@@ -29,10 +29,14 @@ class Jugadores extends Model
     public static function Getjugadores() {
         $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
         // dd(auth()->user()->id);
-        return self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
-            ->where('jugadores.club_id', $club->id)
-            ->select('jugadores.*', 'clubes.nombre as club_nombre')
-            ->get();
+        if (!$club) {
+            return collect(); // Return an empty collection if no club is found
+        }else {
+            return self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
+                ->where('jugadores.club_id', $club->id)
+                ->select('jugadores.*', 'clubes.nombre as club_nombre')
+                ->get();
+        }
     }
     public static function GetjugadoresPending() {
         // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();

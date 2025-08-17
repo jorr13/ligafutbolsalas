@@ -55,7 +55,7 @@
                                     <option value="inactivo">Inactivo</option>
                                 </select>
                             </div> --}}
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <label for="club_id" class="form-label text-blue-dark">Club</label>
                                 <select class="form-select" id="club_id" name="club_id">
                                     <option value="">Seleccione...</option>
@@ -63,7 +63,7 @@
                                         <option value="{{ $club->id }}">{{ $club->nombre }}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
                             <div class="col-md-6">
                                 <label for="categoria_id" class="form-label text-blue-dark">Categoría</label>
                                 <select class="form-select" id="categoria_id" name="categoria_id">

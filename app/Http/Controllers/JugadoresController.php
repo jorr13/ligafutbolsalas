@@ -22,14 +22,17 @@ class JugadoresController extends Controller
 
     public function create()
     {
+        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        // dd($clubs);
         $jugadores = Jugadores::all();
-        $categorias = Categorias::all();
-        $clubs = Clubes::all();
-        return view('jugadores.create', compact('jugadores','clubs','categorias'));
+        $categorias = Categorias::getCategoriasPorClub($clubs->id);
+        // dd($categorias);
+        return view('jugadores.create', compact('jugadores','categorias'));
     }
 
     public function store(Request $request)
     {
+        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->get();
         // dd($request);
         // $request->validate([
         //     'nombre' => 'required|string|max:255',
@@ -48,7 +51,7 @@ class JugadoresController extends Controller
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
             // 'user_id' => auth()->user()->id,
-            'club_id' => $request->club_id,
+            'club_id' => $clubs->id,
             'foto_carnet' => $request->foto_carnet,
             'foto_identificacion' => $request->foto_cedula,
             // 'archivo_cv' => $request->archivo_cv,
