@@ -47,7 +47,7 @@
                 <a class="navbar-brand d-flex align-items-center" href="#">
                     <i class="fas fa-museum me-2"></i>
       
-                    Liga de Futbol Sala
+                    Liga de Futbol Sala de Caracas
                     
                 </a>
             </div>

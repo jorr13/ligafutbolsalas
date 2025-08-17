@@ -28,6 +28,7 @@ class Jugadores extends Model
 
     public static function Getjugadores() {
         $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        // dd(auth()->user()->id);
         return self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
             ->where('jugadores.club_id', $club->id)
             ->select('jugadores.*', 'clubes.nombre as club_nombre')

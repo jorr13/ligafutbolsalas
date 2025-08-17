@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Liga de Futbol Sala</title>
+    <title>Liga de Futbol Sala de Caracas</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -141,7 +141,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-lg sticky-top custom-navbar shadow-sm" style="background-color: #FFFFFF !important;"> 
             <div class="container">
-                <a class="navbar-brand logo" href="{{ route('home') }}" >Liga de Futbol Sala</a>
+                <a class="navbar-brand logo" href="{{ route('home') }}" >Liga de Futbol Sala de caracas</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcol-1" aria-controls="navcol-1" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
