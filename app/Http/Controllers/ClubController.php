@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Clubes;
 use App\Models\Entrenadores;
 use App\Models\Categorias;
+use App\Models\Jugadores;
 use App\Models\ClubesCategorias;
 use Illuminate\Support\Facades\Storage;
 
@@ -197,4 +198,15 @@ class ClubController extends Controller
         $existe->delete();
         return redirect()->route('clubes.index')->with('success', 'Categoria Eliminada exitosamente.');
     }   
+    public function verJugadores($id)
+    {
+        $club = Clubes::find($id);
+        $jugadores = Jugadores::select('jugadores.*', 'categorias.nombre as nombre_categoria')
+            ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+            ->where('jugadores.club_id', $id)
+            ->get();
+        //dd($jugadores);
+        return view('clubes.jugadores', compact('jugadores', 'club'));
+    }
+
 }

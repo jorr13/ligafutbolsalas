@@ -23,7 +23,6 @@ class JugadoresController extends Controller
     public function create()
     {
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        // dd($clubs);
         $jugadores = Jugadores::all();
         $categorias = Categorias::getCategoriasPorClub($clubs->id);
         // dd($categorias);
@@ -167,5 +166,25 @@ class JugadoresController extends Controller
         // $jugadores = Jugadores::Getjugadores(); 
         // dd($jugadores);
         return view('jugadores.index', compact('jugadores'));
+    }
+    public function getJugador(Request $request)
+    {
+        $jugadores = Jugadores::select('jugadores.*', 'categorias.nombre as nombre_categoria')
+        ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+        ->where('jugadores.id', $request->id)
+        ->first();
+        if($jugadores){
+        return response()->json([
+            'data' => $jugadores,
+            'code' => 200,
+            'type' => 'success'
+            ]);
+        }else{
+            return response()->json([
+                'message' => "No se encontro el jugador",
+                'code' => 404,
+                'type' => 'error'
+            ]);
+        }
     }
 }

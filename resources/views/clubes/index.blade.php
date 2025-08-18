@@ -43,6 +43,10 @@
                         </td>
                         <td>
                             <div class="d-flex gap-2 justify-content-end">
+                                <a href="{{ route('clubes.getjugadores', $club->id) }}" 
+                                   class="btn btn-outline-info btn-sm">
+                                    Ver Jugadores
+                                </a>
                                 @if(auth()->user()->rol_id=="administrador")
                                 <a href="{{ route('clubes.edit', $club->id) }}" 
                                    class="btn btn-outline-warning btn-sm">

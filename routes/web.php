@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('entrenadores', App\Http\Controllers\EntrenadoresController::class);
     Route::get('jugadores-pendientes', [App\Http\Controllers\JugadoresController::class, 'indexAdmin'])->name('jugadores.indexpendientes');
     Route::post('aceptar-jugador/{id}', [App\Http\Controllers\JugadoresController::class, 'aceptarJugador'])->name('jugadores.aceptar');
+    Route::get('club-jugadores/{id}', [App\Http\Controllers\ClubController::class, 'verJugadores'])->name('clubes.getjugadores');
 
 });
 
@@ -37,3 +38,4 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('clubes/asing/{id}', [App\Http\Controllers\ClubController::class, 'asingCategoria'])->name('clubes.asignar');
 Route::put('clubes/asing/{id}', [App\Http\Controllers\ClubController::class, 'asingClubCategoria'])->name('clubes.creasignar');
 Route::post('clubes/delete', [App\Http\Controllers\ClubController::class, 'deleteClubCategoria'])->name('clubes.deleteasignar');
+Route::post('get-info', [App\Http\Controllers\JugadoresController::class, 'getJugador'])->name('jugadores.infoJugador');
