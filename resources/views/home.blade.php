@@ -187,28 +187,10 @@
             <div class="card border-0 shadow-sm bg-light">
                 <div class="card-body text-center p-4">
                     <div class="row g-3">
-                        <div class="col-6 col-md-3">
+                        <div class="col-12">
                             <div class="d-flex align-items-center justify-content-center">
-                                <i class="fas fa-heartbeat text-danger me-2"></i>
-                                <span class="text-muted">Sistema Activo</span>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="d-flex align-items-center justify-content-center">
-                                <i class="fas fa-shield-check text-success me-2"></i>
-                                <span class="text-muted">Seguro</span>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="d-flex align-items-center justify-content-center">
-                                <i class="fas fa-tablet-alt text-primary me-2"></i>
-                                <span class="text-muted">Responsive</span>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="d-flex align-items-center justify-content-center">
-                                <i class="fas fa-rocket text-warning me-2"></i>
-                                <span class="text-muted">Rápido</span>
+                            
+                                <span class="text-muted">©Copy Right {{ now()->format('Y') }} Liga de Fútbol Sala. Todos los derechos reservados.</span>
                             </div>
                         </div>
                     </div>

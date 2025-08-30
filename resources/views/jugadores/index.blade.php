@@ -289,12 +289,6 @@
                             <div class="row text-center">
                                 <div class="col-4">
                                     <div class="border-end">
-                                        <h3 class="h5 mb-1 text-success">{{ $jugadores->where('status', 'activo')->count() }}</h3>
-                                        <small class="text-muted">Activos</small>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="border-end">
                                         <h3 class="h5 mb-1 text-warning">{{ $jugadores->where('status', 'pendiente')->count() }}</h3>
                                         <small class="text-muted">Pendientes</small>
                                     </div>
