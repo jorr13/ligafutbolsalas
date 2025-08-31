@@ -70,7 +70,7 @@
                                                id="cedula" 
                                                name="cedula" 
                                                required 
-                                               placeholder="Ej: V-12345678"
+                                               placeholder="Ej: 12345678"
                                                value="{{ old('cedula') }}">
                                     </div>
                                     @error('cedula')
@@ -1058,29 +1058,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
-    // Real-time validation
-    const cedulaInput = document.getElementById('cedula');
-    const cedulaRepresentanteInput = document.getElementById('cedula_representante');
-    const telefonoInput = document.getElementById('telefono');
-    const telefonoRepresentanteInput = document.getElementById('telefono_representante');
-    
-    // Cédula format validation
-    [cedulaInput, cedulaRepresentanteInput].forEach(input => {
-        if (input) {
-            input.addEventListener('input', function() {
-                let value = this.value.replace(/[^A-Za-z0-9-]/g, '');
-                if (value.length > 0) {
-                    value = value.toUpperCase();
-                    if (value.length >= 2) {
-                        value = value.slice(0, 1) + '-' + value.slice(1);
-                    }
-                }
-                this.value = value;
-            });
-        }
-    });
-    
     // Teléfono format validation
     [telefonoInput, telefonoRepresentanteInput].forEach(input => {
         if (input) {

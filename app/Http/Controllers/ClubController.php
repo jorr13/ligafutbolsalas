@@ -59,19 +59,17 @@ class ClubController extends Controller
             // dd('entro');
             $file = $request->file('logo');
             $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('logos', $fileName, 'public');
+            $filePath = Storage::disk('images')->putFileAs('logos', $file, $fileName);
 
             // Guardar la URL en la base de datos
-            $urlLogo = '/app/public/' . $filePath;
+            $urlLogo = $filePath;
         }
-        $qrCodeImage = base64_encode(file_get_contents(storage_path($urlLogo)));
-        // dd($qrCodeImage);
         $club = Clubes::create([
             'nombre' => $request->nombre,
             'localidad' => $request->localidad,
             'rif' => $request->rif,
             'entrenador_id' => $request->entrenador_id,
-            'logo' => $qrCodeImage,
+            'logo' => $urlLogo,
             'estatus' => 'activo'
         ]);
         $entrenadores = Entrenadores::find($request->entrenador_id);
@@ -118,25 +116,23 @@ class ClubController extends Controller
 
         $clubes = Clubes::where('id', $id)->first();
         if ($request->hasFile('logo')) {
-            $path = str_replace('/storage/app/', '', $clubes->logo);
-            if (Storage::disk('store')->exists($path)) { 
-                Storage::disk('store')->delete($path); 
+            // Eliminar archivo anterior si existe
+            if ($clubes->logo && Storage::disk('images')->exists($clubes->logo)) {
+                Storage::disk('images')->delete($clubes->logo);
             }
             $file = $request->file('logo');
             $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('logos', $fileName, 'public');
+            $filePath = Storage::disk('images')->putFileAs('logos', $file, $fileName);
 
             // Guardar la URL en la base de datos
-            $urlLogo = '/storage/app/public/' . $filePath;
+            $urlLogo = $filePath;
         }else{
             $urlLogo = $clubes->logo;
         }   
      
-        $qrCodeImage = base64_encode(file_get_contents(storage_path($clubes->logo)));
-        // dd($qrCodeImage);
         $clubes->update([
             'nombre' => $request->nombre,
-            'logo' => $qrCodeImage,
+            'logo' => $urlLogo,
             'localidad' => $request->localidad,
             'rif' => $request->rif,
             'entrenador_id' => $request->entrenador_id,
@@ -156,9 +152,9 @@ class ClubController extends Controller
     public function destroy(Clubes $clubes, $id)
     {
         $clubes = Clubes::where('id', $id)->first();
-        $path = str_replace('/storage/app/', '', $clubes->logo);
-        if (Storage::disk('store')->exists($path)) { 
-            Storage::disk('store')->delete($path); 
+        // Eliminar archivo asociado
+        if ($clubes->logo && Storage::disk('images')->exists($clubes->logo)) {
+            Storage::disk('images')->delete($clubes->logo);
         }
         $clubes->delete();
     

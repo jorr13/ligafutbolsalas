@@ -31,29 +31,57 @@ class JugadoresController extends Controller
 
     public function store(Request $request)
     {
-        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->get();
-        // dd($request);
-        // $request->validate([
-        //     'nombre' => 'required|string|max:255',
-        //     'cedula' => 'required|string|max:20',
-        //     'telefono' => 'nullable|string|max:15',
-        //     'direccion' => 'nullable|string|max:255',
-        //     'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        //     'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        //     'archivo_cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-        // ]);
+        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        
+        // Validación de campos
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'cedula' => 'required|string|max:20',
+            'telefono' => 'nullable|string|max:15',
+            'email' => 'nullable|email|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'numero_dorsal' => 'nullable|string|min:1|max:99',
+            'edad' => 'nullable|integer|min:1|max:100',
+            'fecha_nacimiento' => 'nullable|date',
+            'tipo_sangre' => 'nullable|string|max:10',
+            'categoria_id' => 'required|exists:categorias,id',
+            'nombre_representante' => 'nullable|string|max:255',
+            'cedula_representante' => 'nullable|string|max:20',
+            'telefono_representante' => 'nullable|string|max:15',
+            'observacion' => 'nullable|string|max:1000',
+            'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto_identificacion' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Procesar archivos de fotos
+        $fotoCarnetPath = null;
+        $fotoCedulaPath = null;
+        $fotoIdentificacionPath = null;
+
+        // Procesar foto carnet
+        if ($request->hasFile('foto_carnet')) {
+            $fotoCarnetPath = Storage::disk('images')->putFile('jugadores/fotos_carnet', $request->file('foto_carnet'));
+        }
+
+        // Procesar foto cédula
+        if ($request->hasFile('foto_cedula')) {
+            $fotoCedulaPath = Storage::disk('images')->putFile('jugadores/fotos_cedula', $request->file('foto_cedula'));
+        }
+
+        // Procesar foto identificación
+        if ($request->hasFile('foto_identificacion')) {
+            $fotoIdentificacionPath = Storage::disk('images')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
+        }
         
         $createJugador = Jugadores::create([
-
             'nombre' => $request->nombre,
             'cedula' => $request->cedula,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
-            // 'user_id' => auth()->user()->id,
             'club_id' => $clubs->id,
-            'foto_carnet' => $request->foto_carnet,
-            'foto_identificacion' => $request->foto_cedula,
-            // 'archivo_cv' => $request->archivo_cv,
+            'foto_carnet' => $fotoCarnetPath,
+            'foto_cedula' => $fotoCedulaPath,
             'status' => 'pendiente',
             'email' => $request->email,
             'numero_dorsal' => $request->numero_dorsal,
@@ -61,15 +89,11 @@ class JugadoresController extends Controller
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'tipo_sangre' => $request->tipo_sangre,
             'observacion' => $request->observacion,
-            'foto_identificacion' => $request->foto_identificacion,
+            'foto_identificacion' => $fotoIdentificacionPath,
             'nombre_representante' => $request->nombre_representante,
             'cedula_representante' => $request->cedula_representante,
             'telefono_representante' => $request->telefono_representante,
             'categoria_id' => $request->categoria_id,
-        
-            // 'foto_carnet' => $request->hasFile('foto_carnet') ? $request->file('foto_carnet')->store('public/fotos_carnet') : null,
-            // 'foto_cedula' => $request->hasFile('foto_cedula') ? $request->file('foto_cedula')->store('public/fotos_cedula') : null,
-            // 'archivo_cv' => $request->hasFile('archivo_cv') ? $request->file('archivo_cv')->store('public/cv') : null,
         ]);
 
         return redirect()->route('jugadores.index')->with('success', 'Jugador creado exitosamente.');
@@ -95,8 +119,11 @@ class JugadoresController extends Controller
      */
     public function edit(Jugadores $jugadores, $id)
     {
-        $jugadores = Jugadores::where('id', $id)->first();
-        return view('jugadores.edit', compact('jugadores'));
+        $jugador = Jugadores::where('id', $id)->first();
+        //dd($jugadores);
+        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        $categorias = Categorias::getCategoriasPorClub($clubs->id);
+        return view('jugadores.edit', compact('jugador', 'categorias'));
     }
 
     /**
@@ -109,16 +136,67 @@ class JugadoresController extends Controller
     public function update(Request $request, Jugadores $jugadores, $id)
     {
         $jugador = Jugadores::where('id', $id)->first();
+        
+        // Validación de campos
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'cedula' => 'required|string|max:20',
+            'telefono' => 'nullable|string|max:15',
+            'email' => 'nullable|email|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'numero_dorsal' => 'nullable|string|min:1|max:99',
+            'edad' => 'nullable|integer|min:1|max:100',
+            'fecha_nacimiento' => 'nullable|date',
+            'tipo_sangre' => 'nullable|string|max:10',
+            'categoria_id' => 'required|exists:categorias,id',
+            'nombre_representante' => 'nullable|string|max:255',
+            'cedula_representante' => 'nullable|string|max:20',
+            'telefono_representante' => 'nullable|string|max:15',
+            'observacion' => 'nullable|string|max:1000',
+            'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto_identificacion' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Procesar archivos de fotos
+        $fotoCarnetPath = $jugador->foto_carnet;
+        $fotoCedulaPath = $jugador->foto_cedula;
+        $fotoIdentificacionPath = $jugador->foto_identificacion;
+
+        // Procesar foto carnet
+        if ($request->hasFile('foto_carnet')) {
+            // Eliminar archivo anterior si existe
+            if ($jugador->foto_carnet && Storage::disk('images')->exists($jugador->foto_carnet)) {
+                Storage::disk('images')->delete($jugador->foto_carnet);
+            }
+            $fotoCarnetPath = Storage::disk('images')->putFile('jugadores/fotos_carnet', $request->file('foto_carnet'));
+        }
+
+        // Procesar foto cédula
+        if ($request->hasFile('foto_cedula')) {
+            // Eliminar archivo anterior si existe
+            if ($jugador->foto_cedula && Storage::disk('images')->exists($jugador->foto_cedula)) {
+                Storage::disk('images')->delete($jugador->foto_cedula);
+            }
+            $fotoCedulaPath = Storage::disk('images')->putFile('jugadores/fotos_cedula', $request->file('foto_cedula'));
+        }
+
+        // Procesar foto identificación
+        if ($request->hasFile('foto_identificacion')) {
+            // Eliminar archivo anterior si existe
+            if ($jugador->foto_identificacion && Storage::disk('images')->exists($jugador->foto_identificacion)) {
+                Storage::disk('images')->delete($jugador->foto_identificacion);
+            }
+            $fotoIdentificacionPath = Storage::disk('images')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
+        }
+
         $jugador->update([
             'nombre' => $request->nombre,
             'cedula' => $request->cedula,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
-            'user_id' => auth()->user()->id,
-            'club_id' => $request->club_id,
-            'foto_carnet' => $request->foto_carnet,
-            'foto_cedula' => $request->foto_cedula,
-            'archivo_cv' => $request->archivo_cv,
+            'foto_carnet' => $fotoCarnetPath,
+            'foto_cedula' => $fotoCedulaPath,
             'status' => 'pendiente',
             'email' => $request->email,
             'numero_dorsal' => $request->numero_dorsal,
@@ -126,7 +204,7 @@ class JugadoresController extends Controller
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'tipo_sangre' => $request->tipo_sangre,
             'observacion' => $request->observacion,
-            'foto_identificacion' => $request->foto_identificacion,
+            'foto_identificacion' => $fotoIdentificacionPath,
             'nombre_representante' => $request->nombre_representante,
             'cedula_representante' => $request->cedula_representante,
             'telefono_representante' => $request->telefono_representante,
@@ -134,8 +212,8 @@ class JugadoresController extends Controller
         ]);
     
         return redirect()->route('jugadores.index')->with('success', 'Jugador editado exitosamente.');
-
     }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -145,10 +223,25 @@ class JugadoresController extends Controller
     public function destroy(Jugadores $jugadores, $id)
     {
         $jugador = Jugadores::where('id', $id)->first();
+        
+        // Eliminar archivos asociados
+        if ($jugador->foto_carnet && Storage::disk('images')->exists($jugador->foto_carnet)) {
+            Storage::disk('images')->delete($jugador->foto_carnet);
+        }
+        
+        if ($jugador->foto_cedula && Storage::disk('images')->exists($jugador->foto_cedula)) {
+            Storage::disk('images')->delete($jugador->foto_cedula);
+        }
+        
+        if ($jugador->foto_identificacion && Storage::disk('images')->exists($jugador->foto_identificacion)) {
+            Storage::disk('images')->delete($jugador->foto_identificacion);
+        }
+        
         $jugador->delete();
     
         return redirect()->route('jugadores.index')->with('success', 'Jugador eliminado exitosamente.');
     }
+
     public function aceptarJugador($id)
     {
         // dd($id);
@@ -159,6 +252,7 @@ class JugadoresController extends Controller
         $jugadores = Jugadores::GetjugadoresPending(); 
         return view('jugadores.index', compact('jugadores'))->with('success', 'Jugador aceptado exitosamente.');
     }
+
     public function indexAdmin()
     {
         // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
@@ -167,6 +261,7 @@ class JugadoresController extends Controller
         // dd($jugadores);
         return view('jugadores.index', compact('jugadores'));
     }
+
     public function getJugador(Request $request)
     {
         $jugadores = Jugadores::select('jugadores.*', 'categorias.nombre as nombre_categoria')

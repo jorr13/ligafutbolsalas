@@ -21,8 +21,8 @@
                         <div class="card-body p-4 text-center">
                             <div class="club-image-container mb-3">
                                 @if($clubes->logo)
-                                    <img src="data:image/png;base64,{{ $clubes->logo }}" 
-                                         alt="Logo de {{ $clubes->nombre }}" 
+                                                                                                             <img src="{{ asset('images/' . $clubes->logo) }}" 
+                                         alt="Logo de {{ $clubes->logo }}" 
                                          class="club-logo img-fluid rounded"
                                          id="currentLogo">
                                 @else

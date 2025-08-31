@@ -89,14 +89,6 @@
                                     {{ __('Iniciar Sesión') }}
                                 </button>
                             </div>
-
-                            <!-- Additional Links -->
-                            <div class="text-center">
-                                <small class="text-muted">
-                                    <i class="fas fa-shield-alt me-1"></i>
-                                    {{ __('Sistema seguro y confiable') }}
-                                </small>
-                            </div>
                         </form>
                     </div>
                 </div>

@@ -360,7 +360,8 @@
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-                                    <img src="{{ $jugador->foto_identificacion ?? '/images/default-avatar.png' }}" 
+                                 
+                                    <img src="{{ $jugador->foto_carnet ? asset('images/' . $jugador->foto_carnet) : '/images/default-avatar.png' }}"  
                                          alt="Foto de {{ $jugador->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm jugador-avatar" 
                                          style="width: 45px; height: 45px; object-fit: cover;">

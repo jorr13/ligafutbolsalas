@@ -364,7 +364,7 @@
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-                                    <img src="data:image/png;base64,{{ $club->logo }}" 
+                                                                                                             <img src="{{ asset('images/' . $club->logo) }}" 
                                          alt="Logo de {{ $club->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm club-logo" 
                                          style="width: 45px; height: 45px; object-fit: cover;">

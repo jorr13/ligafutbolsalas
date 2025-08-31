@@ -60,7 +60,7 @@ class EntrenadoresController extends Controller
             'status' => 1,
         ]);
 
-        Entrenadores::create([
+        $entrenadorData = [
             'nombre' => $request->nombre,
             'cedula' => $request->cedula,
             'email' => $request->email,
@@ -68,7 +68,27 @@ class EntrenadoresController extends Controller
             'direccion' => $request->direccion,
             'user_id' => $user->id,
             'estatus' => 'activo'
-        ]);
+        ];
+
+        // Manejar foto_carnet
+        if ($request->hasFile('foto_carnet')) {
+            $fotoCarnetPath = Storage::disk('images')->putFile('entrenadores/fotos_carnet', $request->file('foto_carnet'));
+            $entrenadorData['foto_carnet'] = $fotoCarnetPath;
+        }
+
+        // Manejar foto_cedula
+        if ($request->hasFile('foto_cedula')) {
+            $fotoCedulaPath = Storage::disk('images')->putFile('entrenadores/fotos_cedula', $request->file('foto_cedula'));
+            $entrenadorData['foto_cedula'] = $fotoCedulaPath;
+        }
+
+        // Manejar archivo_cv
+        if ($request->hasFile('archivo_cv')) {
+            $archivoCvPath = Storage::disk('images')->putFile('entrenadores/archivos_cv', $request->file('archivo_cv'));
+            $entrenadorData['archivo_cv'] = $archivoCvPath;
+        }
+
+        Entrenadores::create($entrenadorData);
     
         return redirect()->route('entrenadores.index')->with('success', 'Entrenador creado exitosamente.');
     }
@@ -110,18 +130,51 @@ class EntrenadoresController extends Controller
     {
         $entrenador = Entrenadores::where('id', $id)->first();
         $user = User::where('id', $entrenador->user_id)->first();
-        // dd($entrenador,$user);
+        
         $user->update([
             'name' => $request->nombre,
             'email' => $request->email,
         ]);
-        $entrenador->update([
-           'nombre' => $request->nombre,
+
+        $entrenadorData = [
+            'nombre' => $request->nombre,
             'cedula' => $request->cedula,
             'email' => $request->email,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
-        ]);
+        ];
+
+        // Manejar foto_carnet
+        if ($request->hasFile('foto_carnet')) {
+            // Eliminar archivo anterior si existe
+            if ($entrenador->foto_carnet && Storage::disk('images')->exists($entrenador->foto_carnet)) {
+                Storage::disk('images')->delete($entrenador->foto_carnet);
+            }
+            $fotoCarnetPath = Storage::disk('images')->putFile('entrenadores/fotos_carnet', $request->file('foto_carnet'));
+            $entrenadorData['foto_carnet'] = $fotoCarnetPath;
+        }
+
+        // Manejar foto_cedula
+        if ($request->hasFile('foto_cedula')) {
+            // Eliminar archivo anterior si existe
+            if ($entrenador->foto_cedula && Storage::disk('images')->exists($entrenador->foto_cedula)) {
+                Storage::disk('images')->delete($entrenador->foto_cedula);
+            }
+            $fotoCedulaPath = Storage::disk('images')->putFile('entrenadores/fotos_cedula', $request->file('foto_cedula'));
+            $entrenadorData['foto_cedula'] = $fotoCedulaPath;
+        }
+
+        // Manejar archivo_cv
+        if ($request->hasFile('archivo_cv')) {
+            // Eliminar archivo anterior si existe
+            if ($entrenador->archivo_cv && Storage::disk('images')->exists($entrenador->archivo_cv)) {
+                Storage::disk('images')->delete($entrenador->archivo_cv);
+            }
+            $archivoCvPath = Storage::disk('images')->putFile('entrenadores/archivos_cv', $request->file('archivo_cv'));
+            $entrenadorData['archivo_cv'] = $archivoCvPath;
+        }
+
+        $entrenador->update($entrenadorData);
     
         return redirect()->route('entrenadores.index')->with('success', 'Entrenador editado exitosamente.');
 
@@ -135,7 +188,19 @@ class EntrenadoresController extends Controller
     public function destroy(Entrenadores $entrenadores, $id)
     {
         $entrenador = Entrenadores::where('id', $id)->first();
-        $user = User::where('id', $id)->first();
+        $user = User::where('id', $entrenador->user_id)->first();
+        
+        // Eliminar archivos asociados
+        if ($entrenador->foto_carnet && Storage::disk('images')->exists($entrenador->foto_carnet)) {
+            Storage::disk('images')->delete($entrenador->foto_carnet);
+        }
+        if ($entrenador->foto_cedula && Storage::disk('images')->exists($entrenador->foto_cedula)) {
+            Storage::disk('images')->delete($entrenador->foto_cedula);
+        }
+        if ($entrenador->archivo_cv && Storage::disk('images')->exists($entrenador->archivo_cv)) {
+            Storage::disk('images')->delete($entrenador->archivo_cv);
+        }
+        
         $entrenador->delete();
         $user->delete();
     

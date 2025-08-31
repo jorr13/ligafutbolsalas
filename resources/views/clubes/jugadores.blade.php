@@ -193,7 +193,7 @@
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-                                    <img src="{{ $jugador->foto_identificacion ?? '/images/default-avatar.png' }}" 
+                                                                                                             <img src="{{ $jugador->foto_identificacion ? asset('images/' . $jugador->foto_identificacion) : '/images/default-avatar.png' }}"  
                                          alt="Foto de {{ $jugador->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm" 
                                          style="width: 45px; height: 45px; object-fit: cover;">
@@ -456,7 +456,7 @@
                 $('#staticBackdropLabel').html('<i class="fas fa-user-circle me-2"></i>Perfil del Jugador');
                 
                 // Llenar datos del jugador
-                $('#jugador-foto').attr('src', response.data.foto_identificacion || '/images/default-avatar.png');
+                $('#jugador-foto').attr('src', response.data.foto_identificacion ? '/storage/' + response.data.foto_identificacion : '/images/default-avatar.png');
                 $('#jugador-nombre').text(response.data.nombre || 'Sin nombre');
                 $('#jugador-categoria').text(response.data.nombre_categoria || 'Sin categoría');
                 $('#jugador-cedula').text(response.data.cedula || 'No especificada');
