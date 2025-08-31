@@ -45,8 +45,8 @@
                     <div class="card border-0 shadow-lg form-card">
                         <div class="card-body p-5">
                             <form action="{{ route('jugadores.update', $jugador->id) }}" method="POST" enctype="multipart/form-data" class="edit-form">
-                                @csrf
-                                @method('PATCH')
+                        @csrf
+                        @method('PATCH')
                                 
                                 <!-- Información Personal -->
                                 <div class="section-header mb-4">
@@ -57,7 +57,7 @@
                                 </div>
                                 
                                 <div class="row g-4 mb-5">
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="nombre" class="form-label fw-semibold">
                                                 <i class="fas fa-user me-2 text-primary"></i>
@@ -82,9 +82,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="cedula" class="form-label fw-semibold">
                                                 <i class="fas fa-id-card me-2 text-primary"></i>
@@ -109,9 +109,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="telefono" class="form-label fw-semibold">
                                                 <i class="fas fa-phone me-2 text-primary"></i>
@@ -135,9 +135,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="email" class="form-label fw-semibold">
                                                 <i class="fas fa-envelope me-2 text-primary"></i>
@@ -161,9 +161,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="direccion" class="form-label fw-semibold">
                                                 <i class="fas fa-map-marker-alt me-2 text-primary"></i>
@@ -187,9 +187,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="numero_dorsal" class="form-label fw-semibold">
                                                 <i class="fas fa-tshirt me-2 text-primary"></i>
@@ -213,9 +213,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="edad" class="form-label fw-semibold">
                                                 <i class="fas fa-birthday-cake me-2 text-primary"></i>
@@ -239,9 +239,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="fecha_nacimiento" class="form-label fw-semibold">
                                                 <i class="fas fa-calendar-alt me-2 text-primary"></i>
@@ -264,9 +264,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="tipo_sangre" class="form-label fw-semibold">
                                                 <i class="fas fa-heartbeat me-2 text-primary"></i>
@@ -290,9 +290,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="status" class="form-label fw-semibold">
                                                 <i class="fas fa-toggle-on me-2 text-primary"></i>
@@ -307,8 +307,8 @@
                                                         name="status">
                                                     <option value="activo" {{ old('status', $jugador->status) == 'activo' ? 'selected' : '' }}>{{ __('Activo') }}</option>
                                                     <option value="inactivo" {{ old('status', $jugador->status) == 'inactivo' ? 'selected' : '' }}>{{ __('Inactivo') }}</option>
-                                                </select>
-                                            </div>
+                                </select>
+                            </div>
                                             @error('status')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
@@ -320,7 +320,7 @@
                                     
                              
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="categoria_id" class="form-label fw-semibold">
                                                 <i class="fas fa-tags me-2 text-primary"></i>
@@ -338,9 +338,9 @@
                                                         <option value="{{ $categoria->id }}" {{ old('categoria_id', $jugador->categoria_id) == $categoria->id ? 'selected' : '' }}>
                                                             {{ $categoria->nombre }}
                                                         </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                    @endforeach
+                                </select>
+                            </div>
                                             @error('categoria_id')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
@@ -412,7 +412,7 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="telefono_representante" class="form-label fw-semibold">
                                                 <i class="fas fa-phone me-2 text-primary"></i>
@@ -445,10 +445,10 @@
                                         <i class="fas fa-file-alt me-2"></i>
                                         {{ __('Documentos') }}
                                     </h5>
-                                </div>
+                            </div>
                                 
                                 <div class="row g-4 mb-5">
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="foto_carnet" class="form-label fw-semibold">
                                                 <i class="fas fa-camera me-2 text-primary"></i>
@@ -483,7 +483,7 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            @if($jugador->foto_carnet)
+                                @if($jugador->foto_carnet)
                                                 @php
                                                     $jugador->foto_carnet = str_replace('public/', "", $jugador->foto_carnet);
                                                 @endphp
@@ -491,7 +491,7 @@
                                                     <i class="fas fa-info-circle me-1"></i>
                                                     {{ __('Archivo actual') }}: <a href="{{ asset('images/' . $jugador->foto_carnet) }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
                                                 </small>
-                                            @endif
+                                @endif
                                             @error('foto_carnet')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
@@ -499,9 +499,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="foto_cedula" class="form-label fw-semibold">
                                                 <i class="fas fa-id-card me-2 text-primary"></i>
@@ -536,12 +536,12 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            @if($jugador->foto_cedula)
+                                @if($jugador->foto_cedula)
                                                 <small class="d-block mt-2 text-info">
                                                     <i class="fas fa-info-circle me-1"></i>
                                                     {{ __('Archivo actual') }}: <a href="{{ asset('images/' . $jugador->foto_cedula) }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
                                                 </small>
-                                            @endif
+                                @endif
                                             @error('foto_cedula')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
@@ -549,9 +549,9 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                    </div>
+                            </div>
                                     
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="foto_identificacion" class="form-label fw-semibold">
                                                 <i class="fas fa-id-badge me-2 text-primary"></i>
@@ -585,22 +585,22 @@
                                                         {{ __('Remover') }}
                                                     </button>
                                                 </div>
-                                            </div>
-                                            @if($jugador->foto_identificacion)
+                            </div>
+                                @if($jugador->foto_identificacion)
                                                 <small class="d-block mt-2 text-info">
                                                     <i class="fas fa-info-circle me-1"></i>
                                                     {{ __('Archivo actual') }}: <a href="{{ asset('images/' . $jugador->foto_identificacion) }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
                                                 </small>
-                                            @endif
+                                @endif
                                             @error('foto_identificacion')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
                                                     <strong>{{ $message }}</strong>
                                                 </div>
                                             @enderror
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
+                            </div>
+                            </div>
 
                                 <!-- Observaciones -->
                                 <div class="form-group mb-5">
@@ -617,14 +617,14 @@
                                                   name="observacion" 
                                                   rows="3"
                                                   placeholder="Observaciones adicionales sobre el jugador...">{{ old('observacion', $jugador->observacion) }}</textarea>
-                                    </div>
+                            </div>
                                     @error('observacion')
                                         <div class="invalid-feedback d-block mt-2">
                                             <i class="fas fa-exclamation-circle me-1"></i>
                                             <strong>{{ $message }}</strong>
-                                        </div>
+                            </div>
                                     @enderror
-                                </div>
+                        </div>
 
                                 <!-- Action Buttons -->
                                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -635,14 +635,14 @@
                                     <button type="submit" class="btn btn-primary btn-lg fw-semibold submit-btn">
                                         <i class="fas fa-save me-2"></i>
                                         {{ __('Guardar Cambios') }}
-                                    </button>
-                                </div>
-                            </form>
+                            </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
+</div>
     </div>
 </div>
 

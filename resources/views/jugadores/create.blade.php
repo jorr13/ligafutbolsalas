@@ -11,7 +11,7 @@
                 </div>
                 <h2 class="fw-bold text-primary mb-2">{{ __('Nuevo Jugador') }}</h2>
                 <p class="text-muted mb-0">{{ __('Registra un nuevo jugador en la Liga de Fútbol Sala') }}</p>
-            </div>
+                </div>
 
             <!-- Form Card -->
             <div class="card border-0 shadow-lg form-card">
@@ -277,13 +277,13 @@
                                                 id="categoria_id" 
                                                 name="categoria_id">
                                             <option value="" selected disabled>{{ __('Seleccione una categoría...') }}</option>
-                                            @foreach($categorias as $categoria)
+                                    @foreach($categorias as $categoria)
                                                 <option value="{{ $categoria->id }}" {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>
                                                     {{ $categoria->nombre }}
                                                 </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    @endforeach
+                                </select>
+                            </div>
                                     @error('categoria_id')
                                         <div class="invalid-feedback d-block mt-2">
                                             <i class="fas fa-exclamation-circle me-1"></i>
@@ -388,7 +388,7 @@
                                 <i class="fas fa-file-alt me-2"></i>
                                 {{ __('Documentos') }}
                             </h5>
-                        </div>
+                            </div>
                         
                         <div class="row g-4 mb-5">
                             <div class="col-md-6">
@@ -520,7 +520,7 @@
                                             <strong>{{ $message }}</strong>
                                         </div>
                                     @enderror
-                                </div>
+                            </div>
                             </div>
                         </div>
 
@@ -1093,6 +1093,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('direccion')) addCharacterCounter(document.getElementById('direccion'), 200);
     if (document.getElementById('nombre_representante')) addCharacterCounter(document.getElementById('nombre_representante'), 100);
     if (document.getElementById('observacion')) addCharacterCounter(document.getElementById('observacion'), 500);
-});
+    });
 </script>
 @endsection

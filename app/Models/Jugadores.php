@@ -53,5 +53,27 @@ class Jugadores extends Model
             ->count();
     }
 
+    public static function GetjugadoresByClub($clubId, $filters = []) {
+        $query = self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
+            ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+            ->where('jugadores.club_id', $clubId)
+            ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as nombre_categoria');
+        
+        // Aplicar filtros
+        if (!empty($filters['nombre'])) {
+            $query->where('jugadores.nombre', 'LIKE', '%' . $filters['nombre'] . '%');
+        }
+        
+        if (!empty($filters['categoria'])) {
+            $query->where('categorias.nombre', $filters['categoria']);
+        }
+        
+        if (!empty($filters['status'])) {
+            $query->where('jugadores.status', $filters['status']);
+        }
+        
+        return $query->get();
+    }
+
 }
 

@@ -89,6 +89,19 @@
         .table-responsive {
             font-size: 0.9rem;
         }
+        
+        .row.g-2 {
+            flex-direction: column;
+        }
+        
+        .col-md-5, .col-md-2 {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .col-md-2 {
+            margin-bottom: 0;
+        }
     }
 </style>
 @endsection
@@ -150,11 +163,28 @@
                     </h5>
                 </div>
                 <div class="col-md-6 text-end">
-                    <div class="input-group" style="max-width: 300px; margin-left: auto;">
-                        <span class="input-group-text bg-light border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar jugador...">
+                    <div class="row g-2">
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar jugador...">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <select class="form-select" id="categoriaFilter">
+                                <option value="">Todas las categorías</option>
+                                @foreach($categorias as $categoria)
+                                    <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="clearFilters()" title="Limpiar filtros">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -197,8 +227,7 @@
                                          alt="Foto de {{ $jugador->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm" 
                                          style="width: 45px; height: 45px; object-fit: cover;">
-                                    <div class="position-absolute bottom-0 end-0 bg-{{ $jugador->status == 'activo' ? 'success' : 'warning' }} rounded-circle border-2 border-white" 
-                                         style="width: 12px; height: 12px;"></div>
+                          
                                 </div>
                                 <div>
                                     <h6 class="mb-0 fw-bold text-dark">{{ $jugador->nombre }}</h6>
@@ -247,12 +276,7 @@
                                         title="Ver perfil completo">
                                     <i class="fas fa-eye me-1"></i>Ver
                                 </button>
-                                <button type="button" class="btn btn-outline-success btn-sm" 
-                                        onclick="window.open('tel:{{ $jugador->telefono }}')"
-                                        title="Llamar al jugador"
-                                        {{ !$jugador->telefono ? 'disabled' : '' }}>
-                                    <i class="fas fa-phone me-1"></i>Llamar
-                                </button>
+                       
                             </div>
                         </td>
                     </tr>
@@ -284,7 +308,7 @@
                     <h5 class="modal-title fw-bold" id="staticBackdropLabel">
                         <i class="fas fa-user-circle me-2"></i>Perfil del Jugador
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white cerrar-modal"  aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
                     <!-- Spinner de carga -->
@@ -305,8 +329,7 @@
                                         <img id="jugador-foto" src="" alt="Foto del jugador" 
                                              class="rounded-circle border-4 border-white shadow" 
                                              style="width: 150px; height: 150px; object-fit: cover;">
-                                        <div id="status-badge" class="position-absolute bottom-0 end-0 bg-success rounded-circle border-3 border-white" 
-                                             style="width: 25px; height: 25px;"></div>
+                                        
                                     </div>
                                 </div>
                                 
@@ -315,14 +338,6 @@
                                     <span id="jugador-categoria" class="badge bg-info text-white px-3 py-2"></span>
                                 </div>
                                 
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-phone me-2"></i>Llamar
-                                    </button>
-                                    <button class="btn btn-outline-success btn-sm">
-                                        <i class="fas fa-envelope me-2"></i>Enviar Email
-                                    </button>
-                                </div>
                             </div>
                             
                             <!-- Columna derecha - Información detallada -->
@@ -425,11 +440,8 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 bg-light">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary cerrar-modal">
                         <i class="fas fa-times me-2"></i>Cerrar
-                    </button>
-                    <button type="button" class="btn btn-primary">
-                        <i class="fas fa-edit me-2"></i>Editar Jugador
                     </button>
                 </div>
             </div>
@@ -454,9 +466,9 @@
                 
                 // Actualizar título del modal
                 $('#staticBackdropLabel').html('<i class="fas fa-user-circle me-2"></i>Perfil del Jugador');
-                
+                let miurl= '{{ asset('images/') }}';
                 // Llenar datos del jugador
-                $('#jugador-foto').attr('src', response.data.foto_identificacion ? '/storage/' + response.data.foto_identificacion : '/images/default-avatar.png');
+                $('#jugador-foto').attr('src', miurl+'/'+response.data.foto_identificacion);
                 $('#jugador-nombre').text(response.data.nombre || 'Sin nombre');
                 $('#jugador-categoria').text(response.data.nombre_categoria || 'Sin categoría');
                 $('#jugador-cedula').text(response.data.cedula || 'No especificada');
@@ -479,13 +491,17 @@
                 const statusBadgeClass = status === 'activo' ? 'bg-success' : 'bg-warning';
                 $('#status-badge').removeClass('bg-success bg-warning').addClass(statusBadgeClass);
                 
-                // Configurar botones de acción
-                if (response.data.telefono) {
-                    $('.btn-outline-primary').attr('onclick', `window.open('tel:${response.data.telefono}')`);
-                }
-                if (response.data.email) {
-                    $('.btn-outline-success').attr('onclick', `window.open('mailto:${response.data.email}')`);
-                }
+                                 // Configurar botones de acción
+                 if (response.data.telefono) {
+                     $('.btn-outline-primary').off('click').on('click', function() {
+                         window.open('tel:' + response.data.telefono);
+                     });
+                 }
+                 if (response.data.email) {
+                     $('.btn-outline-success').off('click').on('click', function() {
+                         window.open('mailto:' + response.data.email);
+                     });
+                 }
             },
             error: function (xhr, status, error) {
                 // Ocultar spinner y mostrar mensaje de error
@@ -506,57 +522,114 @@
         });
     }
     
-    // Limpiar modal cuando se cierre
-    $('#staticBackdrop').on('hidden.bs.modal', function () {
-        $('#spinner').show();
-        $('#jugador-content').addClass('d-none');
-    });
+         // Limpiar modal cuando se cierre
+     $('#staticBackdrop').on('hidden.bs.modal', function () {
+         $('#spinner').show();
+         $('#jugador-content').removeClass('d-none').addClass('d-none');
+         
+         // Limpiar event listeners de los botones
+         $('.btn-outline-primary').off('click');
+         $('.btn-outline-success').off('click');
+         
+         // Limpiar contenido del modal
+         $('#jugador-foto').attr('src', '');
+         $('#jugador-nombre').text('');
+         $('#jugador-categoria').text('');
+         $('#jugador-cedula').text('');
+         $('#jugador-telefono').text('');
+         $('#jugador-email').text('');
+         $('#jugador-dorsal').text('');
+         $('#jugador-representante-nombre').text('');
+         $('#jugador-representante-cedula').text('');
+         $('#jugador-representante-telefono').text('');
+         $('#jugador-status').removeClass('bg-success bg-warning').text('');
+     });
 
-    // Funcionalidad de búsqueda en tiempo real
-    $('#searchInput').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
+    // Funcionalidad de búsqueda y filtrado en tiempo real
+    function filterJugadores() {
+        const searchTerm = $('#searchInput').val().toLowerCase();
+        const categoriaFilter = $('#categoriaFilter').val();
         const rows = $('.jugador-row');
         
-        rows.each(function() {
-            const row = $(this);
-            const text = row.text().toLowerCase();
-            
-            if (text.includes(searchTerm)) {
-                row.show();
-                row.addClass('highlight-row');
-            } else {
-                row.hide();
-                row.removeClass('highlight-row');
-            }
-        });
+        // Mostrar indicador de carga
+        if (searchTerm !== '' || categoriaFilter !== '') {
+            $('.jugador-row').addClass('opacity-50');
+        }
         
-        // Mostrar mensaje si no hay resultados
-        const visibleRows = rows.filter(':visible');
-        if (visibleRows.length === 0 && searchTerm !== '') {
-            if ($('#no-results').length === 0) {
-                $('#jugadoresTable tbody').append(`
-                    <tr id="no-results">
-                        <td colspan="7" class="text-center py-4">
-                            <div class="py-3">
-                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                                <h6 class="text-muted mb-2">No se encontraron resultados</h6>
-                                <p class="text-muted mb-0">Intenta con otros términos de búsqueda</p>
-                            </div>
-                        </td>
-                    </tr>
-                `);
+        setTimeout(() => {
+            rows.each(function() {
+                const row = $(this);
+                const nombre = row.find('h6').text().toLowerCase();
+                const categoria = row.find('.badge.bg-info').text().toLowerCase();
+                
+                const matchesSearch = nombre.includes(searchTerm);
+                const matchesCategoria = !categoriaFilter || categoria.includes(categoriaFilter.toLowerCase());
+                
+                if (matchesSearch && matchesCategoria) {
+                    row.show();
+                    row.addClass('highlight-row');
+                    row.removeClass('opacity-50');
+                } else {
+                    row.hide();
+                    row.removeClass('highlight-row');
+                }
+            });
+            
+            // Mostrar mensaje si no hay resultados
+            const visibleRows = rows.filter(':visible');
+            if (visibleRows.length === 0 && (searchTerm !== '' || categoriaFilter !== '')) {
+                if ($('#no-results').length === 0) {
+                    $('#jugadoresTable tbody').append(`
+                        <tr id="no-results">
+                            <td colspan="7" class="text-center py-4">
+                                <div class="py-3">
+                                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted mb-2">No se encontraron resultados</h6>
+                                    <p class="text-muted mb-0">Intenta con otros términos de búsqueda o cambia el filtro de categoría</p>
+                                    <button class="btn btn-outline-primary btn-sm mt-2" onclick="clearFilters()">
+                                        <i class="fas fa-times me-1"></i>Limpiar filtros
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `);
+                }
+            } else {
+                $('#no-results').remove();
             }
-        } else {
-            $('#no-results').remove();
-        }
-    });
-
-    // Limpiar búsqueda
-    $('#searchInput').on('focus', function() {
-        if ($(this).val() === '') {
-            $('.jugador-row').removeClass('highlight-row');
-        }
-    });
+            
+            // Actualizar contadores
+            updateCounters();
+        }, 100);
+    }
+    
+    // Event listeners para filtros
+    $('#searchInput').on('keyup', filterJugadores);
+    $('#categoriaFilter').on('change', filterJugadores);
+    
+    // Limpiar filtros
+    function clearFilters() {
+        $('#searchInput').val('');
+        $('#categoriaFilter').val('');
+        filterJugadores();
+    }
+    
+    // Actualizar contadores de estadísticas
+    function updateCounters() {
+        const visibleRows = $('.jugador-row:visible');
+        const totalVisible = visibleRows.length;
+        const activosVisible = visibleRows.filter(function() {
+            return $(this).find('.badge.bg-success').length > 0;
+        }).length;
+        const pendientesVisible = visibleRows.filter(function() {
+            return $(this).find('.badge.bg-warning').length > 0;
+        }).length;
+        
+        // Actualizar los contadores en el header
+        $('.text-success').text(activosVisible);
+        $('.text-warning').text(pendientesVisible);
+        $('.text-info').text(totalVisible);
+    }
 
     // Efectos hover en las filas
     $('.jugador-row').hover(
@@ -567,6 +640,16 @@
             $(this).removeClass('table-active');
         }
     );
+         $('.cerrar-modal').on('click', function(e) {
+         e.preventDefault();
+         
+         // Limpiar event listeners antes de cerrar
+         $('.btn-outline-primary').off('click');
+         $('.btn-outline-success').off('click');
+         
+         // Cerrar modal usando Bootstrap
+         $('#staticBackdrop').modal('hide');
+     });
 
     // Tooltips para los botones
     $('[title]').tooltip();

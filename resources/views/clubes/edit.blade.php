@@ -42,22 +42,22 @@
                                     <i class="fas fa-hashtag me-1"></i>
                                     {{ $clubes->rif }}
                                 </p>
-                            </div>
-                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
                 <!-- Edit Form -->
                 <div class="col-lg-8">
                     <div class="card border-0 shadow-lg form-card">
                         <div class="card-body p-5">
-                            <form action="{{ route('clubes.update', ['clube' => $clubes->id]) }}" 
-                                  method="POST" 
+                    <form action="{{ route('clubes.update', ['clube' => $clubes->id]) }}" 
+                          method="POST" 
                                   enctype="multipart/form-data" 
                                   class="edit-form">
-                                @csrf
-                                @method('PATCH')
-                                
+                        @csrf
+                        @method('PATCH')
+                        
                                 <!-- Nombre del Club -->
                                 <div class="form-group mb-4">
                                     <label for="nombre" class="form-label fw-semibold">
@@ -68,13 +68,13 @@
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="fas fa-landmark text-muted"></i>
                                         </span>
-                                        <input type="text" 
+                            <input type="text" 
                                                class="form-control border-start-0 @error('nombre') is-invalid @enderror" 
-                                               id="nombre" 
-                                               name="nombre" 
-                                               required 
+                                   id="nombre" 
+                                   name="nombre" 
+                                   required 
                                                placeholder="Ej: Club Deportivo Caracas"
-                                               value="{{ $clubes->nombre }}">
+                                   value="{{ $clubes->nombre }}">
                                     </div>
                                     @error('nombre')
                                         <div class="invalid-feedback d-block mt-2">
@@ -82,8 +82,8 @@
                                             <strong>{{ $message }}</strong>
                                         </div>
                                     @enderror
-                                </div>
-
+                        </div>
+                        
                                 <!-- Localidad -->
                                 <div class="form-group mb-4">
                                     <label for="localidad" class="form-label fw-semibold">
@@ -94,13 +94,13 @@
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="fas fa-map text-muted"></i>
                                         </span>
-                                        <input type="text" 
+                            <input type="text" 
                                                class="form-control border-start-0 @error('localidad') is-invalid @enderror" 
-                                               id="localidad" 
-                                               name="localidad" 
-                                               required 
+                                   id="localidad" 
+                                   name="localidad" 
+                                   required 
                                                placeholder="Ej: Caracas, Venezuela"
-                                               value="{{ $clubes->localidad }}">
+                                   value="{{ $clubes->localidad }}">
                                     </div>
                                     @error('localidad')
                                         <div class="invalid-feedback d-block mt-2">
@@ -108,8 +108,8 @@
                                             <strong>{{ $message }}</strong>
                                         </div>
                                     @enderror
-                                </div>
-
+                        </div>
+                        
                                 <!-- RIF -->
                                 <div class="form-group mb-4">
                                     <label for="rif" class="form-label fw-semibold">
@@ -120,14 +120,14 @@
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="fas fa-hashtag text-muted"></i>
                                         </span>
-                                        <input type="text" 
+                            <input type="text" 
                                                class="form-control border-start-0 @error('rif') is-invalid @enderror" 
-                                               id="rif" 
-                                               name="rif" 
-                                               required 
+                                   id="rif" 
+                                   name="rif" 
+                                   required 
                                                placeholder="Ej: J-12345678-9"
-                                               value="{{ $clubes->rif }}">
-                                    </div>
+                                   value="{{ $clubes->rif }}">
+                        </div>
                                     @error('rif')
                                         <div class="invalid-feedback d-block mt-2">
                                             <i class="fas fa-exclamation-circle me-1"></i>
@@ -149,14 +149,14 @@
                                         <select class="form-select border-start-0 @error('entrenador_id') is-invalid @enderror" 
                                                 id="entrenador_id" 
                                                 name="entrenador_id">
-                                            @foreach ($entrenadores as $entrenador)
-                                                <option value="{{ $entrenador->id }}" 
-                                                    @if($clubes->entrenador_id == $entrenador->id) selected @endif>
-                                                    {{ $entrenador->nombre }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                @foreach ($entrenadores as $entrenador)
+                                    <option value="{{ $entrenador->id }}" 
+                                        @if($clubes->entrenador_id == $entrenador->id) selected @endif>
+                                        {{ $entrenador->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                                     @error('entrenador_id')
                                         <div class="invalid-feedback d-block mt-2">
                                             <i class="fas fa-exclamation-circle me-1"></i>
@@ -174,11 +174,11 @@
                                     <button type="submit" class="btn btn-primary btn-lg fw-semibold submit-btn">
                                         <i class="fas fa-save me-2"></i>
                                         {{ __('Guardar Cambios') }}
-                                    </button>
-                                </div>
-                            </form>
+                            </button>
                         </div>
-                    </div>
+                    </form>
+                </div>
+            </div>
                 </div>
             </div>
 

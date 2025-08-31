@@ -39,3 +39,4 @@ Route::get('clubes/asing/{id}', [App\Http\Controllers\ClubController::class, 'as
 Route::put('clubes/asing/{id}', [App\Http\Controllers\ClubController::class, 'asingClubCategoria'])->name('clubes.creasignar');
 Route::post('clubes/delete', [App\Http\Controllers\ClubController::class, 'deleteClubCategoria'])->name('clubes.deleteasignar');
 Route::post('get-info', [App\Http\Controllers\JugadoresController::class, 'getJugador'])->name('jugadores.infoJugador');
+Route::post('filtrar-jugadores', [App\Http\Controllers\JugadoresController::class, 'filtrarJugadores'])->name('jugadores.filtrar');

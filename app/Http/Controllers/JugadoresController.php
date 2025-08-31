@@ -282,4 +282,22 @@ class JugadoresController extends Controller
             ]);
         }
     }
+
+    public function filtrarJugadores(Request $request)
+    {
+        $clubId = $request->club_id;
+        $filters = [
+            'nombre' => $request->nombre ?? '',
+            'categoria' => $request->categoria ?? '',
+            'status' => $request->status ?? ''
+        ];
+        
+        $jugadores = Jugadores::GetjugadoresByClub($clubId, $filters);
+        
+        return response()->json([
+            'data' => $jugadores,
+            'code' => 200,
+            'type' => 'success'
+        ]);
+    }
 }

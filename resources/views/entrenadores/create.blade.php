@@ -11,7 +11,7 @@
                 </div>
                 <h2 class="fw-bold text-primary mb-2">{{ __('Nuevo Entrenador') }}</h2>
                 <p class="text-muted mb-0">{{ __('Registra un nuevo entrenador en la Liga de Fútbol Sala') }}</p>
-            </div>
+                </div>
 
             <!-- Form Card -->
             <div class="card border-0 shadow-lg form-card">
@@ -140,12 +140,12 @@
                                        required 
                                        placeholder="Ej: entrenador@email.com"
                                        value="{{ old('email') }}">
-                            </div>
+                        </div>
                             @error('email')
                                 <div class="invalid-feedback d-block mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <strong>{{ $message }}</strong>
-                                </div>
+                        </div>
                             @enderror
                         </div>
 
@@ -168,12 +168,12 @@
                                 <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
                                     <i class="fas fa-eye" id="eyeIcon"></i>
                                 </button>
-                            </div>
+                        </div>
                             @error('pass')
                                 <div class="invalid-feedback d-block mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <strong>{{ $message }}</strong>
-                                </div>
+                        </div>
                             @enderror
                         </div>
 
@@ -565,6 +565,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (document.getElementById('nombre')) addCharacterCounter(document.getElementById('nombre'), 100);
     if (document.getElementById('direccion')) addCharacterCounter(document.getElementById('direccion'), 200);
-});
+    });
 </script>
 @endsection

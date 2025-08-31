@@ -201,8 +201,16 @@ class ClubController extends Controller
             ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
             ->where('jugadores.club_id', $id)
             ->get();
+        
+        // Obtener categorías únicas para el filtro
+        $categorias = Categorias::select('categorias.*')
+            ->join('jugadores', 'categorias.id', '=', 'jugadores.categoria_id')
+            ->where('jugadores.club_id', $id)
+            ->distinct()
+            ->get();
+        
         //dd($jugadores);
-        return view('clubes.jugadores', compact('jugadores', 'club'));
+        return view('clubes.jugadores', compact('jugadores', 'club', 'categorias'));
     }
 
 }
