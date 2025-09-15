@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Clubes;
+use App\Models\HistorialJugador;
 
 class Jugadores extends Model
 {
@@ -73,6 +74,27 @@ class Jugadores extends Model
         }
         
         return $query->get();
+    }
+
+    // Relaciones
+    public function club()
+    {
+        return $this->belongsTo(Clubes::class, 'club_id');
+    }
+
+    public function categoria()
+    {
+        return $this->belongsTo(Categorias::class, 'categoria_id');
+    }
+
+    public function historial()
+    {
+        return $this->hasMany(HistorialJugador::class, 'jugador_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

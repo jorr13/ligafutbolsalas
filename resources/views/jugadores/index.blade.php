@@ -416,6 +416,16 @@
                                         title="Aceptar jugador">
                                     <i class="fas fa-check me-1"></i><span class="d-none d-md-inline">Aceptar</span>
                                 </button>
+                                <a href="{{ route('admin.jugadores.transferir', $jugador->id) }}" 
+                                   class="btn btn-outline-primary btn-sm"
+                                   title="Transferir jugador">
+                                    <i class="fas fa-exchange-alt me-1"></i><span class="d-none d-md-inline">Transferir</span>
+                                </a>
+                                <a href="{{ route('admin.jugadores.historial', $jugador->id) }}" 
+                                   class="btn btn-outline-secondary btn-sm"
+                                   title="Ver historial">
+                                    <i class="fas fa-history me-1"></i><span class="d-none d-md-inline">Historial</span>
+                                </a>
                                 <button type="button" 
                                         class="btn btn-outline-danger btn-sm"
                                         onclick="confirmAction('{{ route('jugadores.destroy', $jugador->id) }}', '¿Estás seguro de rechazar este jugador?')"

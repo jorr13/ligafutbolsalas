@@ -20,8 +20,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::resource('exhibiciones', App\Http\Controllers\ExhibicionController::class);
-    Route::resource('contenidos', App\Http\Controllers\ContenidoController::class);
+    // Route::resource('exhibiciones', App\Http\Controllers\ExhibicionController::class);
+    // Route::resource('contenidos', App\Http\Controllers\ContenidoController::class);
     Route::resource('usuarios', App\Http\Controllers\UsuarioController::class);
     Route::resource('clubes', App\Http\Controllers\ClubController::class);
     Route::resource('categorias', App\Http\Controllers\CategoriasController::class);
@@ -30,6 +30,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('jugadores-pendientes', [App\Http\Controllers\JugadoresController::class, 'indexAdmin'])->name('jugadores.indexpendientes');
     Route::post('aceptar-jugador/{id}', [App\Http\Controllers\JugadoresController::class, 'aceptarJugador'])->name('jugadores.aceptar');
     Route::get('club-jugadores/{id}', [App\Http\Controllers\ClubController::class, 'verJugadores'])->name('clubes.getjugadores');
+
+    // Rutas para transferencias de jugadores (solo administradores)
+    Route::prefix('admin')->middleware('admin')->group(function () {
+        Route::get('jugadores/{id}/transferir', [App\Http\Controllers\TransferenciaController::class, 'showTransferForm'])->name('admin.jugadores.transferir');
+        Route::post('jugadores/{id}/transferir', [App\Http\Controllers\TransferenciaController::class, 'transferirJugador'])->name('admin.jugadores.transferir.store');
+        Route::get('jugadores/{id}/historial', [App\Http\Controllers\TransferenciaController::class, 'mostrarHistorial'])->name('admin.jugadores.historial');
+    });
 
 });
 

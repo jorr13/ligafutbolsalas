@@ -89,8 +89,8 @@
                                         class="form-select border-start-0 @error('rol_id') is-invalid @enderror">
                                     <option value="" selected disabled>{{ __('Seleccione un rol...') }}</option>
                                     <option value="administrador" {{ old('rol_id') == 'administrador' ? 'selected' : '' }}>{{ __('Administrador') }}</option>
-                                    <option value="editor" {{ old('rol_id') == 'editor' ? 'selected' : '' }}>{{ __('Editor') }}</option>
-                                    <option value="lector" {{ old('rol_id') == 'lector' ? 'selected' : '' }}>{{ __('Lector') }}</option>
+                                    <option value="entrenador" {{ old('rol_id') == 'entrenador' ? 'selected' : '' }}>{{ __('Entrenador') }}</option>
+                                    <option value="arbitro" {{ old('rol_id') == 'arbitro' ? 'selected' : '' }}>{{ __('arbitro') }}</option>
                                 </select>
                             </div>
                             @error('rol_id')

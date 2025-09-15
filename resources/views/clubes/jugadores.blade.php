@@ -270,12 +270,27 @@
                         </td>
                         <td class="py-3 px-4 text-end">
                             <div class="btn-group" role="group">
+                            <a href="{{ route('admin.jugadores.transferir', $jugador->id) }}" 
+                                   class="btn btn-outline-primary btn-sm"
+                                   title="Transferir jugador">
+                                    <i class="fas fa-exchange-alt me-1"></i><span class="d-none d-md-inline">Transferir</span>
+                                </a>
+                                <a href="{{ route('admin.jugadores.historial', $jugador->id) }}" 
+                                   class="btn btn-outline-secondary btn-sm"
+                                   title="Ver historial">
+                                    <i class="fas fa-history me-1"></i><span class="d-none d-md-inline">Historial</span>
+                                </a>
                                 <button type="button" class="btn btn-outline-primary btn-sm" 
                                         data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
                                         onclick="getJugador({{ $jugador->id }})"
                                         title="Ver perfil completo">
                                     <i class="fas fa-eye me-1"></i>Ver
                                 </button>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-end">
+                            <div class="btn-group" role="group">
+                                
                        
                             </div>
                         </td>
