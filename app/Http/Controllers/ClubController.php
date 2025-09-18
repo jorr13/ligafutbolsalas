@@ -72,9 +72,18 @@ class ClubController extends Controller
             'logo' => $urlLogo,
             'estatus' => 'activo'
         ]);
-        $entrenadores = Entrenadores::find($request->entrenador_id);
-        $entrenadores->club_id= $club->id;
-        $entrenadores->save();
+        
+        if($request->entrenador_id) {
+            $entrenadores = Entrenadores::find($request->entrenador_id);
+            $entrenadores->club_id = $club->id;
+            $entrenadores->save();
+            
+            // Registrar en el historial del club
+            $club->registrarEntrenadorAsignado(
+                $request->entrenador_id,
+                "Entrenador '{$entrenadores->nombre}' asignado al club"
+            );
+        }
         return redirect()->route('clubes.index')->with('success', 'Club creada exitosamente.');
     }
 
@@ -178,20 +187,39 @@ class ClubController extends Controller
         $existe = ClubesCategorias::where('club_id', $id)
         ->where('categoria_id', $request->categorias_id)
         ->count();
+        
         if($existe==0){
             ClubesCategorias::create([
-            'club_id' => $id,
-            'categoria_id' => $request->categorias_id,
+                'club_id' => $id,
+                'categoria_id' => $request->categorias_id,
             ]);
+            
+            // Registrar en el historial del club
+            $club = Clubes::find($id);
+            $categoria = Categorias::find($request->categorias_id);
+            $club->registrarCategoriaAsignada(
+                $request->categorias_id,
+                "Categoría '{$categoria->nombre}' asignada al club"
+            );
         }
         return redirect()->route('clubes.index')->with('success', 'Club Asignada exitosamente.');
     }   
     public function deleteClubCategoria(Request $request)
     {
-        // dd($request->id);
         $existe = ClubesCategorias::find($request->id);
-        // dd($existe);
-        $existe->delete();
+        
+        if($existe) {
+            // Registrar en el historial del club antes de eliminar
+            $club = Clubes::find($existe->club_id);
+            $categoria = Categorias::find($existe->categoria_id);
+            $club->registrarCategoriaRemovida(
+                $existe->categoria_id,
+                "Categoría '{$categoria->nombre}' removida del club"
+            );
+            
+            $existe->delete();
+        }
+        
         return redirect()->route('clubes.index')->with('success', 'Categoria Eliminada exitosamente.');
     }   
     public function verJugadores($id)

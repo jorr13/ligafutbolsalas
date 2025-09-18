@@ -38,6 +38,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('jugadores/{id}/historial', [App\Http\Controllers\TransferenciaController::class, 'mostrarHistorial'])->name('admin.jugadores.historial');
     });
 
+    // Rutas para historial de clubes
+    Route::get('clubes/{id}/historial', [App\Http\Controllers\HistorialClubController::class, 'mostrarHistorial'])->name('clubes.historial');
+    Route::get('clubes/historial/general', [App\Http\Controllers\HistorialClubController::class, 'mostrarHistorialGeneral'])->name('clubes.historial.general');
+    Route::get('clubes/{id}/historial/exportar', [App\Http\Controllers\HistorialClubController::class, 'exportarHistorial'])->name('clubes.historial.exportar');
+    Route::get('api/clubes/{id}/historial', [App\Http\Controllers\HistorialClubController::class, 'apiHistorial'])->name('api.clubes.historial');
+
 });
 
 

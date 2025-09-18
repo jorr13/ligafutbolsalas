@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Jugadores;
 use App\Models\Clubes;
 use App\Models\HistorialJugador;
+use App\Models\HistorialClub;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -52,13 +53,32 @@ class TransferenciaController extends Controller
                 'status' => 'activo' // Mantener activo después de transferencia
             ]);
 
-            // Registrar en el historial
+            // Registrar en el historial del jugador
             HistorialJugador::registrarTransferencia(
                 $jugador->id,
                 $clubAnteriorId,
                 $clubNuevoId,
                 Auth::id(),
                 $request->descripcion
+            );
+
+            // Obtener información de los clubes
+            $clubAnterior = $clubAnteriorId ? Clubes::find($clubAnteriorId) : null;
+            $clubNuevo = Clubes::find($clubNuevoId);
+
+            // Registrar en el historial del club anterior (salida del jugador)
+            if ($clubAnterior) {
+                $clubAnterior->registrarJugadorSalida(
+                    $jugador->id,
+                    $clubNuevoId,
+                    "Jugador {$jugador->nombre} transferido al club {$clubNuevo->nombre}"
+                );
+            }
+
+            // Registrar en el historial del club nuevo (ingreso del jugador)
+            $clubNuevo->registrarJugadorIngreso(
+                $jugador->id,
+                "Jugador {$jugador->nombre} transferido desde el club " . ($clubAnterior ? $clubAnterior->nombre : 'Sin club')
             );
 
             DB::commit();

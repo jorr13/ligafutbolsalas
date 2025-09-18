@@ -324,6 +324,9 @@
                             </span>
                             <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar club...">
                         </div>
+                        <a href="{{ route('clubes.historial.general') }}" class="btn btn-secondary me-2">
+                            <i class="fas fa-history me-2"></i>Historial General
+                        </a>
                         @if(auth()->user()->rol_id=="administrador")
                         <a href="{{ route('clubes.create') }}" class="btn btn-primary">
                             <i class="fas fa-plus me-2"></i>Nuevo Club
@@ -402,6 +405,11 @@
                                    class="btn btn-outline-info btn-sm"
                                    title="Ver jugadores del club">
                                     <i class="fas fa-users me-1"></i><span class="d-none d-md-inline">Jugadores</span>
+                                </a>
+                                <a href="{{ route('clubes.historial', $club->id) }}" 
+                                   class="btn btn-outline-secondary btn-sm"
+                                   title="Ver historial del club">
+                                    <i class="fas fa-history me-1"></i><span class="d-none d-md-inline">Historial</span>
                                 </a>
                                 @if(auth()->user()->rol_id=="administrador")
                                 <a href="{{ route('clubes.edit', $club->id) }}" 
