@@ -223,7 +223,7 @@
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-                                                                                                             <img src="{{ $jugador->foto_identificacion ? asset('images/' . $jugador->foto_identificacion) : '/images/default-avatar.png' }}"  
+     <img src="{{ $jugador->foto_identificacion ? asset('images/' . $jugador->foto_identificacion) : '/images/default-avatar.png' }}"  
                                          alt="Foto de {{ $jugador->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm" 
                                          style="width: 45px; height: 45px; object-fit: cover;">
@@ -274,6 +274,11 @@
                                    class="btn btn-outline-primary btn-sm"
                                    title="Transferir jugador">
                                     <i class="fas fa-exchange-alt me-1"></i><span class="d-none d-md-inline">Transferir</span>
+                                </a>
+                                <a href="{{ route('jugadores.carnet.preview', $jugador->id) }}" 
+                                   class="btn btn-outline-success btn-sm"
+                                   title="Ver carnet del jugador">
+                                    <i class="fas fa-id-card me-1"></i><span class="d-none d-md-inline">Carnet</span>
                                 </a>
                                 <a href="{{ route('admin.jugadores.historial', $jugador->id) }}" 
                                    class="btn btn-outline-secondary btn-sm"
