@@ -18,12 +18,7 @@
                             CARNET DE JUGADOR
                         </td>
                         <td style="text-align: right; width: 50px;">
-                            @if($jugador->club && $jugador->club->logo)
-                                <img src="{{ public_path('storage/' . $jugador->club->logo) }}" 
-                                     alt="Logo" style="width: 25px; height: 25px; border-radius: 50%;">
-                            @else
-                                <div style="width: 25px; height: 25px; background: rgba(255,255,255,0.3); border-radius: 50%; text-align: center; line-height: 25px; font-size: 10px; font-weight: bold;">FS</div>
-                            @endif
+                
                         </td>
                     </tr>
                 </table>
@@ -46,9 +41,6 @@
                                         Sin Foto
                                     </div>
                                 @endif
-                            </div>
-                            <div style="background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; font-size: 8px; font-weight: bold; margin-top: 2px; display: inline-block;">
-                                FOTO
                             </div>
                         </td>
                     </tr>
@@ -110,7 +102,12 @@
                 
                 <!-- Sección QR -->
                 <div style="width: 50px; height: 50px; background: #f8f9fa; border: 1px solid #e9ecef; text-align: center; vertical-align: middle; font-size: 8px; color: #6c757d; font-weight: bold;">
-                    QR<br>{{ $jugador->id }}
+                    @if($jugador->club && $jugador->club->logo)
+                        <img src="{{ public_path('storage/' . $jugador->club->logo) }}" 
+                                alt="Logo" style="width: 25px; height: 25px; border-radius: 50%;">
+                    @else
+                        <div style="width: 25px; height: 25px; background: rgba(255,255,255,0.3); border-radius: 50%; text-align: center; line-height: 25px; font-size: 10px; font-weight: bold;">FS</div>
+                    @endif
                 </div>
             </td>
         </tr>

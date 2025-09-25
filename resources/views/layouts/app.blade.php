@@ -365,8 +365,8 @@
         <nav class="navbar navbar-expand-lg sticky-top custom-navbar shadow-sm"> 
             <div class="container">
                 <a class="navbar-brand logo" href="{{ route('home') }}">
-                    <i class="fas fa-futbol me-2"></i>
-                    Liga de Fútbol Sala de Caracas
+                    <img src="{{ asset('images/logo/logoligafutbolsalas.png') }}" alt="Logo" style="width: auto; height: 50px;">
+                    Liga de Fútbol Sala de Caracasssss
                 </a>
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcol-1" aria-controls="navcol-1" aria-expanded="false" aria-label="Toggle navigation">

@@ -16,8 +16,8 @@
                     @endif
                     
                     <div class="d-flex align-items-center justify-content-center mb-3">
-                        <div class="bg-white bg-opacity-20 rounded-circle p-3 me-3">
-                            <i class="fas fa-futbol text-white fs-1"></i>
+                        <div class="">
+                            <img src="{{ asset('images/logo/logoligafutbolsalas.png') }}" alt="Logo" style="width: auto; height: 150px;">
                         </div>
                         <div>
                             <h1 class="text-white mb-1 fw-bold">{{ __('¡Bienvenido!') }}</h1>

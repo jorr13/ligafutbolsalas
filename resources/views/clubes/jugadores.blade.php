@@ -293,12 +293,7 @@
                                 </button>
                             </div>
                         </td>
-                        <td class="py-3 px-4 text-end">
-                            <div class="btn-group" role="group">
-                                
-                       
-                            </div>
-                        </td>
+            
                     </tr>
                     @empty
                     <tr>
