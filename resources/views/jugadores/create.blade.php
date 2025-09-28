@@ -292,6 +292,32 @@
                                     @enderror
                                 </div>
                             </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nivel" class="form-label fw-semibold">
+                                        <i class="fas fa-star me-2 text-primary"></i>
+                                        {{ __('Nivel') }}
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-trophy text-muted"></i>
+                                        </span>
+                                        <select class="form-select border-start-0 @error('nivel') is-invalid @enderror" 
+                                                id="nivel" 
+                                                name="nivel">
+                                            <option value="iniciante" {{ old('nivel', 'iniciante') == 'iniciante' ? 'selected' : '' }}>{{ __('Iniciante') }}</option>
+                                            <option value="elite" {{ old('nivel') == 'elite' ? 'selected' : '' }}>{{ __('Élite') }}</option>
+                                        </select>
+                                    </div>
+                                    @error('nivel')
+                                        <div class="invalid-feedback d-block mt-2">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Información del Representante -->

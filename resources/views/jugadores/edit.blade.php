@@ -31,6 +31,11 @@
                             <h5 class="fw-bold text-primary mb-2">{{ $jugador->nombre }}</h5>
                             <p class="text-muted mb-1">{{ __('Cédula') }}: {{ $jugador->cedula }}</p>
                             <p class="text-muted mb-1">{{ __('Categoría') }}: {{ $jugador->categoria->nombre ?? 'N/A' }}</p>
+                            <p class="text-muted mb-1">{{ __('Nivel') }}: 
+                                <span class="badge {{ $jugador->nivel == 'elite' ? 'bg-warning' : 'bg-info' }}">
+                                    {{ ucfirst($jugador->nivel ?? 'iniciante') }}
+                                </span>
+                            </p>
                             <p class="text-muted mb-0">{{ __('Estado') }}: 
                                 <span class="badge {{ $jugador->status == 'activo' ? 'bg-success' : 'bg-danger' }}">
                                     {{ ucfirst($jugador->status) }}
@@ -342,6 +347,32 @@
                                 </select>
                             </div>
                                             @error('categoria_id')
+                                                <div class="invalid-feedback d-block mt-2">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                                    <strong>{{ $message }}</strong>
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nivel" class="form-label fw-semibold">
+                                                <i class="fas fa-star me-2 text-primary"></i>
+                                                {{ __('Nivel') }}
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="fas fa-trophy text-muted"></i>
+                                                </span>
+                                                <select class="form-select border-start-0 @error('nivel') is-invalid @enderror" 
+                                                        id="nivel" 
+                                                        name="nivel">
+                                                    <option value="iniciante" {{ old('nivel', $jugador->nivel ?? 'iniciante') == 'iniciante' ? 'selected' : '' }}>{{ __('Iniciante') }}</option>
+                                                    <option value="elite" {{ old('nivel', $jugador->nivel ?? 'iniciante') == 'elite' ? 'selected' : '' }}>{{ __('Élite') }}</option>
+                                                </select>
+                                            </div>
+                                            @error('nivel')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
                                                     <strong>{{ $message }}</strong>

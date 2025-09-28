@@ -261,6 +261,110 @@
             scroll-snap-align: start;
         }
     }
+    
+    /* Estilos para el paginador */
+    .pagination {
+        margin: 0;
+        justify-content: center;
+    }
+    
+    .pagination .page-link {
+        color: #007bff;
+        border: 1px solid #dee2e6;
+        padding: 0.5rem 0.75rem;
+        margin: 0 2px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    
+    .pagination .page-link:hover {
+        color: #0056b3;
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+        transform: translateY(-1px);
+    }
+    
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    }
+    
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+    }
+    
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Responsive para el paginador */
+    @media (max-width: 768px) {
+        .pagination {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        
+        .pagination .page-link {
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+            margin: 0 1px;
+        }
+        
+        .card-footer .d-flex {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .card-footer .text-muted {
+            order: 2;
+        }
+        
+        .pagination-wrapper {
+            order: 1;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .pagination .page-link {
+            padding: 0.25rem 0.375rem;
+            font-size: 0.8rem;
+            min-width: 32px;
+            text-align: center;
+        }
+        
+        .pagination .page-item:not(.active):not(.disabled) .page-link {
+            display: none;
+        }
+        
+        .pagination .page-item:first-child,
+        .pagination .page-item:last-child,
+        .pagination .page-item.active,
+        .pagination .page-item:has(.page-link[aria-label*="Previous"]),
+        .pagination .page-item:has(.page-link[aria-label*="Next"]) {
+            display: block;
+        }
+        
+        .pagination .page-item:has(.page-link[aria-label*="Previous"]) .page-link::before {
+            content: "‹";
+        }
+        
+        .pagination .page-item:has(.page-link[aria-label*="Next"]) .page-link::before {
+            content: "›";
+        }
+        
+        .pagination .page-item:has(.page-link[aria-label*="Previous"]) .page-link,
+        .pagination .page-item:has(.page-link[aria-label*="Next"]) .page-link {
+            font-size: 0;
+        }
+    }
 </style>
 @endsection
 
@@ -294,7 +398,7 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <h3 class="h5 mb-1 text-info">{{ $jugadores->count() }}</h3>
+                                    <h3 class="h5 mb-1 text-info">{{ $jugadores->total() }}</h3>
                                     <small class="text-muted">Total</small>
                                 </div>
                             </div>
@@ -458,6 +562,22 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Paginador -->
+        @if($jugadores->hasPages())
+        <div class="card-footer bg-white border-0 py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted">
+                    <small>
+                        Mostrando {{ $jugadores->firstItem() }} a {{ $jugadores->lastItem() }} de {{ $jugadores->total() }} jugadores
+                    </small>
+                </div>
+                <div class="pagination-wrapper">
+                    {{ $jugadores->links() }}
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 

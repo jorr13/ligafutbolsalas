@@ -77,6 +77,11 @@
                     </tr>
                     
                     <tr>
+                        <td style="font-weight: bold; color: #495057; text-transform: uppercase; padding: 2px 0; border-bottom: 1px dotted #e9ecef;">Nivel:</td>
+                        <td style="color: #212529; font-weight: 500; padding: 2px 0; border-bottom: 1px dotted #e9ecef;">{{ ucfirst($jugador->nivel ?? 'iniciante') }}</td>
+                    </tr>
+                    
+                    <tr>
                         <td style="font-weight: bold; color: #495057; text-transform: uppercase; padding: 2px 0; border-bottom: 1px dotted #e9ecef;">Club:</td>
                         <td style="color: #212529; font-weight: 500; padding: 2px 0; border-bottom: 1px dotted #e9ecef;">{{ $jugador->club->nombre ?? 'N/A' }}</td>
                     </tr>

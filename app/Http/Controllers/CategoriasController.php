@@ -21,7 +21,7 @@ class CategoriasController extends Controller
      */
     public function index()
     {
-        $categorias = Categorias::all();
+        $categorias = Categorias::paginate(10); // Paginación de 10 categorías por página
         return view('categorias.index', compact('categorias'));
     }
     /**

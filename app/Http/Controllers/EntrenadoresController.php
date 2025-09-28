@@ -28,7 +28,7 @@ class EntrenadoresController extends Controller
     {
         $entrenadores = Entrenadores::leftJoin('clubes', 'entrenadores.club_id', '=', 'clubes.id')
             ->select('entrenadores.*', 'clubes.nombre as nombre_club')
-            ->get();
+            ->paginate(10); // Paginación de 10 entrenadores por página
         // dd($entrenadores);
 
         return view('entrenadores.index', compact('entrenadores'));

@@ -269,8 +269,8 @@
                             </span>
                         </td>
                         <td class="py-3 px-4 text-end">
-                            <div class="btn-group" role="group">
-                            <a href="{{ route('admin.jugadores.transferir', $jugador->id) }}" 
+                            <div class="btn-group" role="group" style='    flex-wrap: wrap;'>
+                                <a href="{{ route('admin.jugadores.transferir', $jugador->id) }}" 
                                    class="btn btn-outline-primary btn-sm"
                                    title="Transferir jugador">
                                     <i class="fas fa-exchange-alt me-1"></i><span class="d-none d-md-inline">Transferir</span>
@@ -351,6 +351,7 @@
                                 <div class="text-center mb-3">
                                     <h4 id="jugador-nombre" class="fw-bold text-dark mb-1"></h4>
                                     <span id="jugador-categoria" class="badge bg-info text-white px-3 py-2"></span>
+                                    <span id="jugador-nivel" class="badge bg-info text-white px-3 py-2"></span>
                                 </div>
                                 
                             </div>
@@ -490,7 +491,7 @@
                 $('#jugador-telefono').text(response.data.telefono || 'No especificado');
                 $('#jugador-email').text(response.data.email || 'No especificado');
                 $('#jugador-dorsal').text(response.data.numero_dorsal || 'No especificado');
-                
+                $('#jugador-nivel').text(response.data.nivel || 'No especificado');
                 // Información del representante
                 $('#jugador-representante-nombre').text(response.data.nombre_representante || 'No especificado');
                 $('#jugador-representante-cedula').text(response.data.cedula_representante || 'No especificada');

@@ -20,6 +20,11 @@
                             <p><strong>Cédula:</strong> {{ $jugador->cedula }}</p>
                             <p><strong>Club:</strong> {{ $jugador->club->nombre ?? 'N/A' }}</p>
                             <p><strong>Categoría:</strong> {{ $jugador->categoria->nombre ?? 'N/A' }}</p>
+                            <p><strong>Nivel:</strong> 
+                                <span class="badge badge-{{ $jugador->nivel == 'elite' ? 'warning' : 'info' }}">
+                                    {{ ucfirst($jugador->nivel ?? 'iniciante') }}
+                                </span>
+                            </p>
                         </div>
                         <div class="col-md-6">
                             <h6><strong>Estado:</strong></h6>

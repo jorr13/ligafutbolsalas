@@ -25,7 +25,7 @@ class ClubController extends Controller
             $join->on('users.id', '=', 'clubes.entrenador_id')
                  ->where('users.rol_id', '=', 'entrenador');
             })
-            ->get();
+            ->paginate(10); // Paginación de 10 clubes por página
         // foreach ($clubes as $club) {
         //     $entrenador = Entrenadores::where('id', $club->entrenador_id)->first();
         //     $club->entrenador_id = $entrenador->nombre;

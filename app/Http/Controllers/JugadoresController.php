@@ -15,7 +15,7 @@ class JugadoresController extends Controller
     public function index()
     {
         // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        $jugadores = Jugadores::Getjugadores(); 
+        $jugadores = Jugadores::Getjugadores()->paginate(10); // Paginación de 10 jugadores por página
         // dd($jugadores);
         return view('jugadores.index', compact('jugadores'));
     }
@@ -45,6 +45,7 @@ class JugadoresController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'tipo_sangre' => 'nullable|string|max:10',
             'categoria_id' => 'required|exists:categorias,id',
+            'nivel' => 'required|in:iniciante,elite',
             'nombre_representante' => 'nullable|string|max:255',
             'cedula_representante' => 'nullable|string|max:20',
             'telefono_representante' => 'nullable|string|max:15',
@@ -94,6 +95,7 @@ class JugadoresController extends Controller
             'cedula_representante' => $request->cedula_representante,
             'telefono_representante' => $request->telefono_representante,
             'categoria_id' => $request->categoria_id,
+            'nivel' => $request->nivel,
         ]);
 
         return redirect()->route('jugadores.index')->with('success', 'Jugador creado exitosamente.');
@@ -149,6 +151,7 @@ class JugadoresController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'tipo_sangre' => 'nullable|string|max:10',
             'categoria_id' => 'required|exists:categorias,id',
+            'nivel' => 'required|in:iniciante,elite',
             'nombre_representante' => 'nullable|string|max:255',
             'cedula_representante' => 'nullable|string|max:20',
             'telefono_representante' => 'nullable|string|max:15',
@@ -209,6 +212,7 @@ class JugadoresController extends Controller
             'cedula_representante' => $request->cedula_representante,
             'telefono_representante' => $request->telefono_representante,
             'categoria_id' => $request->categoria_id,
+            'nivel' => $request->nivel,
         ]);
     
         return redirect()->route('jugadores.index')->with('success', 'Jugador editado exitosamente.');

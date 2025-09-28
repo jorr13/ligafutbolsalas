@@ -24,7 +24,8 @@ class Jugadores extends Model
         'nombre_representante',
         'cedula_representante',
         'telefono_representante',
-        'categoria_id'
+        'categoria_id',
+        'nivel'
     ];
 
     public static function Getjugadores() {
