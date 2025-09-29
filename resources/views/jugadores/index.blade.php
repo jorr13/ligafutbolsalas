@@ -377,6 +377,21 @@
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(!$hasClub)
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Atención:</strong> No tienes un club asignado. Contacta al administrador para que te asigne a un club antes de gestionar jugadores.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <!-- Header con estadísticas -->
     <div class="row mb-4">
         <div class="col-12">
@@ -398,7 +413,7 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <h3 class="h5 mb-1 text-info">{{ $jugadores->total() }}</h3>
+                                    <h3 class="h5 mb-1 text-info">{{ method_exists($jugadores, 'total') ? $jugadores->total() : $jugadores->count() }}</h3>
                                     <small class="text-muted">Total</small>
                                 </div>
                             </div>
@@ -426,9 +441,15 @@
                             </span>
                             <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar jugador...">
                         </div>
-                        <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Nuevo Jugador
-                        </a>
+                        @if($hasClub)
+                            <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Nuevo Jugador
+                            </a>
+                        @else
+                            <button type="button" class="btn btn-primary" disabled title="Necesitas un club asignado para crear jugadores">
+                                <i class="fas fa-plus me-2"></i>Nuevo Jugador
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -505,7 +526,7 @@
                             </span>
                         </td>
                         <td class="py-3 px-4 text-end">
-                            <div class="btn-group" role="group">
+                            <div class="btn-group" role="group" style='    flex-wrap: wrap;'>
                                 @if($jugador->status!="activo")
                                 <a href="{{ route('jugadores.edit', $jugador->id) }}" 
                                    class="btn btn-outline-warning btn-sm"
@@ -520,20 +541,10 @@
                                         title="Aceptar jugador">
                                     <i class="fas fa-check me-1"></i><span class="d-none d-md-inline">Aceptar</span>
                                 </button>
-                                <a href="{{ route('admin.jugadores.transferir', $jugador->id) }}" 
-                                   class="btn btn-outline-primary btn-sm"
-                                   title="Transferir jugador">
-                                    <i class="fas fa-exchange-alt me-1"></i><span class="d-none d-md-inline">Transferir</span>
-                                </a>
                                  <a href="{{ route('admin.jugadores.historial', $jugador->id) }}" 
                                     class="btn btn-outline-secondary btn-sm"
                                     title="Ver historial">
                                      <i class="fas fa-history me-1"></i><span class="d-none d-md-inline">Historial</span>
-                                 </a>
-                                 <a href="{{ route('jugadores.carnet.preview', $jugador->id) }}" 
-                                    class="btn btn-outline-success btn-sm"
-                                    title="Ver carnet del jugador">
-                                     <i class="fas fa-id-card me-1"></i><span class="d-none d-md-inline">Carnet</span>
                                  </a>
                                  <button type="button" 
                                          class="btn btn-outline-danger btn-sm"
@@ -552,9 +563,15 @@
                                 <i class="fas fa-users fa-4x text-muted mb-4"></i>
                                 <h5 class="text-muted mb-3">No hay jugadores registrados</h5>
                                 <p class="text-muted mb-4">Aún no se han registrado jugadores en el sistema.</p>
-                                <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-plus me-2"></i>Registrar Primer Jugador
-                                </a>
+                                @if($hasClub)
+                                    <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Registrar Primer Jugador
+                                    </a>
+                                @else
+                                    <button type="button" class="btn btn-primary" disabled title="Necesitas un club asignado para crear jugadores">
+                                        <i class="fas fa-plus me-2"></i>Registrar Primer Jugador
+                                    </button>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -564,7 +581,7 @@
         </div>
         
         <!-- Paginador -->
-        @if($jugadores->hasPages())
+        @if(method_exists($jugadores, 'hasPages') && $jugadores->hasPages())
         <div class="card-footer bg-white border-0 py-3">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="text-muted">

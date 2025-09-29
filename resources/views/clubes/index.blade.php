@@ -504,7 +504,7 @@
                             </span>
                         </td>
                         <td class="py-3 px-4 text-end">
-                            <div class="btn-group" role="group">
+                            <div class="btn-group" role="group" style='    flex-wrap: wrap;'>
                                 <a href="{{ route('clubes.getjugadores', $club->id) }}" 
                                    class="btn btn-outline-info btn-sm"
                                    title="Ver jugadores del club">

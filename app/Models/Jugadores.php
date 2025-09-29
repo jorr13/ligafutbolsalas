@@ -32,6 +32,18 @@ class Jugadores extends Model
         $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
         // dd(auth()->user()->id);
         if (!$club) {
+            return self::whereRaw('1 = 0'); // Return empty query builder if no club is found
+        }else {
+            return self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
+                ->where('jugadores.club_id', $club->id)
+                ->select('jugadores.*', 'clubes.nombre as club_nombre');
+        }
+    }
+    
+    public static function GetjugadoresCollection() {
+        $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        // dd(auth()->user()->id);
+        if (!$club) {
             return collect(); // Return an empty collection if no club is found
         }else {
             return self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
@@ -44,6 +56,13 @@ class Jugadores extends Model
         // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
         return self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
             ->where('jugadores.status', 'pendiente')
+            ->select('jugadores.*', 'clubes.nombre as club_nombre');
+    }
+    
+    public static function GetjugadoresPendingCollection() {
+        // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        return self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
+            ->where('jugadores.status', 'pendiente')
             ->select('jugadores.*', 'clubes.nombre as club_nombre')
             ->get();
     }
@@ -51,7 +70,6 @@ class Jugadores extends Model
         // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
         return self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
             ->where('jugadores.status', 'pendiente')
-            ->select('jugadores.*', 'clubes.nombre as club_nombre')
             ->count();
     }
 
@@ -74,7 +92,7 @@ class Jugadores extends Model
             $query->where('jugadores.status', $filters['status']);
         }
         
-        return $query->get();
+        return $query;
     }
 
     // Relaciones

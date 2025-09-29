@@ -90,7 +90,7 @@
                                     <option value="" selected disabled>{{ __('Seleccione un rol...') }}</option>
                                     <option value="administrador" {{ old('rol_id') == 'administrador' ? 'selected' : '' }}>{{ __('Administrador') }}</option>
                                     <option value="entrenador" {{ old('rol_id') == 'entrenador' ? 'selected' : '' }}>{{ __('Entrenador') }}</option>
-                                    <option value="arbitro" {{ old('rol_id') == 'arbitro' ? 'selected' : '' }}>{{ __('arbitro') }}</option>
+                                    <option value="arbitro" {{ old('rol_id') == 'arbitro' ? 'selected' : '' }}>{{ __('Arbitro') }}</option>
                                 </select>
                             </div>
                             @error('rol_id')

@@ -55,6 +55,7 @@ class UsuarioController extends Controller
             'rol_id' => $request->rol_id,
             'password' => Hash::make($request->password),
         ]);
+        return redirect()->route('usuarios.index');
     }
 
     /**

@@ -14,15 +14,27 @@ class JugadoresController extends Controller
 {
     public function index()
     {
-        // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        
+        // Verificar si el entrenador tiene un club asignado
+        $hasClub = !is_null($club);
+        
         $jugadores = Jugadores::Getjugadores()->paginate(10); // Paginación de 10 jugadores por página
         // dd($jugadores);
-        return view('jugadores.index', compact('jugadores'));
+        
+        return view('jugadores.index', compact('jugadores', 'hasClub', 'club'));
     }
 
     public function create()
     {
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        
+        // Validar que el entrenador tenga un club asignado
+        if (!$clubs) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'No tienes un club asignado. Contacta al administrador para asignarte a un club antes de crear jugadores.');
+        }
+        
         $jugadores = Jugadores::all();
         $categorias = Categorias::getCategoriasPorClub($clubs->id);
         // dd($categorias);
@@ -32,6 +44,12 @@ class JugadoresController extends Controller
     public function store(Request $request)
     {
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        
+        // Validar que el entrenador tenga un club asignado
+        if (!$clubs) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'No tienes un club asignado. Contacta al administrador para asignarte a un club antes de crear jugadores.');
+        }
         
         // Validación de campos
         $request->validate([
@@ -122,8 +140,28 @@ class JugadoresController extends Controller
     public function edit(Jugadores $jugadores, $id)
     {
         $jugador = Jugadores::where('id', $id)->first();
+        
+        // Validar que el jugador existe y pertenece al entrenador
+        if (!$jugador) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'Jugador no encontrado.');
+        }
+        
         //dd($jugadores);
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        
+        // Validar que el entrenador tenga un club asignado
+        if (!$clubs) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'No tienes un club asignado. Contacta al administrador para asignarte a un club antes de editar jugadores.');
+        }
+        
+        // Validar que el jugador pertenece al club del entrenador
+        if ($jugador->club_id !== $clubs->id) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'No tienes permisos para editar este jugador.');
+        }
+        
         $categorias = Categorias::getCategoriasPorClub($clubs->id);
         return view('jugadores.edit', compact('jugador', 'categorias'));
     }
@@ -138,6 +176,19 @@ class JugadoresController extends Controller
     public function update(Request $request, Jugadores $jugadores, $id)
     {
         $jugador = Jugadores::where('id', $id)->first();
+        
+        // Validar que el jugador existe
+        if (!$jugador) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'Jugador no encontrado.');
+        }
+        
+        // Validar permisos: que el jugador pertenezca al club del entrenador
+        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        if (!$clubs || $jugador->club_id !== $clubs->id) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'No tienes permisos para actualizar este jugador.');
+        }
         
         // Validación de campos
         $request->validate([
@@ -228,6 +279,19 @@ class JugadoresController extends Controller
     {
         $jugador = Jugadores::where('id', $id)->first();
         
+        // Validar que el jugador existe
+        if (!$jugador) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'Jugador no encontrado.');
+        }
+        
+        // Validar permisos: que el jugador pertenezca al club del entrenador
+        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        if (!$clubs || $jugador->club_id !== $clubs->id) {
+            return redirect()->route('jugadores.index')
+                ->with('error', 'No tienes permisos para eliminar este jugador.');
+        }
+        
         // Eliminar archivos asociados
         if ($jugador->foto_carnet && Storage::disk('images')->exists($jugador->foto_carnet)) {
             Storage::disk('images')->delete($jugador->foto_carnet);
@@ -253,14 +317,14 @@ class JugadoresController extends Controller
         $jugador->update([
             'status' => 'activo',
         ]);
-        $jugadores = Jugadores::GetjugadoresPending(); 
+        $jugadores = Jugadores::Getjugadores()->paginate(10); 
         return view('jugadores.index', compact('jugadores'))->with('success', 'Jugador aceptado exitosamente.');
     }
 
     public function indexAdmin()
     {
         // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        $jugadores = Jugadores::GetjugadoresPending(); 
+        $jugadores = Jugadores::GetjugadoresPending()->paginate(10); 
         // $jugadores = Jugadores::Getjugadores(); 
         // dd($jugadores);
         return view('jugadores.index', compact('jugadores'));
@@ -296,7 +360,7 @@ class JugadoresController extends Controller
             'status' => $request->status ?? ''
         ];
         
-        $jugadores = Jugadores::GetjugadoresByClub($clubId, $filters);
+        $jugadores = Jugadores::GetjugadoresByClub($clubId, $filters)->get();
         
         return response()->json([
             'data' => $jugadores,
