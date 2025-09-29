@@ -505,17 +505,21 @@
                         </td>
                         <td class="py-3 px-4 text-end">
                             <div class="btn-group" role="group" style='    flex-wrap: wrap;'>
-                                <a href="{{ route('clubes.getjugadores', $club->id) }}" 
+                            @if(auth()->user()->rol_id=="entrenador")
+                                <!-- Vista para entrenadores: solo JUGADORES -->
+                                <a href="{{ route('entrenador.clubes.jugadores', $club->id) }}" 
                                    class="btn btn-outline-info btn-sm"
                                    title="Ver jugadores del club">
                                     <i class="fas fa-users me-1"></i><span class="d-none d-md-inline">Jugadores</span>
                                 </a>
-                                <a href="{{ route('clubes.historial', $club->id) }}" 
-                                   class="btn btn-outline-secondary btn-sm"
-                                   title="Ver historial del club">
-                                    <i class="fas fa-history me-1"></i><span class="d-none d-md-inline">Historial</span>
+                            @endif
+                            @if(auth()->user()->rol_id=="administrador")
+                                         <!-- Vista para entrenadores: solo JUGADORES -->
+                                <a href="{{ route('entrenador.clubes.jugadores', $club->id) }}" 
+                                   class="btn btn-outline-info btn-sm"
+                                   title="Ver jugadores del club">
+                                    <i class="fas fa-users me-1"></i><span class="d-none d-md-inline">Jugadores</span>
                                 </a>
-                                @if(auth()->user()->rol_id=="administrador")
                                 <a href="{{ route('clubes.edit', $club->id) }}" 
                                    class="btn btn-outline-warning btn-sm"
                                    title="Editar club">

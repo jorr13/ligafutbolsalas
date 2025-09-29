@@ -25,6 +25,18 @@ class Clubes extends Model
         return $this->hasMany(Jugadores::class, 'club_id');
     }
 
+    public function jugadoresActivos() {
+        return $this->hasMany(Jugadores::class, 'club_id')->where('status', 'activo');
+    }
+
+    public function jugadoresPendientes() {
+        return $this->hasMany(Jugadores::class, 'club_id')->where('status', 'pendiente');
+    }
+
+    public function entrenador() {
+        return $this->belongsTo(User::class, 'entrenador_id');
+    }
+
     public function historial() {
         return $this->hasMany(HistorialClub::class, 'club_id')->orderBy('fecha_accion', 'desc');
     }

@@ -332,15 +332,23 @@ class JugadoresController extends Controller
 
     public function getJugador(Request $request)
     {
-        $jugadores = Jugadores::select('jugadores.*', 'categorias.nombre as nombre_categoria')
-        ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
-        ->where('jugadores.id', $request->id)
-        ->first();
+        $jugadores = Jugadores::select('jugadores.*', 'categorias.nombre as categoria_nombre', 'clubes.nombre as club_nombre')
+            ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+            ->leftJoin('clubes', 'jugadores.club_id', '=', 'clubes.id')
+            ->where('jugadores.id', $request->id)
+            ->first();
+        
         if($jugadores){
-        return response()->json([
-            'data' => $jugadores,
-            'code' => 200,
-            'type' => 'success'
+            // Si el usuario es entrenador, ocultar datos sensibles
+            if(auth()->user()->rol_id === 'entrenador'){
+                $jugadores->telefono = '[Oculto]';
+                $jugadores->email = '[Oculto]';
+            }
+            
+            return response()->json([
+                'data' => $jugadores,
+                'code' => 200,
+                'type' => 'success'
             ]);
         }else{
             return response()->json([
@@ -367,5 +375,50 @@ class JugadoresController extends Controller
             'code' => 200,
             'type' => 'success'
         ]);
+    }
+
+    /**
+     * Mostrar todos los clubes para el entrenador (solo lectura)
+     */
+    public function verClub()
+    {
+        // Verificar que el usuario sea entrenador
+        if (auth()->user()->rol_id !== 'entrenador') {
+            abort(403, 'No tienes permisos para acceder a esta sección');
+        }
+
+        $clubes = Clubes::with(['categorias'])
+            ->leftJoin('users', 'clubes.entrenador_id', '=', 'users.id')
+            ->select('clubes.*', 'users.name as entrenador_nombre')
+            ->withCount(['jugadoresActivos' => function($query) {
+                $query->where('status', 'activo');
+            }])
+            ->withCount(['jugadoresPendientes' => function($query) {
+                $query->where('status', 'pendiente');
+            }])
+            ->paginate(10);
+
+        return view('clubes.index', compact('clubes'));
+    }
+
+    /**
+     * Mostrar jugadores de un club específico (solo lectura para entrenadores)
+     */
+    public function verJugadoresClub($clubId)
+    {
+        // Verificar que el usuario sea entrenador
+        if (auth()->user()->rol_id !== 'entrenador') {  
+            abort(403, 'No tienes permisos para acceder a esta sección');
+        }
+
+        $club = Clubes::findOrFail($clubId);
+        
+        $jugadores = Jugadores::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
+            ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+            ->where('jugadores.club_id', $clubId)
+            ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as categoria_nombre')
+            ->paginate(10);
+
+        return view('jugadores.index-public', compact('jugadores', 'club'));
     }
 }
