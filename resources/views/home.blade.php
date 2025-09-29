@@ -114,6 +114,26 @@
                 </a>
             </div>
         @endif
+        @if(auth()->user()->rol_id=="arbitro")
+            <!-- Entrenador Dashboard -->
+            <div class="col-12">
+                <h3 class="mb-4 fw-bold text-primary">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>
+                    Panel de Arbitro
+                </h3>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ route('entrenador.clubes.index') }}" class="card h-100 border-0 shadow-sm text-decoration-none quick-action-card">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-landmark text-info fs-2"></i>
+                        </div>
+                        <h5 class="card-title mb-2 fw-bold">Clubes</h5>
+                        <p class="text-muted small mb-0">Ver todos los clubes</p>
+                    </div>
+                </a>
+            </div>
+        @endif
 
         @if(auth()->user()->rol_id=="administrador")
             <!-- Administrador Dashboard -->
