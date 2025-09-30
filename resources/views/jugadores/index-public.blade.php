@@ -172,7 +172,15 @@
                                 <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar jugador...">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-5">
+                            <select class="form-select" id="categoriaFilter">
+                                <option value="">Todas las categorías</option>
+                                @foreach($categorias as $categoria)
+                                    <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                             <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="clearFilters()" title="Limpiar filtros">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -262,6 +270,23 @@
                         </td>
                         <td class="py-3 px-4 text-end">
                             <div class="btn-group" role="group" style='    flex-wrap: wrap;'>
+                                @if(auth()->user()->rol_id=="administrador")
+                                <a href="{{ route('admin.jugadores.transferir', $jugador->id) }}" 
+                                   class="btn btn-outline-primary btn-sm"
+                                   title="Transferir jugador">
+                                    <i class="fas fa-exchange-alt me-1"></i><span class="d-none d-md-inline">Transferir</span>
+                                </a>
+                                <a href="{{ route('jugadores.carnet.preview', $jugador->id) }}" 
+                                   class="btn btn-outline-success btn-sm"
+                                   title="Ver carnet del jugador">
+                                    <i class="fas fa-id-card me-1"></i><span class="d-none d-md-inline">Carnet</span>
+                                </a>
+                                <a href="{{ route('admin.jugadores.historial', $jugador->id) }}" 
+                                   class="btn btn-outline-secondary btn-sm"
+                                   title="Ver historial">
+                                    <i class="fas fa-history me-1"></i><span class="d-none d-md-inline">Historial</span>
+                                </a>
+                                @endif
                                 <button type="button" class="btn btn-outline-primary btn-sm" 
                                         data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
                                         onclick="getJugador({{ $jugador->id }})"
@@ -292,7 +317,6 @@
     </div>
 
 
-    <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow">
@@ -380,7 +404,43 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+                                    @if(auth()->user()->rol_id=="administrador")
+                                    <!-- Información del Representante -->
+                                    <div class="col-12">
+                                        <h6 class="text-primary fw-bold mb-3">
+                                            <i class="fas fa-user-friends me-2"></i>Información del Representante
+                                        </h6>
+                                        <div class="row g-3">
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-user text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Nombre</small>
+                                                        <strong id="jugador-representante-nombre"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-id-badge text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Cédula</small>
+                                                        <strong id="jugador-representante-cedula"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-phone text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Teléfono</small>
+                                                        <strong id="jugador-representante-telefono"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+            @endif                                    
                                     <!-- Estado del Jugador -->
                                     <div class="col-12">
                                         <div class="d-flex align-items-center p-3 bg-light rounded">
