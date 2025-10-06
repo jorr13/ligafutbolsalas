@@ -32,13 +32,19 @@ class CarnetController extends Controller
                 ->with('error', 'El jugador no tiene los datos completos necesarios para generar el carnet.');
         }
 
-        // Generar el PDF
+        // Generar el PDF con tamaño personalizado 80mm x 50mm (ancho x alto)
+        // Dompdf usa puntos (pt): 1mm ≈ 2.83465pt → 80mm ≈ 226.77pt, 50mm ≈ 141.73pt
         $pdf = PDF::loadView('carnet.template', compact('jugador'))
-            ->setPaper('a4', 'portrait')
+            ->setPaper([0, 0, 226.77, 141.73], 'landscape')
             ->setOptions([
                 'isHtml5ParserEnabled' => true,
                 'isRemoteEnabled' => true,
-                'defaultFont' => 'Arial'
+                'defaultFont' => 'Arial',
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'page_orientation' => 'landscape'
             ]);
 
         // Nombre del archivo

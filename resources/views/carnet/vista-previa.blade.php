@@ -67,7 +67,7 @@
                         <h6><i class="fas fa-info-circle"></i> Información Importante:</h6>
                         <ul class="mb-0">
                             <li>El carnet se generará en formato PDF optimizado para impresión</li>
-                            <li>Tamaño recomendado: A4 (210 x 297 mm)</li>
+                            <li>Tamaño recomendado:(8 x 5 cm)</li>
                             <li>El archivo se descargará automáticamente al hacer clic en "Descargar Carnet PDF"</li>
                             @if(!$jugador->foto_carnet)
                             <li class="text-warning"><strong>Nota:</strong> Este jugador no tiene foto asignada</li>
