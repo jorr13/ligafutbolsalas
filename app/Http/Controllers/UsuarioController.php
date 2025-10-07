@@ -49,13 +49,13 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
-        return User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'rol_id' => $request->rol_id,
             'password' => Hash::make($request->password),
         ]);
-        return redirect()->route('usuarios.index');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     /**
@@ -97,6 +97,7 @@ class UsuarioController extends Controller
             'rol_id' => $request->rol_id,
             'password' => Hash::make($request->password),
         ]);
+        return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
     /**

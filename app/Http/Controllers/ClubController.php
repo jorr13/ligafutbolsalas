@@ -20,12 +20,12 @@ class ClubController extends Controller
      */
     public function index()
     {
-        $clubes = Clubes::select('clubes.*', 'users.name as entrenador_nombre')
-            ->leftJoin('users', function($join) {
-            $join->on('users.id', '=', 'clubes.entrenador_id')
-                 ->where('users.rol_id', '=', 'entrenador');
+        $clubes = Clubes::select('clubes.*', 'entrenadores.nombre as entrenador_nombre')
+            ->leftJoin('entrenadores', function($join) {
+            $join->on('entrenadores.id', '=', 'clubes.entrenador_id');
             })
             ->paginate(10); // Paginación de 10 clubes por página
+            //dd($clubes);
         // foreach ($clubes as $club) {
         //     $entrenador = Entrenadores::where('id', $club->entrenador_id)->first();
         //     $club->entrenador_id = $entrenador->nombre;
@@ -53,7 +53,7 @@ class ClubController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
+         //dd($request);
         // Manejar el archivo de imagen
         if ($request->hasFile('logo')) {
             // dd('entro');

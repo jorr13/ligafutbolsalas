@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Clubes;
 use App\Models\HistorialJugador;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class Jugadores extends Model
 {
@@ -25,7 +27,9 @@ class Jugadores extends Model
         'cedula_representante',
         'telefono_representante',
         'categoria_id',
-        'nivel'
+        'nivel',
+        'qr_code_image',
+        'qr_code_url'
     ];
 
     public static function Getjugadores() {
@@ -116,5 +120,49 @@ class Jugadores extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /**
+     * Generar QR Code para el jugador
+     */
+    public function generarQRCode()
+    {
+        $urlapp = url("jugador/{$this->id}");
+        $title = str_replace(' ', '_', $this->nombre);
+        
+        // Crear directorio si no existe
+        $qrDir = storage_path('app/public/qrs');
+        if (!file_exists($qrDir)) {
+            mkdir($qrDir, 0755, true);
+        }
+        
+        $result = Builder::create()
+            ->writer(new PngWriter())
+            ->data($urlapp)
+            ->build();
+            
+        $qrPath = storage_path('app/public/qrs/' . $title . '_qrjugador.png');
+        $result->saveToFile($qrPath);
+        
+        // Convertir a base64
+        $qrCodeImage = base64_encode(file_get_contents($qrPath));
+        
+        // Actualizar el modelo
+        $this->update([
+            'qr_code_image' => $qrCodeImage,
+            'qr_code_url' => $urlapp
+        ]);
+        
+        return $qrCodeImage;
+    }
+
+    /**
+     * Obtener la imagen QR en base64
+     */
+    public function getQRCodeImageAttribute($value)
+    {
+        if (!$value) {
+            return $this->generarQRCode();
+        }
+        return $value;
+    }
 }
 

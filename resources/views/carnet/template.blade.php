@@ -100,12 +100,20 @@
                 @endif
             </td>
             
-            <!-- Columna derecha: logo -->
+            <!-- Columna derecha: logo y QR -->
             <td style="width: 25mm; padding: 0.8mm; vertical-align: top; text-align: center;">
+                <!-- Logo del club -->
                 @if($jugador->club && $jugador->club->logo)
-                    <img src="{{ public_path('storage/' . $jugador->club->logo) }}" alt="" style="width: 16mm; height: 16mm; object-fit: contain; display: block;">
+                    <img src="{{ public_path('storage/' . $jugador->club->logo) }}" alt="" style="width: 12mm; height: 12mm; object-fit: contain; display: block; margin: 0 auto 2mm auto;">
                 @else
-                    <div style="width: 16mm; height: 16mm; background: #f8f9fa; border: 0.2mm solid #e9ecef; color: #6c757d; font-weight: bold; font-size: 6pt; text-align: center; line-height: 16mm;">FS</div>
+                    <div style="width: 12mm; height: 12mm; background: #f8f9fa; border: 0.2mm solid #e9ecef; color: #6c757d; font-weight: bold; font-size: 5pt; text-align: center; line-height: 12mm; margin: 0 auto 2mm auto;">FS</div>
+                @endif
+                
+                <!-- QR Code -->
+                @if($jugador->qr_code_image)
+                    <div style="width: 12mm; height: 12mm; border: 0.2mm solid #e9ecef; background: white; margin: 0 auto; padding: 0.5mm;">
+                        <img src="data:image/png;base64,{{ $jugador->qr_code_image }}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
                 @endif
             </td>
         </tr>

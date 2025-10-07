@@ -529,9 +529,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let value = this.value.replace(/[^A-Za-z0-9-]/g, '');
         if (value.length > 0) {
             value = value.toUpperCase();
-            if (value.length >= 2) {
-                value = value.slice(0, 1) + '-' + value.slice(1);
-            }
         }
         this.value = value;
     });
@@ -539,9 +536,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Teléfono format validation
     telefonoInput.addEventListener('input', function() {
         let value = this.value.replace(/[^0-9-]/g, '');
-        if (value.length >= 4) {
-            value = value.slice(0, 4) + '-' + value.slice(4);
-        }
         this.value = value;
     });
     

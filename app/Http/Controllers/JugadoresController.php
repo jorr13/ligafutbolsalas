@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Jugadores;
 use App\Models\Clubes;
 use App\Models\Categorias;
+use App\Models\Entrenadores;
 use Endroid\QrCode\Builder\Builder;
  use Endroid\QrCode\Writer\PngWriter;
  use Illuminate\Support\Facades\Storage;
@@ -14,10 +15,15 @@ class JugadoresController extends Controller
 {
     public function index()
     {
-        $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        
+        if(auth()->user()->rol_id == 'entrenador'){
+        $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
+        $club = Clubes::where('entrenador_id', $entrenador->id)->first();
+
         // Verificar si el entrenador tiene un club asignado
-        $hasClub = !is_null($club);
+            $hasClub = !is_null($club);
+        }else{
+            $hasClub = false;
+        }
         
         $jugadores = Jugadores::Getjugadores()->paginate(10); // Paginación de 10 jugadores por página
         // dd($jugadores);
@@ -27,8 +33,8 @@ class JugadoresController extends Controller
 
     public function create()
     {
-        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        
+        $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
+        $clubs = Clubes::where('entrenador_id', $entrenador->id)->first();
         // Validar que el entrenador tenga un club asignado
         if (!$clubs) {
             return redirect()->route('jugadores.index')
@@ -43,7 +49,8 @@ class JugadoresController extends Controller
 
     public function store(Request $request)
     {
-        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
+        $clubs = Clubes::where('entrenador_id', $entrenador->id)->first();
         
         // Validar que el entrenador tenga un club asignado
         if (!$clubs) {
@@ -115,6 +122,9 @@ class JugadoresController extends Controller
             'categoria_id' => $request->categoria_id,
             'nivel' => $request->nivel,
         ]);
+
+        // Generar QR Code automáticamente
+        $createJugador->generarQRCode();
 
         return redirect()->route('jugadores.index')->with('success', 'Jugador creado exitosamente.');
     }
@@ -266,6 +276,9 @@ class JugadoresController extends Controller
             'nivel' => $request->nivel,
         ]);
     
+        // Regenerar QR Code si es necesario
+        $jugador->generarQRCode();
+    
         return redirect()->route('jugadores.index')->with('success', 'Jugador editado exitosamente.');
     }
 
@@ -308,6 +321,20 @@ class JugadoresController extends Controller
         $jugador->delete();
     
         return redirect()->route('jugadores.index')->with('success', 'Jugador eliminado exitosamente.');
+    }
+
+    /**
+     * Mostrar datos públicos del jugador (acceso por QR)
+     */
+    public function mostrarJugadorPublico($id)
+    {
+        $jugador = Jugadores::with(['club', 'categoria'])->find($id);
+        
+        if (!$jugador) {
+            abort(404, 'Jugador no encontrado');
+        }
+        
+        return view('jugadores.publico', compact('jugador'));
     }
 
     public function aceptarJugador($id)
