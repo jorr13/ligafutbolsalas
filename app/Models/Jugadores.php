@@ -33,7 +33,8 @@ class Jugadores extends Model
     ];
 
     public static function Getjugadores() {
-        $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
+        $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
+        $club = Clubes::where('entrenador_id', $entrenador->id)->first();
         // dd(auth()->user()->id);
         if (!$club) {
             return self::whereRaw('1 = 0'); // Return empty query builder if no club is found

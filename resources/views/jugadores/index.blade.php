@@ -383,13 +383,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-
-    @if(!$hasClub)
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <strong>Atención:</strong> No tienes un club asignado. Contacta al administrador para que te asigne a un club antes de gestionar jugadores.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    @if(auth()->user()->rol_id!="administrador")
+        @if(!$hasClub)
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Atención:</strong> No tienes un club asignado. Contacta al administrador para que te asigne a un club antes de gestionar jugadores.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
     @endif
 
     <!-- Header con estadísticas -->
@@ -441,14 +442,16 @@
                             </span>
                             <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar jugador...">
                         </div>
-                        @if($hasClub)
-                            <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus me-2"></i>Nuevo Jugador
-                            </a>
-                        @else
-                            <button type="button" class="btn btn-primary" disabled title="Necesitas un club asignado para crear jugadores">
-                                <i class="fas fa-plus me-2"></i>Nuevo Jugador
-                            </button>
+                        @if(auth()->user()->rol_id!="administrador")
+                            @if($hasClub)
+                                <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Nuevo Jugador
+                                </a>
+                            @else
+                                <button type="button" class="btn btn-primary" disabled title="Necesitas un club asignado para crear jugadores">
+                                    <i class="fas fa-plus me-2"></i>Nuevo Jugador
+                                </button>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -553,6 +556,24 @@
                                      <i class="fas fa-times me-1"></i><span class="d-none d-md-inline">Rechazar</span>
                                  </button>
                                 @endif
+                                @if(auth()->user()->rol_id=="entrenador")
+                                {{-- <a href="{{ route('jugadores.carnet.preview', $jugador->id) }}" 
+                                   class="btn btn-outline-success btn-sm"
+                                   title="Ver carnet del jugador">
+                                    <i class="fas fa-id-card me-1"></i><span class="d-none d-md-inline">Carnet</span>
+                                </a>
+                                <a href="{{ route('admin.jugadores.historial', $jugador->id) }}" 
+                                   class="btn btn-outline-secondary btn-sm"
+                                   title="Ver historial">
+                                    <i class="fas fa-history me-1"></i><span class="d-none d-md-inline">Historial</span>
+                                </a> --}}
+                                @endif
+                                <button type="button" class="btn btn-outline-primary btn-sm" 
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
+                                        onclick="getJugador({{ $jugador->id }})"
+                                        title="Ver perfil completo">
+                                    <i class="fas fa-eye me-1"></i>Ver
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -563,14 +584,16 @@
                                 <i class="fas fa-users fa-4x text-muted mb-4"></i>
                                 <h5 class="text-muted mb-3">No hay jugadores registrados</h5>
                                 <p class="text-muted mb-4">Aún no se han registrado jugadores en el sistema.</p>
-                                @if($hasClub)
-                                    <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
-                                        <i class="fas fa-plus me-2"></i>Registrar Primer Jugador
-                                    </a>
-                                @else
-                                    <button type="button" class="btn btn-primary" disabled title="Necesitas un club asignado para crear jugadores">
-                                        <i class="fas fa-plus me-2"></i>Registrar Primer Jugador
-                                    </button>
+                                @if(auth()->user()->rol_id!="administrador")
+                                    @if($hasClub)
+                                        <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
+                                            <i class="fas fa-plus me-2"></i>Registrar Primer Jugador
+                                        </a>
+                                    @else
+                                        <button type="button" class="btn btn-primary" disabled title="Necesitas un club asignado para crear jugadores">
+                                            <i class="fas fa-plus me-2"></i>Registrar Primer Jugador
+                                        </button>
+                                    @endif
                                 @endif
                             </div>
                         </td>
@@ -598,6 +621,152 @@
     </div>
 </div>
 
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white border-0">
+                    <h5 class="modal-title fw-bold" id="staticBackdropLabel">
+                        <i class="fas fa-user-circle me-2"></i>Perfil del Jugador
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white cerrar-modal"  aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <!-- Spinner de carga -->
+                    <div class="text-center py-5" id="spinner">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="text-muted mt-3">Cargando información del jugador...</p>
+                    </div>
+                    
+                    <!-- Contenido del jugador -->
+                    <div id="jugador-content" class="d-none">
+                        <div class="row g-0">
+                            <!-- Columna izquierda - Foto y datos básicos -->
+                            <div class="col-md-4 bg-light p-4">
+                                <div class="text-center mb-4">
+                                    <div class="position-relative d-inline-block">
+                                        <img id="jugador-foto" src="" alt="Foto del jugador" 
+                                             class="rounded-circle border-4 border-white shadow" 
+                                             style="width: 150px; height: 150px; object-fit: cover;">
+                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center mb-3">
+                                    <h4 id="jugador-nombre" class="fw-bold text-dark mb-1"></h4>
+                                    <span id="jugador-categoria" class="badge bg-info text-white px-3 py-2"></span>
+                                    <span id="jugador-nivel" class="badge bg-info text-white px-3 py-2"></span>
+                                </div>
+                                
+                            </div>
+                            
+                            <!-- Columna derecha - Información detallada -->
+                            <div class="col-md-8 p-4">
+                                <div class="row g-3">
+                                    <!-- Información Personal -->
+                                    <div class="col-12">
+                                        <h6 class="text-primary fw-bold mb-3">
+                                            <i class="fas fa-id-card me-2"></i>Información Personal
+                                        </h6>
+                                        <div class="row g-3">
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-id-badge text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Cédula</small>
+                                                        <strong id="jugador-cedula"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-phone text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Teléfono</small>
+                                                        <strong id="jugador-telefono"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-envelope text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Email</small>
+                                                        <strong id="jugador-email"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-tshirt text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Número de Camiseta</small>
+                                                        <strong id="jugador-dorsal"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    <!-- Información del Representante -->
+                                    <div class="col-12">
+                                        <h6 class="text-primary fw-bold mb-3">
+                                            <i class="fas fa-user-friends me-2"></i>Información del Representante
+                                        </h6>
+                                        <div class="row g-3">
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-user text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Nombre</small>
+                                                        <strong id="jugador-representante-nombre"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-id-badge text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Cédula</small>
+                                                        <strong id="jugador-representante-cedula"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                                    <i class="fas fa-phone text-muted me-3"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Teléfono</small>
+                                                        <strong id="jugador-representante-telefono"></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                              
+                                    <!-- Estado del Jugador -->
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center p-3 bg-light rounded">
+                                            <i class="fas fa-check-circle text-muted me-3"></i>
+                                            <div>
+                                                <small class="text-muted d-block">Estado</small>
+                                                <span id="jugador-status" class="badge fs-6"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary cerrar-modal">
+                        <i class="fas fa-times me-2"></i>Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 <!-- Formulario oculto para acciones -->
 <form id="actionForm" method="POST" style="display: none;">
     @csrf
@@ -669,8 +838,6 @@
         }
     }
 
-    // Tooltips para los botones
-    $('[title]').tooltip();
     
     // Mejoras para móvil
     if (window.innerWidth <= 768) {
@@ -698,5 +865,114 @@
             });
         }
     }
+    function getJugador(id){
+        // Mostrar spinner y ocultar contenido
+        $('#spinner').show();
+        $('#jugador-content').addClass('d-none');
+        
+        $.ajax({
+            url: "{{ route('jugadores.infoJugadorMio') }}",
+            type: "POST",
+            headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+            data: { id: id },
+            success: function(response) {
+                // Ocultar spinner y mostrar contenido
+                console.log(response);
+                $('#spinner').hide();
+                $('#jugador-content').removeClass('d-none');
+                
+                // Actualizar título del modal
+                $('#staticBackdropLabel').html('<i class="fas fa-user-circle me-2"></i>Perfil del Jugador');
+                let miurl= '{{ asset('images/') }}';
+                // Llenar datos del jugador
+                $('#jugador-foto').attr('src', miurl+'/'+response.data.foto_identificacion);
+                $('#jugador-nombre').text(response.data.nombre || 'Sin nombre');
+                $('#jugador-categoria').text(response.data.categoria_nombre || 'Sin categoría');
+                $('#jugador-cedula').text(response.data.cedula || 'No especificada');
+                $('#jugador-telefono').text(response.data.telefono || 'No especificado');
+                $('#jugador-email').text(response.data.email || 'No especificado');
+                $('#jugador-dorsal').text(response.data.numero_dorsal || 'No especificado');
+                $('#jugador-nivel').text(response.data.nivel || 'No especificado');
+                // Información del representante
+                $('#jugador-representante-nombre').text(response.data.nombre_representante || 'No especificado');
+                $('#jugador-representante-cedula').text(response.data.cedula_representante || 'No especificada');
+                $('#jugador-representante-telefono').text(response.data.telefono_representante || 'No especificado');
+                
+                // Estado del jugador
+                const status = response.data.status || 'pendiente';
+                const statusClass = status === 'activo' ? 'bg-success' : 'bg-warning';
+                const statusText = status === 'activo' ? 'Activo' : 'Pendiente';
+                $('#jugador-status').removeClass('bg-success bg-warning').addClass(statusClass).text(statusText);
+                
+                // Actualizar badge de estado en la foto
+                const statusBadgeClass = status === 'activo' ? 'bg-success' : 'bg-warning';
+                $('#status-badge').removeClass('bg-success bg-warning').addClass(statusBadgeClass);
+                
+                                 // Configurar botones de acción
+                 if (response.data.telefono) {
+                     $('.btn-outline-primary').off('click').on('click', function() {
+                         window.open('tel:' + response.data.telefono);
+                     });
+                 }
+                 if (response.data.email) {
+                     $('.btn-outline-success').off('click').on('click', function() {
+                         window.open('mailto:' + response.data.email);
+                     });
+                 }
+            },
+            error: function (xhr, status, error) {
+                // Ocultar spinner y mostrar mensaje de error
+                $('#spinner').hide();
+                $('#jugador-content').removeClass('d-none');
+                $('#jugador-content').html(`
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+                        <h5 class="text-muted">Error al cargar la información</h5>
+                        <p class="text-muted">No se pudo obtener la información del jugador. Inténtalo de nuevo.</p>
+                        <button class="btn btn-primary" onclick="getJugador(${id})">
+                            <i class="fas fa-redo me-2"></i>Reintentar
+                        </button>
+                    </div>
+                `);
+                console.error('Error al cargar jugador:', error);
+            }
+        });
+    }
+    
+         // Limpiar modal cuando se cierre
+        $('#staticBackdrop').on('hidden.bs.modal', function () {
+         $('#spinner').show();
+         $('#jugador-content').removeClass('d-none').addClass('d-none');
+         
+         // Limpiar event listeners de los botones
+         $('.btn-outline-primary').off('click');
+         $('.btn-outline-success').off('click');
+         
+         // Limpiar contenido del modal
+         $('#jugador-foto').attr('src', '');
+         $('#jugador-nombre').text('');
+         $('#jugador-categoria').text('');
+         $('#jugador-cedula').text('');
+         $('#jugador-telefono').text('');
+         $('#jugador-email').text('');
+         $('#jugador-dorsal').text('');
+         $('#jugador-representante-nombre').text('');
+         $('#jugador-representante-cedula').text('');
+         $('#jugador-representante-telefono').text('');
+         $('#jugador-status').removeClass('bg-success bg-warning').text('');
+     });
+     $('.cerrar-modal').click(function(e) {
+         e.preventDefault();
+         
+         // Limpiar event listeners antes de cerrar
+         $('.btn-outline-primary').off('click');
+         $('.btn-outline-success').off('click');
+         
+         // Cerrar modal usando Bootstrap
+         $('#staticBackdrop').modal('hide');
+     });
+
+    // Tooltips para los botones
+    $('[title]').tooltip();
 </script>
 @endsection

@@ -126,7 +126,7 @@ class JugadoresController extends Controller
         // Generar QR Code automáticamente
         $createJugador->generarQRCode();
 
-        return redirect()->route('jugadores.index')->with('success', 'Jugador creado exitosamente.');
+        return redirect()->route('jugadores.index')->with('success', 'Jugador creado exitosamente, Debe esperar a que el administrador lo acepte.');
     }
 
  /**
@@ -344,7 +344,7 @@ class JugadoresController extends Controller
         $jugador->update([
             'status' => 'activo',
         ]);
-        $jugadores = Jugadores::Getjugadores()->paginate(10); 
+        $jugadores = Jugadores::GetjugadoresPending()->paginate(10); 
         return view('jugadores.index', compact('jugadores'))->with('success', 'Jugador aceptado exitosamente.');
     }
 
@@ -371,6 +371,34 @@ class JugadoresController extends Controller
                 $jugadores->telefono = '[Oculto]';
                 $jugadores->email = '[Oculto]';
             }
+            
+            return response()->json([
+                'data' => $jugadores,
+                'code' => 200,
+                'type' => 'success'
+            ]);
+        }else{
+            return response()->json([
+                'message' => "No se encontro el jugador",
+                'code' => 404,
+                'type' => 'error'
+            ]);
+        }
+    }
+    public function getJugadorMio(Request $request)
+    {
+        $jugadores = Jugadores::select('jugadores.*', 'categorias.nombre as categoria_nombre', 'clubes.nombre as club_nombre')
+            ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+            ->leftJoin('clubes', 'jugadores.club_id', '=', 'clubes.id')
+            ->where('jugadores.id', $request->id)
+            ->first();
+        
+        if($jugadores){
+            // Si el usuario es entrenador, ocultar datos sensibles
+            /*if(auth()->user()->rol_id === 'entrenador'){
+                $jugadores->telefono = '[Oculto]';
+                $jugadores->email = '[Oculto]';
+            }*/
             
             return response()->json([
                 'data' => $jugadores,
