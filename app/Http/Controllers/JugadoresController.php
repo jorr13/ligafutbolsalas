@@ -473,7 +473,7 @@ class JugadoresController extends Controller
             ->where('jugadores.club_id', $clubId)
             ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as categoria_nombre')
             ->paginate(10);
-
+        //dd($jugadores);
         return view('jugadores.index-public', compact('jugadores', 'club', 'categorias'));
     }
 }

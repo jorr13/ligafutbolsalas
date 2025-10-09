@@ -104,20 +104,32 @@
             <td style="width: 25mm; padding: 0.8mm; vertical-align: top; text-align: center;">
                 <!-- Logo del club -->
                 @if($jugador->club && $jugador->club->logo)
-                    <img src="{{ public_path('storage/' . $jugador->club->logo) }}" alt="" style="width: 12mm; height: 12mm; object-fit: contain; display: block; margin: 0 auto 2mm auto;">
+                    <img src="{{ asset('images/'. $jugador->club->logo) }}" alt="" style="width: 22mm; height: 22mm; object-fit: contain; display: block; margin: 0 auto 2mm auto;">
                 @else
                     <div style="width: 12mm; height: 12mm; background: #f8f9fa; border: 0.2mm solid #e9ecef; color: #6c757d; font-weight: bold; font-size: 5pt; text-align: center; line-height: 12mm; margin: 0 auto 2mm auto;">FS</div>
                 @endif
                 
-                <!-- QR Code -->
+            </td>
+
+        </tr>
+    </table>
+    <div style="page-break-before: always;break-before: page;"></div>
+    <table  style="width: 80mm; margin: 0; background: #ffffff; border: 0.2mm solid #e9ecef;">
+            <td style="width: 40mm; padding: 0.8mm; vertical-align: top; text-align: center;">
                 @if($jugador->qr_code_image)
-                    <div style="width: 12mm; height: 12mm; border: 0.2mm solid #e9ecef; background: white; margin: 0 auto; padding: 0.5mm;">
+                    <div style="width: 35mm; height: 35mm; border: 0.2mm solid #e9ecef; background: white; margin: 0 auto; padding: 0.5mm;">
                         <img src="data:image/png;base64,{{ $jugador->qr_code_image }}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                 @endif
             </td>
-        </tr>
-    </table>
+            <td style="width: 40mm; padding: 0.8mm; vertical-align: top; text-align: center;">
+         
+                <div style="width: 32mm; height: 35mm;text-align: center;">
+
+                </div>
+                <div style="font-size: 5pt; text-align: center;">Sello</div>
+            </td>
+    </table>           
 
 </body>
 </html>

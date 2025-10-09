@@ -259,7 +259,7 @@
                         </td>
                         <td class="py-3 px-4">
                             <span class="badge bg-info text-white px-3 py-2 rounded-pill">
-                                {{ $jugador->nombre_categoria ?? 'Sin categoría' }}
+                                {{ $jugador->categoria_nombre ?? 'Sin categoría' }}
                             </span>
                         </td>
                         <td class="py-3 px-4">
@@ -487,7 +487,7 @@
                 // Llenar datos del jugador
                 $('#jugador-foto').attr('src', miurl+'/'+response.data.foto_identificacion);
                 $('#jugador-nombre').text(response.data.nombre || 'Sin nombre');
-                $('#jugador-categoria').text(response.data.nombre_categoria || 'Sin categoría');
+                $('#jugador-categoria').text(response.data.categoria_nombre || 'Sin categoría');
                 $('#jugador-cedula').text(response.data.cedula || 'No especificada');
                 $('#jugador-telefono').text(response.data.telefono || 'No especificado');
                 $('#jugador-email').text(response.data.email || 'No especificado');
