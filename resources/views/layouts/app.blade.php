@@ -397,7 +397,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('clubes.index') }}">
                                     <i class="fas fa-landmark me-2"></i>
-                                    Mi Club
+                                    Clubes
                                 </a>
                             </li>
                         @endif

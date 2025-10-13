@@ -54,15 +54,11 @@ class ClubController extends Controller
     public function store(Request $request)
     {
          //dd($request);
-        // Manejar el archivo de imagen
-        if ($request->hasFile('logo')) {
-            // dd('entro');
-            $file = $request->file('logo');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $filePath = Storage::disk('images')->putFileAs('logos', $file, $fileName);
+         $urlLogo = null;
 
-            // Guardar la URL en la base de datos
-            $urlLogo = $filePath;
+        // Procesar foto carnet
+        if ($request->hasFile('logo')) {
+            $urlLogo = Storage::disk('images')->putFile('logos', $request->file('logo'));
         }
         $club = Clubes::create([
             'nombre' => $request->nombre,

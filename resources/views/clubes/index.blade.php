@@ -513,6 +513,14 @@
                                     <i class="fas fa-users me-1"></i><span class="d-none d-md-inline">Jugadores</span>
                                 </a>
                             @endif
+                            @if(auth()->user()->rol_id=="arbitro")
+                                <!-- Vista para entrenadores: solo JUGADORES -->
+                                <a href="{{ route('entrenador.clubes.jugadores', $club->id) }}" 
+                                   class="btn btn-outline-info btn-sm"
+                                   title="Ver jugadores del club">
+                                    <i class="fas fa-users me-1"></i><span class="d-none d-md-inline">Jugadores</span>
+                                </a>
+                            @endif
                             @if(auth()->user()->rol_id=="administrador")
                                          <!-- Vista para entrenadores: solo JUGADORES -->
                                 <a href="{{ route('entrenador.clubes.jugadores', $club->id) }}" 
