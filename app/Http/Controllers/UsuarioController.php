@@ -112,4 +112,44 @@ class UsuarioController extends Controller
         $usuario->delete();
         return redirect()->route('usuarios.index');
     }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function indexArbitro()
+    {
+        $arbitros = User::where('rol_id', 'arbitro')->paginate(10); // Paginación de 10 usuarios por página
+        return view('arbitros.index', compact('arbitros'));
+    }
+
+    public function createArbitro()
+    {
+        return view('arbitros.create');
+    }
+    
+    public function storeArbitro(Request $request)
+    {
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'rol_id' => 'arbitro',
+            'password' => Hash::make($request->password),
+        ]);
+        // Manejar foto_carnet
+         /*    if ($request->hasFile('foto_carnet')) {
+                $fotoCarnetPath = Storage::disk('images')->putFile('arbitros/fotos_carnet', $request->file('foto_carnet'));
+                $arbitroData['foto_carnet'] = $fotoCarnetPath;
+            }
+
+            // Manejar foto_cedula
+            if ($request->hasFile('foto_cedula')) {
+                $fotoCedulaPath = Storage::disk('images')->putFile('arbitros/fotos_cedula', $request->file('foto_cedula'));
+                $arbitroData['foto_cedula'] = $fotoCedulaPath;
+            } 
+                */
+    
+        return redirect()->route('arbitros.index')->with('success', 'Arbitro creado exitosamente.');
+    }
 }

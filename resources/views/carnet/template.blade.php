@@ -86,7 +86,7 @@
                 </table>
                 
                 <!-- Representante compacto -->
-              @if($jugador->nombre_representante) 
+                {{-- @if($jugador->nombre_representante) 
                 <div style="border-top: 0.2mm solid #e9ecef; padding-top: 0.5mm; margin-top: 0.5mm; font-size: 4pt;">
                     <div style="font-weight: bold; color: #495057; text-transform: uppercase;">Representante:</div>
                     <div style="color: #212529;">{{ $jugador->nombre_representante }}</div>
@@ -97,7 +97,7 @@
                         <div style="color: #212529;">Tel: {{ $jugador->telefono_representante }}</div>
                     @endif
                 </div>
-                @endif
+                @endif --}} 
             </td>
             
             <!-- Columna derecha: logo y QR -->
@@ -127,7 +127,7 @@
                 <div style="width: 32mm; height: 35mm;text-align: center;">
 
                 </div>
-                <div style="font-size: 5pt; text-align: center;">Sello</div>
+                {{-- <div style="font-size: 5pt; text-align: center;">Sello</div> --}} 
             </td>
     </table>           
 

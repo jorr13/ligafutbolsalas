@@ -30,6 +30,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('jugadores-pendientes', [App\Http\Controllers\JugadoresController::class, 'indexAdmin'])->name('jugadores.indexpendientes');
     Route::post('aceptar-jugador/{id}', [App\Http\Controllers\JugadoresController::class, 'aceptarJugador'])->name('jugadores.aceptar');
     Route::get('club-jugadores/{id}', [App\Http\Controllers\ClubController::class, 'verJugadores'])->name('clubes.getjugadores');
+    Route::get('arbitros', [App\Http\Controllers\UsuarioController::class, 'indexArbitro'])->name('arbitros.index');
+    Route::get('arbitros/create', [App\Http\Controllers\UsuarioController::class, 'createArbitro'])->name('arbitros.create');
+    Route::post('arbitros', [App\Http\Controllers\UsuarioController::class, 'storeArbitro'])->name('arbitros.store');
+
     
     // Rutas para entrenadores (solo lectura de otros clubes)  
     Route::get('ver-clubes', [App\Http\Controllers\JugadoresController::class, 'verClub'])->name('entrenador.clubes.index');
