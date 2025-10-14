@@ -14,7 +14,7 @@
                                 <img src="{{ asset('images/logo/logoligafutbolsalas.png') }}" alt="Logo" style="width: auto; height: 100px;">
                             </div>
                             <h2 class="fw-bold text-primary mb-2">{{ __('Iniciar Sesión') }}</h2>
-                            <p class="text-muted mb-0">{{ __('Liga de Fútbol Sala de Caracas') }}</p>
+                            <p class="text-muted mb-0">{{ __('Liga Fútbol Sala de Caracas') }}</p>
                         </div>
 
                         <!-- Login Form -->
