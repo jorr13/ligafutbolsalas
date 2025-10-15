@@ -335,9 +335,9 @@
 
 <style>
 :root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
-    --accent-color: #f093fb;
+    --primary-color: #8F0000;
+    --secondary-color: #6B0000;
+    --accent-color: #B30000;
     --text-dark: #2d3748;
     --text-light: #718096;
     --white: #ffffff;
@@ -358,7 +358,7 @@
     margin: 0 auto;
     color: var(--white);
     font-size: 2rem;
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 10px 25px rgba(143, 0, 0, 0.3);
     transition: all 0.3s ease;
 }
 

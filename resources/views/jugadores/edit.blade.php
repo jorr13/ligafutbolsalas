@@ -679,9 +679,9 @@
 
 <style>
 :root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
-    --accent-color: #f093fb;
+    --primary-color: #8F0000;
+    --secondary-color: #6B0000;
+    --accent-color: #B30000;
     --text-dark: #2d3748;
     --text-light: #718096;
     --white: #ffffff;

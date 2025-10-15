@@ -183,7 +183,7 @@
                 <a href="{{ route('arbitros.index') }}" class="card h-100 border-0 shadow-sm text-decoration-none quick-action-card">
                     <div class="card-body text-center p-4">
                         <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fas fa-graduation-cap text-info fs-2"></i>
+                            <i class="fas fa-flag-checkered text-info fs-2"></i>
                         </div>
                         <h5 class="card-title mb-2 fw-bold">Arbitros</h5>
                         <p class="text-muted small mb-0">Gestionar arbitros</p>
@@ -245,15 +245,15 @@
 
 <style>
 .bg-gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #8F0000 0%, #6B0000 100%);
 }
 
 .bg-purple {
-    background-color: #6f42c1;
+    background-color: #8F0000;
 }
 
 .text-purple {
-    color: #6f42c1;
+    color: #8F0000;
 }
 
 .quick-action-card {

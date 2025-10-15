@@ -7,21 +7,30 @@
             <!-- Header Section -->
             <div class="text-center mb-5">
                 <div class="page-icon mb-3">
-                    <i class="fas fa-whistle"></i>
+                    <i class="fas fa-edit"></i>
                 </div>
-                <h2 class="fw-bold text-primary mb-2">{{ __('Nuevo Árbitro') }}</h2>
-                <p class="text-muted mb-0">{{ __('Registra un nuevo árbitro en la Liga de Fútbol Sala') }}</p>
-                </div>
+                <h2 class="fw-bold text-primary mb-2">{{ __('Editar Mi Perfil') }}</h2>
+                <p class="text-muted mb-0">{{ __('Actualiza tu información personal') }}</p>
+            </div>
 
             <!-- Form Card -->
             <div class="card border-0 shadow-lg form-card">
                 <div class="card-body p-5">
-                    <form action="{{ route('arbitros.store') }}" method="POST" enctype="multipart/form-data" class="create-form">
+                    <form action="{{ route('perfil.update') }}" method="POST" class="edit-form">
                         @csrf
+                        @method('PUT')
                         
-                        <!-- Nombre del Árbitro -->
+                        <!-- Información Básica -->
+                        <div class="section-header mb-4">
+                            <h5 class="fw-bold text-primary">
+                                <i class="fas fa-user me-2"></i>
+                                {{ __('Información Básica') }}
+                            </h5>
+                        </div>
+
+                        <!-- Nombre -->
                         <div class="form-group mb-4">
-                            <label for="nombre" class="form-label fw-semibold">
+                            <label for="name" class="form-label fw-semibold">
                                 <i class="fas fa-user me-2 text-primary"></i>
                                 {{ __('Nombre Completo') }}
                             </label>
@@ -30,89 +39,14 @@
                                     <i class="fas fa-user text-muted"></i>
                                 </span>
                                 <input type="text" 
-                                       class="form-control border-start-0 @error('nombre') is-invalid @enderror" 
-                                       id="nombre" 
-                                       name="nombre" 
+                                       class="form-control border-start-0 @error('name') is-invalid @enderror" 
+                                       id="name" 
+                                       name="name" 
                                        required 
                                        placeholder="Ej: Juan Carlos Pérez"
-                                       value="{{ old('nombre') }}">
+                                       value="{{ old('name', $user->name) }}">
                             </div>
-                            @error('nombre')
-                                <div class="invalid-feedback d-block mt-2">
-                                    <i class="fas fa-exclamation-circle me-1"></i>
-                                    <strong>{{ $message }}</strong>
-                                </div>
-                            @enderror
-                        </div>
-
-                        <!-- Cédula -->
-                        <div class="form-group mb-4">
-                            <label for="cedula" class="form-label fw-semibold">
-                                <i class="fas fa-id-card me-2 text-primary"></i>
-                                {{ __('Cédula de Identidad') }}
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-hashtag text-muted"></i>
-                                </span>
-                                <input type="text" 
-                                       class="form-control border-start-0 @error('cedula') is-invalid @enderror" 
-                                       id="cedula" 
-                                       name="cedula" 
-                                       required 
-                                       placeholder="Ej: V-12345678"
-                                       value="{{ old('cedula') }}">
-                            </div>
-                            @error('cedula')
-                                <div class="invalid-feedback d-block mt-2">
-                                    <i class="fas fa-exclamation-circle me-1"></i>
-                                    <strong>{{ $message }}</strong>
-                                </div>
-                            @enderror
-                        </div>
-
-                        <!-- Teléfono -->
-                        <div class="form-group mb-4">
-                            <label for="telefono" class="form-label fw-semibold">
-                                <i class="fas fa-phone me-2 text-primary"></i>
-                                {{ __('Teléfono') }}
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-phone-alt text-muted"></i>
-                                </span>
-                                <input type="tel" 
-                                       class="form-control border-start-0 @error('telefono') is-invalid @enderror" 
-                                       id="telefono" 
-                                       name="telefono" 
-                                       placeholder="Ej: 0412-1234567"
-                                       value="{{ old('telefono') }}">
-                            </div>
-                            @error('telefono')
-                                <div class="invalid-feedback d-block mt-2">
-                                    <i class="fas fa-exclamation-circle me-1"></i>
-                                    <strong>{{ $message }}</strong>
-                                </div>
-                            @enderror
-                        </div>
-
-                        <!-- Dirección -->
-                        <div class="form-group mb-4">
-                            <label for="direccion" class="form-label fw-semibold">
-                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>
-                                {{ __('Dirección') }}
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-home text-muted"></i>
-                                </span>
-                                <textarea class="form-control border-start-0 @error('direccion') is-invalid @enderror" 
-                                       id="direccion" 
-                                       name="direccion" 
-                                          rows="3"
-                                          placeholder="Ej: Av. Principal, Sector Los Rosales, Caracas">{{ old('direccion') }}</textarea>
-                            </div>
-                            @error('direccion')
+                            @error('name')
                                 <div class="invalid-feedback d-block mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <strong>{{ $message }}</strong>
@@ -136,62 +70,37 @@
                                        name="email" 
                                        required 
                                        placeholder="Ej: juan.perez@email.com"
-                                       value="{{ old('email') }}">
-                        </div>
+                                       value="{{ old('email', $user->email) }}">
+                            </div>
                             @error('email')
                                 <div class="invalid-feedback d-block mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <strong>{{ $message }}</strong>
-                        </div>
+                                </div>
                             @enderror
                         </div>
 
                         <!-- Contraseña -->
                         <div class="form-group mb-4">
-                            <label for="pass" class="form-label fw-semibold">
+                            <label for="password" class="form-label fw-semibold">
                                 <i class="fas fa-lock me-2 text-primary"></i>
-                                {{ __('Contraseña') }}
+                                {{ __('Nueva Contraseña') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="fas fa-key text-muted"></i>
                                 </span>
                                 <input type="password" 
-                                       class="form-control border-start-0 @error('pass') is-invalid @enderror" 
-                                       id="pass" 
-                                       name="pass" 
-                                       required 
-                                       placeholder="Mínimo 6 caracteres">
-                        </div>
-                            @error('pass')
-                                <div class="invalid-feedback d-block mt-2">
-                                    <i class="fas fa-exclamation-circle me-1"></i>
-                                    <strong>{{ $message }}</strong>
-                        </div>
-                            @enderror
-                        </div>
-
-                        <!-- Foto Carnet -->
-                        <div class="form-group mb-4">
-                            <label for="foto_carnet" class="form-label fw-semibold">
-                                <i class="fas fa-camera me-2 text-primary"></i>
-                                {{ __('Foto para Carnet') }}
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-image text-muted"></i>
-                                </span>
-                                    <input type="file" 
-                                       class="form-control border-start-0 @error('foto_carnet') is-invalid @enderror" 
-                                           id="foto_carnet" 
-                                           name="foto_carnet" 
-                                       accept="image/*">
+                                       class="form-control border-start-0 @error('password') is-invalid @enderror" 
+                                       id="password" 
+                                       name="password" 
+                                       placeholder="Deja vacío para mantener la actual">
                             </div>
                             <small class="form-text text-muted">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB
+                                Deja este campo vacío si no quieres cambiar tu contraseña
                             </small>
-                            @error('foto_carnet')
+                            @error('password')
                                 <div class="invalid-feedback d-block mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <strong>{{ $message }}</strong>
@@ -199,27 +108,51 @@
                             @enderror
                         </div>
 
-                        <!-- Foto Cédula -->
+                        <!-- Confirmar Contraseña -->
                         <div class="form-group mb-4">
-                            <label for="foto_cedula" class="form-label fw-semibold">
-                                <i class="fas fa-id-badge me-2 text-primary"></i>
-                                {{ __('Foto de Cédula') }}
+                            <label for="password_confirmation" class="form-label fw-semibold">
+                                <i class="fas fa-lock me-2 text-primary"></i>
+                                {{ __('Confirmar Nueva Contraseña') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-file-image text-muted"></i>
+                                    <i class="fas fa-key text-muted"></i>
                                 </span>
-                                    <input type="file" 
-                                       class="form-control border-start-0 @error('foto_cedula') is-invalid @enderror" 
-                                           id="foto_cedula" 
-                                           name="foto_cedula" 
-                                       accept="image/*">
+                                <input type="password" 
+                                       class="form-control border-start-0" 
+                                       id="password_confirmation" 
+                                       name="password_confirmation" 
+                                       placeholder="Repite la nueva contraseña">
                             </div>
-                            <small class="form-text text-muted">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB
-                            </small>
-                            @error('foto_cedula')
+                        </div>
+
+                        <!-- Información Adicional (solo para entrenadores y árbitros) -->
+                        @if($datosAdicionales && ($user->rol_id == 'entrenador' || $user->rol_id == 'arbitro'))
+                        <div class="section-header mb-4 mt-5">
+                            <h5 class="fw-bold text-primary">
+                                <i class="fas fa-info-circle me-2"></i>
+                                {{ __('Información Adicional') }}
+                            </h5>
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div class="form-group mb-4">
+                            <label for="telefono" class="form-label fw-semibold">
+                                <i class="fas fa-phone me-2 text-primary"></i>
+                                {{ __('Teléfono') }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-phone-alt text-muted"></i>
+                                </span>
+                                <input type="tel" 
+                                       class="form-control border-start-0 @error('telefono') is-invalid @enderror" 
+                                       id="telefono" 
+                                       name="telefono" 
+                                       placeholder="Ej: 0412-1234567"
+                                       value="{{ old('telefono', $datosAdicionales->telefono) }}">
+                            </div>
+                            @error('telefono')
                                 <div class="invalid-feedback d-block mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <strong>{{ $message }}</strong>
@@ -227,43 +160,40 @@
                             @enderror
                         </div>
 
-                        <!-- Archivo CV -->
+                        <!-- Dirección -->
                         <div class="form-group mb-4">
-                            <label for="archivo_cv" class="form-label fw-semibold">
-                                <i class="fas fa-file-alt me-2 text-primary"></i>
-                                {{ __('Currículum Vitae') }}
+                            <label for="direccion" class="form-label fw-semibold">
+                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                                {{ __('Dirección') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-file-pdf text-muted"></i>
+                                    <i class="fas fa-home text-muted"></i>
                                 </span>
-                                    <input type="file" 
-                                       class="form-control border-start-0 @error('archivo_cv') is-invalid @enderror" 
-                                           id="archivo_cv" 
-                                           name="archivo_cv" 
-                                       accept=".pdf,.doc,.docx">
+                                <textarea class="form-control border-start-0 @error('direccion') is-invalid @enderror" 
+                                          id="direccion" 
+                                          name="direccion" 
+                                          rows="3"
+                                          placeholder="Ej: Av. Principal, Sector Los Rosales, Caracas">{{ old('direccion', $datosAdicionales->direccion) }}</textarea>
                             </div>
-                            <small class="form-text text-muted">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 5MB
-                            </small>
-                            @error('archivo_cv')
+                            @error('direccion')
                                 <div class="invalid-feedback d-block mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <strong>{{ $message }}</strong>
                                 </div>
                             @enderror
                         </div>
+                        @endif
 
                         <!-- Action Buttons -->
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                            <a href="{{ route('arbitros.index') }}" class="btn btn-outline-secondary btn-lg">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">
+                            <a href="{{ route('perfil.show') }}" class="btn btn-outline-secondary btn-lg">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 {{ __('Cancelar') }}
                             </a>
                             <button type="submit" class="btn btn-primary btn-lg fw-semibold submit-btn">
                                 <i class="fas fa-save me-2"></i>
-                                {{ __('Guardar Árbitro') }}
+                                {{ __('Actualizar Perfil') }}
                             </button>
                         </div>
                     </form>
@@ -314,6 +244,12 @@
 .form-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group {

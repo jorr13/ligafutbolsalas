@@ -111,9 +111,9 @@
 
 <style>
 :root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
-    --accent-color: #f093fb;
+    --primary-color: #8F0000;
+    --secondary-color: #6B0000;
+    --accent-color: #B30000;
     --text-dark: #2d3748;
     --text-light: #718096;
     --white: #ffffff;
@@ -166,7 +166,7 @@ body::before {
     margin: 0 auto;
     color: var(--white);
     font-size: 2rem;
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 10px 25px rgba(143, 0, 0, 0.3);
     transition: all 0.3s ease;
 }
 
@@ -188,7 +188,7 @@ body::before {
 }
 
 .input-group:focus-within {
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 4px 20px rgba(143, 0, 0, 0.2);
     transform: translateY(-2px);
 }
 
@@ -208,7 +208,7 @@ body::before {
 
 .form-control:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(143, 0, 0, 0.25);
     background: var(--white);
 }
 
@@ -225,12 +225,12 @@ body::before {
     font-size: 1rem;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(143, 0, 0, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(143, 0, 0, 0.4);
 }
 
 .btn-primary:active {

@@ -9,13 +9,13 @@
         border-bottom: 2px solid #e9ecef;
     }
     
-    .entrenador-row {
+    .arbitro-row {
         transition: all 0.2s ease-in-out;
         border-left: 3px solid transparent;
     }
     
-    .entrenador-row:hover {
-        border-left-color: #007bff;
+    .arbitro-row:hover {
+        border-left-color: #8F0000;
         background-color: #f8f9fa;
         transform: translateX(2px);
     }
@@ -58,16 +58,16 @@
     }
     
     #searchInput:focus {
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(143, 0, 0, 0.25);
+        border-color: #8F0000;
     }
     
     /* Estilos para las imágenes de perfil */
-    .entrenador-avatar {
+    .arbitro-avatar {
         transition: all 0.3s ease;
     }
     
-    .entrenador-avatar:hover {
+    .arbitro-avatar:hover {
         transform: scale(1.05);
     }
     
@@ -260,7 +260,7 @@
     }
     
     .pagination .page-link {
-        color: #007bff;
+        color: #8F0000;
         border: 1px solid #dee2e6;
         padding: 0.5rem 0.75rem;
         margin: 0 2px;
@@ -269,17 +269,17 @@
     }
     
     .pagination .page-link:hover {
-        color: #0056b3;
+        color: #6B0000;
         background-color: #e9ecef;
         border-color: #adb5bd;
         transform: translateY(-1px);
     }
     
     .pagination .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #007bff;
+        background-color: #8F0000;
+        border-color: #8F0000;
         color: white;
-        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+        box-shadow: 0 2px 4px rgba(143, 0, 0, 0.3);
     }
     
     .pagination .page-item.disabled .page-link {
@@ -376,9 +376,9 @@
                     <div class="row align-items-center">
                         <div class="col-md-6">
                             <h2 class="h4 mb-1 text-primary fw-bold">
-                                <i class="fas fa-user-tie me-2"></i>Gestión de Entrenadores
+                                <i class="fas fa-whistle me-2"></i>Gestión de Árbitros
                             </h2>
-                            <p class="text-muted mb-0">Administra todos los entrenadores de la liga</p>
+                            <p class="text-muted mb-0">Administra todos los árbitros de la liga</p>
                         </div>
                         <div class="col-md-6">
                             <div class="row text-center">
@@ -412,7 +412,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <h5 class="mb-0 fw-bold text-dark">
-                        <i class="fas fa-list me-2 text-primary"></i>Lista de Entrenadores
+                        <i class="fas fa-list me-2 text-primary"></i>Lista de Árbitros
                     </h5>
                 </div>
                 <div class="col-md-6 text-end">
@@ -421,11 +421,11 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar entrenador...">
+                            <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar árbitro...">
                         </div>
                         @if(auth()->user()->rol_id=="administrador")
-                        <a href="{{ route('entrenadores.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Nuevo Entrenador
+                        <a href="{{ route('arbitros.create') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Nuevo Árbitro
                         </a>
                         @endif
                     </div>
@@ -434,23 +434,17 @@
         </div>
         
         <div class="table-responsive">
-            <table class="table table-hover mb-0" id="entrenadoresTable">
+            <table class="table table-hover mb-0" id="arbitrosTable">
                 <thead class="table-light">
                     <tr>
                         <th class="border-0 py-3 px-4">
-                            <i class="fas fa-user-tie text-muted me-2"></i>Entrenador
+                            <i class="fas fa-whistle text-muted me-2"></i>Árbitro
                         </th>
                         <th class="border-0 py-3 px-4">
                             <i class="fas fa-id-badge text-muted me-2"></i>Cédula
                         </th>
                         <th class="border-0 py-3 px-4">
                             <i class="fas fa-phone text-muted me-2"></i>Contacto
-                        </th>
-                        <th class="border-0 py-3 px-4">
-                            <i class="fas fa-map-marker-alt text-muted me-2"></i>Dirección
-                        </th>
-                        <th class="border-0 py-3 px-4">
-                            <i class="fas fa-shield-alt text-muted me-2"></i>Club
                         </th>
                         <th class="border-0 py-3 px-4">
                             <i class="fas fa-circle text-muted me-2"></i>Estado
@@ -461,67 +455,53 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($arbitros as $entrenador)
-                    <tr class="entrenador-row">
+                    @forelse ($arbitros as $arbitro)
+                    <tr class="arbitro-row">
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-                                                                         <img src="{{ $entrenador->foto_carnet ? asset('images/' . $entrenador->foto_carnet) : '/images/default-avatar.png' }}" 
-                                         alt="Foto de {{ $entrenador->nombre }}" 
-                                         class="rounded-circle border-2 border-light shadow-sm entrenador-avatar" 
-                                         style="width: 45px; height: 45px; object-fit: cover;">
-                                    <div class="position-absolute bottom-0 end-0 bg-{{ $entrenador->estatus == 'activo' ? 'success' : 'secondary' }} rounded-circle border-2 border-white" 
+                                    <div class="position-absolute bottom-0 end-0 bg-{{ $arbitro->estatus == 'activo' ? 'success' : 'secondary' }} rounded-circle border-2 border-white" 
                                          style="width: 12px; height: 12px;"></div>
                                 </div>
                                 <div>
-                                    <h6 class="mb-0 fw-bold text-dark">{{ $entrenador->nombre }}</h6>
-                                    <small class="text-muted">{{ $entrenador->email ?? 'Sin email' }}</small>
+                                    <h6 class="mb-0 fw-bold text-dark">{{ $arbitro->nombre }}</h6>
+                                    <small class="text-muted">{{ $arbitro->email ?? 'Sin email' }}</small>
                                 </div>
                             </div>
                         </td>
                         <td class="py-3 px-4">
-                            <span class="fw-medium text-dark">{{ $entrenador->cedula }}</span>
+                            <span class="fw-medium text-dark">{{ $arbitro->cedula }}</span>
                         </td>
                         <td class="py-3 px-4">
                             <div class="d-flex flex-column">
                                 <span class="fw-medium text-dark">
-                                    <i class="fas fa-phone text-muted me-1"></i>{{ $entrenador->telefono ?? 'No especificado' }}
+                                    <i class="fas fa-phone text-muted me-1"></i>{{ $arbitro->telefono ?? 'No especificado' }}
                                 </span>
-                                @if($entrenador->email)
+                                @if($arbitro->email)
                                 <small class="text-muted">
-                                    <i class="fas fa-envelope text-muted me-1"></i>{{ $entrenador->email }}
+                                    <i class="fas fa-envelope text-muted me-1"></i>{{ $arbitro->email }}
                                 </small>
                                 @endif
                             </div>
                         </td>
                         <td class="py-3 px-4">
-                            <span class="fw-medium text-dark">
-                                <i class="fas fa-map-marker-alt text-muted me-1"></i>{{ $entrenador->direccion ?? 'No especificada' }}
-                            </span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="badge bg-info text-white px-3 py-2 rounded-pill">
-                                <i class="fas fa-shield-alt me-1"></i>{{ $entrenador->nombre_club ?? 'Sin club' }}
-                            </span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="badge bg-{{ $entrenador->estatus == 'activo' ? 'success' : 'secondary' }} text-white px-3 py-2 rounded-pill">
-                                <i class="fas fa-{{ $entrenador->estatus == 'activo' ? 'check' : 'pause' }} me-1"></i>
-                                {{ ucfirst($entrenador->estatus) }}
+                            <span class="badge bg-{{ $arbitro->estatus == 'activo' ? 'success' : 'secondary' }} text-white px-3 py-2 rounded-pill">
+                                <i class="fas fa-{{ $arbitro->estatus == 'activo' ? 'check' : 'pause' }} me-1"></i>
+                                {{ ucfirst($arbitro->estatus) }}
                             </span>
                         </td>
                         <td class="py-3 px-4 text-end">
                             <div class="btn-group" role="group">
                                 @if(auth()->user()->rol_id=="administrador")
-                                <a href="{{ route('entrenadores.edit', $entrenador->id) }}" 
+                                <a href="{{ route('arbitros.edit', $arbitro) }}" 
                                    class="btn btn-outline-warning btn-sm"
-                                   title="Editar entrenador">
+                                   title="Editar árbitro">
                                     <i class="fas fa-edit me-1"></i><span class="d-none d-md-inline">Editar</span>
                                 </a>
                                 <button type="button" 
                                         class="btn btn-outline-danger btn-sm"
-                                        onclick="confirmDelete({{ $entrenador->id }}, '{{ $entrenador->nombre }}')"
-                                        title="Eliminar entrenador">
+                                        onclick="confirmDelete({{ $arbitro->id }}, '{{ $arbitro->nombre }}')"
+                                        title="Eliminar árbitro">
                                     <i class="fas fa-trash me-1"></i><span class="d-none d-md-inline">Eliminar</span>
                                 </button>
                                 @endif
@@ -532,12 +512,12 @@
                     <tr>
                         <td colspan="7" class="text-center py-5">
                             <div class="py-5">
-                                <i class="fas fa-user-tie fa-4x text-muted mb-4"></i>
-                                <h5 class="text-muted mb-3">No hay entrenadores registrados</h5>
-                                <p class="text-muted mb-4">Aún no se han registrado entrenadores en el sistema.</p>
+                                <i class="fas fa-whistle fa-4x text-muted mb-4"></i>
+                                <h5 class="text-muted mb-3">No hay árbitros registrados</h5>
+                                <p class="text-muted mb-4">Aún no se han registrado árbitros en el sistema.</p>
                                 @if(auth()->user()->rol_id=="administrador")
-                                <a href="{{ route('entrenadores.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-plus me-2"></i>Registrar Primer Entrenador
+                                <a href="{{ route('arbitros.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Registrar Primer Árbitro
                                 </a>
                                 @endif
                             </div>
@@ -554,7 +534,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="text-muted">
                     <small>
-                        Mostrando {{ $arbitros->firstItem() }} a {{ $arbitros->lastItem() }} de {{ $arbitros->total() }} entrenadores
+                        Mostrando {{ $arbitros->firstItem() }} a {{ $arbitros->lastItem() }} de {{ $arbitros->total() }} árbitros
                     </small>
                 </div>
                 <div class="pagination-wrapper">
@@ -576,7 +556,7 @@
     // Funcionalidad de búsqueda en tiempo real
     $('#searchInput').on('keyup', function() {
         const searchTerm = $(this).val().toLowerCase();
-        const rows = $('.entrenador-row');
+        const rows = $('.arbitro-row');
         
         rows.each(function() {
             const row = $(this);
@@ -595,7 +575,7 @@
         const visibleRows = rows.filter(':visible');
         if (visibleRows.length === 0 && searchTerm !== '') {
             if ($('#no-results').length === 0) {
-                $('#entrenadoresTable tbody').append(`
+                $('#arbitrosTable tbody').append(`
                     <tr id="no-results">
                         <td colspan="7" class="text-center py-4">
                             <div class="py-3">
@@ -615,12 +595,12 @@
     // Limpiar búsqueda
     $('#searchInput').on('focus', function() {
         if ($(this).val() === '') {
-            $('.entrenador-row').removeClass('highlight-row');
+            $('.arbitro-row').removeClass('highlight-row');
         }
     });
 
     // Efectos hover en las filas
-    $('.entrenador-row').hover(
+    $('.arbitro-row').hover(
         function() {
             $(this).addClass('table-active');
         },
@@ -631,9 +611,9 @@
 
     // Función para confirmar eliminación
     function confirmDelete(id, nombre) {
-        if (confirm(`¿Estás seguro de eliminar el entrenador "${nombre}"? Esta acción no se puede deshacer.`)) {
+        if (confirm(`¿Estás seguro de eliminar el árbitro "${nombre}"? Esta acción no se puede deshacer.`)) {
             const form = document.getElementById('deleteForm');
-            form.action = `/entrenadores/${id}`;
+            form.action = `/arbitros/${id}`;
             form.submit();
         }
     }

@@ -30,9 +30,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('jugadores-pendientes', [App\Http\Controllers\JugadoresController::class, 'indexAdmin'])->name('jugadores.indexpendientes');
     Route::post('aceptar-jugador/{id}', [App\Http\Controllers\JugadoresController::class, 'aceptarJugador'])->name('jugadores.aceptar');
     Route::get('club-jugadores/{id}', [App\Http\Controllers\ClubController::class, 'verJugadores'])->name('clubes.getjugadores');
-    Route::get('arbitros', [App\Http\Controllers\UsuarioController::class, 'indexArbitro'])->name('arbitros.index');
-    Route::get('arbitros/create', [App\Http\Controllers\UsuarioController::class, 'createArbitro'])->name('arbitros.create');
-    Route::post('arbitros', [App\Http\Controllers\UsuarioController::class, 'storeArbitro'])->name('arbitros.store');
+    Route::resource('arbitros', App\Http\Controllers\ArbitrosController::class);
+    
+    // Rutas para perfil de usuario
+    Route::get('perfil', [App\Http\Controllers\PerfilController::class, 'show'])->name('perfil.show');
+    Route::get('perfil/edit', [App\Http\Controllers\PerfilController::class, 'edit'])->name('perfil.edit');
+    Route::put('perfil', [App\Http\Controllers\PerfilController::class, 'update'])->name('perfil.update');
 
     
     // Rutas para entrenadores (solo lectura de otros clubes)  

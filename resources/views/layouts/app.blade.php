@@ -21,9 +21,9 @@
     
     <style>
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
+            --primary-color: #8F0000;
+            --secondary-color: #6B0000;
+            --accent-color: #B30000;
             --text-dark: #2d3748;
             --text-light: #718096;
             --white: #ffffff;
@@ -93,7 +93,7 @@
         
         .nav-link:hover {
             color: var(--primary-color) !important;
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(143, 0, 0, 0.1);
             transform: translateY(-2px);
         }
         
@@ -136,22 +136,22 @@
             border: none;
             padding: 0.75rem;
             border-radius: 12px;
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(143, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
         
         .navbar-toggler:hover {
-            background: rgba(102, 126, 234, 0.2);
+            background: rgba(143, 0, 0, 0.2);
             transform: scale(1.05);
         }
         
         .navbar-toggler:focus {
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+            box-shadow: 0 0 0 3px rgba(143, 0, 0, 0.25);
             outline: none;
         }
         
         .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(102, 126, 234, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(143, 0, 0, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
         
         @media (max-width: 991.98px) {
@@ -444,6 +444,13 @@
                                             </div>
                                         </div>
                                     </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('perfil.show') }}">
+                                        <i class="fas fa-user-circle me-2"></i>
+                                        {{ __('Mi Perfil') }}
+                                    </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>

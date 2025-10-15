@@ -21,7 +21,7 @@
     <table style="width: 80mm; margin: 0; background: #ffffff; border: 0.2mm solid #e9ecef; border-collapse: collapse; table-layout: fixed; page-break-inside: avoid;">
         <!-- Header compacto -->
         <tr>
-            <td colspan="3" style=" background: #007bff; color: #ffffff; text-align: center; font-weight: bold; text-transform: uppercase; font-size: 5.5pt; padding: 0.8mm 0; position: relative;">
+            <td colspan="3" style=" background: #8F0000; color: #ffffff; text-align: center; font-weight: bold; text-transform: uppercase; font-size: 5.5pt; padding: 0.8mm 0; position: relative;">
              
                 <h1 style="  display: inline-flex;position: relative;top: 5px;font-size: 10px;">CARNET DE JUGADOR</h1>
                 <img src="{{ asset('images/logo/logoligafutbolsalas.png') }}" alt="Logo" style="display: inline-flex; width: auto; height: 25px; position: relative; top: 5px; left: 15px;">
@@ -105,6 +105,7 @@
                 <!-- Logo del club -->
                 @if($jugador->club && $jugador->club->logo)
                     <img src="{{ asset('images/'. $jugador->club->logo) }}" alt="" style="width: 22mm; height: 22mm; object-fit: contain; display: block; margin: 0 auto 2mm auto;">
+                    <h5 style="font-size: 5px; font-weight: bold; text-transform: uppercase; color: #212529;">Valido solo para el año {{ date('Y') }}</h5>
                 @else
                     <div style="width: 12mm; height: 12mm; background: #f8f9fa; border: 0.2mm solid #e9ecef; color: #6c757d; font-weight: bold; font-size: 5pt; text-align: center; line-height: 12mm; margin: 0 auto 2mm auto;">FS</div>
                 @endif
