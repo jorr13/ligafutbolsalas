@@ -58,7 +58,7 @@ class ClubController extends Controller
 
         // Procesar foto carnet
         if ($request->hasFile('logo')) {
-            $urlLogo = Storage::disk('images')->putFile('logos', $request->file('logo'));
+            $urlLogo = Storage::disk('storage')->putFile('logos', $request->file('logo'));
         }
         $club = Clubes::create([
             'nombre' => $request->nombre,
@@ -122,12 +122,12 @@ class ClubController extends Controller
         $clubes = Clubes::where('id', $id)->first();
         if ($request->hasFile('logo')) {
             // Eliminar archivo anterior si existe
-            if ($clubes->logo && Storage::disk('images')->exists($clubes->logo)) {
-                Storage::disk('images')->delete($clubes->logo);
+            if ($clubes->logo && Storage::disk('storage')->exists($clubes->logo)) {
+                Storage::disk('storage')->delete($clubes->logo);
             }
             $file = $request->file('logo');
             $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $filePath = Storage::disk('images')->putFileAs('logos', $file, $fileName);
+            $filePath = Storage::disk('storage')->putFileAs('logos', $file, $fileName);
 
             // Guardar la URL en la base de datos
             $urlLogo = $filePath;
@@ -158,8 +158,8 @@ class ClubController extends Controller
     {
         $clubes = Clubes::where('id', $id)->first();
         // Eliminar archivo asociado
-        if ($clubes->logo && Storage::disk('images')->exists($clubes->logo)) {
-            Storage::disk('images')->delete($clubes->logo);
+        if ($clubes->logo && Storage::disk('storage')->exists($clubes->logo)) {
+            Storage::disk('storage')->delete($clubes->logo);
         }
         $clubes->delete();
     

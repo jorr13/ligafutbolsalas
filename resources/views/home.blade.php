@@ -17,7 +17,7 @@
                     
                     <div class="d-flex align-items-center justify-content-center mb-3">
                         <div class="">
-                            <img src="{{ asset('images/logo/logoligafutbolsalas.png') }}" alt="Logo" style="width: auto; height: 150px;">
+                            <img src="{{ asset('imagen/logoligafutbolsalas.png') }}" alt="Logo" style="width: auto; height: 150px;">
                         </div>
                         <div>
                             <h1 class="text-white mb-1 fw-bold">{{ __('¡Bienvenido!') }}</h1>

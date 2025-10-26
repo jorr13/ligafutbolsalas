@@ -21,7 +21,12 @@
                         <div class="card-body text-center p-4">
                             <div class="club-image-container mb-3">
                                 @if($jugador->foto_carnet)
-                                    <img src="{{ asset('images/' . $jugador->foto_carnet) }}" alt="Foto Carnet" class="club-logo">
+                                    @php
+                                        $fotoCarnetUrl = str_starts_with($jugador->foto_carnet, 'jugadores/') 
+                                            ? asset('storage/' . $jugador->foto_carnet) 
+                                            : asset('images/' . $jugador->foto_carnet);
+                                    @endphp
+                                    <img src="{{ $fotoCarnetUrl }}" alt="Foto Carnet" class="club-logo">
                                 @else
                                     <div class="no-image-placeholder">
                                         <i class="fas fa-user-circle"></i>
@@ -516,11 +521,13 @@
                                             </div>
                                 @if($jugador->foto_carnet)
                                                 @php
-                                                    $jugador->foto_carnet = str_replace('public/', "", $jugador->foto_carnet);
+                                                    $fotoCarnetUrl = str_starts_with($jugador->foto_carnet, 'jugadores/') 
+                                                        ? asset('storage/' . $jugador->foto_carnet) 
+                                                        : asset('images/' . $jugador->foto_carnet);
                                                 @endphp
                                                 <small class="d-block mt-2 text-info">
                                                     <i class="fas fa-info-circle me-1"></i>
-                                                    {{ __('Archivo actual') }}: <a href="{{ asset('images/' . $jugador->foto_carnet) }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    {{ __('Archivo actual') }}: <a href="{{ $fotoCarnetUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
                                                 </small>
                                 @endif
                                             @error('foto_carnet')
@@ -568,9 +575,14 @@
                                                 </div>
                                             </div>
                                 @if($jugador->foto_cedula)
+                                                @php
+                                                    $fotoCedulaUrl = str_starts_with($jugador->foto_cedula, 'jugadores/') 
+                                                        ? asset('storage/' . $jugador->foto_cedula) 
+                                                        : asset('images/' . $jugador->foto_cedula);
+                                                @endphp
                                                 <small class="d-block mt-2 text-info">
                                                     <i class="fas fa-info-circle me-1"></i>
-                                                    {{ __('Archivo actual') }}: <a href="{{ asset('images/' . $jugador->foto_cedula) }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    {{ __('Archivo actual') }}: <a href="{{ $fotoCedulaUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
                                                 </small>
                                 @endif
                                             @error('foto_cedula')
@@ -618,9 +630,14 @@
                                                 </div>
                             </div>
                                 @if($jugador->foto_identificacion)
+                                                @php
+                                                    $fotoIdentificacionUrl = str_starts_with($jugador->foto_identificacion, 'jugadores/') 
+                                                        ? asset('storage/' . $jugador->foto_identificacion) 
+                                                        : asset('images/' . $jugador->foto_identificacion);
+                                                @endphp
                                                 <small class="d-block mt-2 text-info">
                                                     <i class="fas fa-info-circle me-1"></i>
-                                                    {{ __('Archivo actual') }}: <a href="{{ asset('images/' . $jugador->foto_identificacion) }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    {{ __('Archivo actual') }}: <a href="{{ $fotoIdentificacionUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
                                                 </small>
                                 @endif
                                             @error('foto_identificacion')

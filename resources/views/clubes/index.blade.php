@@ -471,10 +471,17 @@
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-                                                                                                             <img src="{{ asset('images/' . $club->logo) }}" 
+                                    @php
+                                        // Verificar si el logo tiene el path completo o solo el nombre
+                                        $logoUrl = str_starts_with($club->logo, 'logos/') || str_starts_with($club->logo, 'images/') 
+                                            ? asset('storage/' . $club->logo) 
+                                            : asset('storage/images/' . $club->logo);
+                                    @endphp
+                                    <img src="{{ $logoUrl }}" 
                                          alt="Logo de {{ $club->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm club-logo" 
-                                         style="width: 45px; height: 45px; object-fit: cover;">
+                                         style="width: 45px; height: 45px; object-fit: cover;"
+                                         onerror="this.src='{{ asset('imagen/logoligafutbolsalas.png') }}'">
                                     <div class="position-absolute bottom-0 end-0 bg-{{ $club->estatus == 'activo' ? 'success' : 'secondary' }} rounded-circle border-2 border-white" 
                                          style="width: 12px; height: 12px;"></div>
                                 </div>

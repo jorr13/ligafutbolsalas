@@ -21,7 +21,12 @@
                         <div class="card-body text-center p-4">
                             <div class="club-image-container mb-3">
                                 @if($jugador->foto_carnet)
-                                    <img src="{{ asset('images/' . $jugador->foto_carnet) }}" alt="Foto Carnet" class="club-logo">
+                                    @php
+                                        $fotoCarnetUrl = str_starts_with($jugador->foto_carnet, 'jugadores/') 
+                                            ? asset('storage/' . $jugador->foto_carnet) 
+                                            : asset('images/' . $jugador->foto_carnet);
+                                    @endphp
+                                    <img src="{{ $fotoCarnetUrl }}" alt="Foto Carnet" class="club-logo">
                                 @else
                                     <div class="no-image-placeholder">
                                         <i class="fas fa-user-circle"></i>

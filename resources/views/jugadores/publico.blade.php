@@ -100,7 +100,12 @@
             <div class="player-header">
                 <h1 class="mb-3">CARNET DE JUGADOR</h1>
                 @if($jugador->foto_carnet)
-                    <img src="{{ asset('images/' . $jugador->foto_carnet) }}" alt="Foto del jugador" class="player-photo">
+                    @php
+                        $fotoCarnetUrl = str_starts_with($jugador->foto_carnet, 'jugadores/') 
+                            ? asset('storage/' . $jugador->foto_carnet) 
+                            : asset('images/' . $jugador->foto_carnet);
+                    @endphp
+                    <img src="{{ $fotoCarnetUrl }}" alt="Foto del jugador" class="player-photo">
                 @else
                     <div class="player-photo d-flex align-items-center justify-content-center bg-light text-muted">
                         Sin Foto

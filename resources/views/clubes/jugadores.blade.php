@@ -223,10 +223,18 @@
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-     <img src="{{ $jugador->foto_identificacion ? asset('images/' . $jugador->foto_identificacion) : '/images/default-avatar.png' }}"  
+                                    @php
+                                        $fotoUrl = $jugador->foto_identificacion 
+                                            ? (str_starts_with($jugador->foto_identificacion, 'jugadores/') 
+                                                ? asset('storage/' . $jugador->foto_identificacion) 
+                                                : asset('images/' . $jugador->foto_identificacion))
+                                            : asset('/images/default-avatar.png');
+                                    @endphp
+                                    <img src="{{ $fotoUrl }}"  
                                          alt="Foto de {{ $jugador->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm" 
-                                         style="width: 45px; height: 45px; object-fit: cover;">
+                                         style="width: 45px; height: 45px; object-fit: cover;"
+                                         onerror="this.src='/images/default-avatar.png'">
                           
                                 </div>
                                 <div>

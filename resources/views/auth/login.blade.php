@@ -11,7 +11,7 @@
                         <!-- Header Section -->
                         <div class="text-center mb-4">
                             <div class="">
-                                <img src="{{ asset('images/logo/logoligafutbolsalas.png') }}" alt="Logo" style="width: auto; height: 100px;">
+                                <img src="{{ asset('imagen/logoligafutbolsalas.png') }}" alt="Logo" style="width: auto; height: 100px;">
                             </div>
                             <h2 class="fw-bold text-primary mb-2">{{ __('Iniciar Sesión') }}</h2>
                             <p class="text-muted mb-0">{{ __('Liga Fútbol Sala de Caracas') }}</p>

@@ -24,7 +24,7 @@
             <td colspan="3" style=" background: #8F0000; color: #ffffff; text-align: center; font-weight: bold; text-transform: uppercase; font-size: 5.5pt; padding: 0.8mm 0; position: relative;">
              
                 <h1 style="  display: inline-flex;position: relative;top: 5px;font-size: 10px;">CARNET DE JUGADOR</h1>
-                <img src="{{ asset('images/logo/logoligafutbolsalas.png') }}" alt="Logo" style="display: inline-flex; width: auto; height: 25px; position: relative; top: 5px; left: 15px;">
+                <img src="{{ asset('imagen/logoligafutbolsalas.png') }}" alt="Logo" style="display: inline-flex; width: auto; height: 25px; position: relative; top: 5px; left: 15px;">
       
             </td>
           
@@ -35,7 +35,12 @@
             <td style="width: 20mm; padding: 0.8mm; vertical-align: top; text-align: center;">
                 <div style="width: 16mm; height: 18mm; margin-bottom: 0.6mm;">
                     @if($jugador->foto_carnet)
-                        <img src="{{ $jugador->foto_carnet ? asset('images/' . $jugador->foto_carnet) : '/images/default-avatar.png' }}" alt="" style="width: 20mm; height: 22mm; object-fit: cover; display: block; position: relative; left: 10px;">
+                        @php
+                            $fotoCarnetUrl = str_starts_with($jugador->foto_carnet, 'jugadores/') 
+                                ? asset('storage/' . $jugador->foto_carnet) 
+                                : asset('images/' . $jugador->foto_carnet);
+                        @endphp
+                        <img src="{{ $fotoCarnetUrl }}" alt="" style="width: 20mm; height: 22mm; object-fit: cover; display: block; position: relative; left: 10px;">
                     @else
                         <div style="width: 16mm; height: 18mm; background: #e9ecef; color: #6c757d; font-size: 5pt; line-height: 18mm; text-align: center; position: relative; left: 10px;">Sin Foto</div>
                     @endif
@@ -104,7 +109,12 @@
             <td style="width: 25mm; padding: 0.8mm; vertical-align: top; text-align: center;">
                 <!-- Logo del club -->
                 @if($jugador->club && $jugador->club->logo)
-                    <img src="{{ asset('images/'. $jugador->club->logo) }}" alt="" style="width: 22mm; height: 22mm; object-fit: contain; display: block; margin: 0 auto 2mm auto;">
+                @php
+                            $logoClubUrl = str_starts_with($jugador->club->logo, 'logos/') 
+                                ? asset('storage/' . $jugador->club->logo) 
+                                : asset('images/' . $jugador->club->logo);
+                        @endphp
+                        <img src="{{ $logoClubUrl }}" alt="" style="width: 20mm; height: 22mm; object-fit: cover; display: block; position: relative; left: 10px;">
                     <h5 style="font-size: 5px; font-weight: bold; text-transform: uppercase; color: #212529;">Valido solo para el año {{ date('Y') }}</h5>
                 @else
                     <div style="width: 12mm; height: 12mm; background: #f8f9fa; border: 0.2mm solid #e9ecef; color: #6c757d; font-weight: bold; font-size: 5pt; text-align: center; line-height: 12mm; margin: 0 auto 2mm auto;">FS</div>

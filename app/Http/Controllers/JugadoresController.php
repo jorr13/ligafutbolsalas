@@ -87,17 +87,17 @@ class JugadoresController extends Controller
 
         // Procesar foto carnet
         if ($request->hasFile('foto_carnet')) {
-            $fotoCarnetPath = Storage::disk('images')->putFile('jugadores/fotos_carnet', $request->file('foto_carnet'));
+            $fotoCarnetPath = Storage::disk('storage')->putFile('jugadores/fotos_carnet', $request->file('foto_carnet'));
         }
 
         // Procesar foto cédula
         if ($request->hasFile('foto_cedula')) {
-            $fotoCedulaPath = Storage::disk('images')->putFile('jugadores/fotos_cedula', $request->file('foto_cedula'));
+            $fotoCedulaPath = Storage::disk('storage')->putFile('jugadores/fotos_cedula', $request->file('foto_cedula'));
         }
 
         // Procesar foto identificación
         if ($request->hasFile('foto_identificacion')) {
-            $fotoIdentificacionPath = Storage::disk('images')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
+            $fotoIdentificacionPath = Storage::disk('storage')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
         }
         
         $createJugador = Jugadores::create([
@@ -230,28 +230,28 @@ class JugadoresController extends Controller
         // Procesar foto carnet
         if ($request->hasFile('foto_carnet')) {
             // Eliminar archivo anterior si existe
-            if ($jugador->foto_carnet && Storage::disk('images')->exists($jugador->foto_carnet)) {
-                Storage::disk('images')->delete($jugador->foto_carnet);
+            if ($jugador->foto_carnet && Storage::disk('storage')->exists($jugador->foto_carnet)) {
+                Storage::disk('storage')->delete($jugador->foto_carnet);
             }
-            $fotoCarnetPath = Storage::disk('images')->putFile('jugadores/fotos_carnet', $request->file('foto_carnet'));
+            $fotoCarnetPath = Storage::disk('storage')->putFile('jugadores/fotos_carnet', $request->file('foto_carnet'));
         }
 
         // Procesar foto cédula
         if ($request->hasFile('foto_cedula')) {
             // Eliminar archivo anterior si existe
-            if ($jugador->foto_cedula && Storage::disk('images')->exists($jugador->foto_cedula)) {
-                Storage::disk('images')->delete($jugador->foto_cedula);
+            if ($jugador->foto_cedula && Storage::disk('storage')->exists($jugador->foto_cedula)) {
+                Storage::disk('storage')->delete($jugador->foto_cedula);
             }
-            $fotoCedulaPath = Storage::disk('images')->putFile('jugadores/fotos_cedula', $request->file('foto_cedula'));
+            $fotoCedulaPath = Storage::disk('storage')->putFile('jugadores/fotos_cedula', $request->file('foto_cedula'));
         }
 
         // Procesar foto identificación
         if ($request->hasFile('foto_identificacion')) {
             // Eliminar archivo anterior si existe
-            if ($jugador->foto_identificacion && Storage::disk('images')->exists($jugador->foto_identificacion)) {
-                Storage::disk('images')->delete($jugador->foto_identificacion);
+            if ($jugador->foto_identificacion && Storage::disk('storage')->exists($jugador->foto_identificacion)) {
+                Storage::disk('storage')->delete($jugador->foto_identificacion);
             }
-            $fotoIdentificacionPath = Storage::disk('images')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
+            $fotoIdentificacionPath = Storage::disk('storage')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
         }
 
         $jugador->update([
@@ -306,16 +306,16 @@ class JugadoresController extends Controller
         }
         
         // Eliminar archivos asociados
-        if ($jugador->foto_carnet && Storage::disk('images')->exists($jugador->foto_carnet)) {
-            Storage::disk('images')->delete($jugador->foto_carnet);
+        if ($jugador->foto_carnet && Storage::disk('storage')->exists($jugador->foto_carnet)) {
+            Storage::disk('storage')->delete($jugador->foto_carnet);
         }
         
-        if ($jugador->foto_cedula && Storage::disk('images')->exists($jugador->foto_cedula)) {
-            Storage::disk('images')->delete($jugador->foto_cedula);
+        if ($jugador->foto_cedula && Storage::disk('storage')->exists($jugador->foto_cedula)) {
+            Storage::disk('storage')->delete($jugador->foto_cedula);
         }
         
-        if ($jugador->foto_identificacion && Storage::disk('images')->exists($jugador->foto_identificacion)) {
-            Storage::disk('images')->delete($jugador->foto_identificacion);
+        if ($jugador->foto_identificacion && Storage::disk('storage')->exists($jugador->foto_identificacion)) {
+            Storage::disk('storage')->delete($jugador->foto_identificacion);
         }
         
         $jugador->delete();

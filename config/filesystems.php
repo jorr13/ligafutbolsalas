@@ -54,6 +54,15 @@ return [
             'url' => env('APP_URL').'/images',
             'visibility' => 'public',
         ],
+        
+        'storage' => [
+            'driver' => 'local',
+            'root' => public_path('storage'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+        
         //esto se debe comentar antes de correr cualquier comando artisan
         // 'asset' => [
         //     'driver' => 'local',
@@ -87,7 +96,7 @@ return [
     */
 
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        // public_path('storage') => storage_path('app/public'), // Deshabilitado para usar public/storage como carpeta real
     ],
 
 ];

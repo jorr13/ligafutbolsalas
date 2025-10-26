@@ -72,19 +72,19 @@ class EntrenadoresController extends Controller
 
         // Manejar foto_carnet
         if ($request->hasFile('foto_carnet')) {
-            $fotoCarnetPath = Storage::disk('images')->putFile('entrenadores/fotos_carnet', $request->file('foto_carnet'));
+            $fotoCarnetPath = Storage::disk('storage')->putFile('entrenadores/fotos_carnet', $request->file('foto_carnet'));
             $entrenadorData['foto_carnet'] = $fotoCarnetPath;
         }
 
         // Manejar foto_cedula
         if ($request->hasFile('foto_cedula')) {
-            $fotoCedulaPath = Storage::disk('images')->putFile('entrenadores/fotos_cedula', $request->file('foto_cedula'));
+            $fotoCedulaPath = Storage::disk('storage')->putFile('entrenadores/fotos_cedula', $request->file('foto_cedula'));
             $entrenadorData['foto_cedula'] = $fotoCedulaPath;
         }
 
         // Manejar archivo_cv
         if ($request->hasFile('archivo_cv')) {
-            $archivoCvPath = Storage::disk('images')->putFile('entrenadores/archivos_cv', $request->file('archivo_cv'));
+            $archivoCvPath = Storage::disk('storage')->putFile('entrenadores/archivos_cv', $request->file('archivo_cv'));
             $entrenadorData['archivo_cv'] = $archivoCvPath;
         }
 
@@ -147,30 +147,30 @@ class EntrenadoresController extends Controller
         // Manejar foto_carnet
         if ($request->hasFile('foto_carnet')) {
             // Eliminar archivo anterior si existe
-            if ($entrenador->foto_carnet && Storage::disk('images')->exists($entrenador->foto_carnet)) {
-                Storage::disk('images')->delete($entrenador->foto_carnet);
+            if ($entrenador->foto_carnet && Storage::disk('storage')->exists($entrenador->foto_carnet)) {
+                Storage::disk('storage')->delete($entrenador->foto_carnet);
             }
-            $fotoCarnetPath = Storage::disk('images')->putFile('entrenadores/fotos_carnet', $request->file('foto_carnet'));
+            $fotoCarnetPath = Storage::disk('storage')->putFile('entrenadores/fotos_carnet', $request->file('foto_carnet'));
             $entrenadorData['foto_carnet'] = $fotoCarnetPath;
         }
 
         // Manejar foto_cedula
         if ($request->hasFile('foto_cedula')) {
             // Eliminar archivo anterior si existe
-            if ($entrenador->foto_cedula && Storage::disk('images')->exists($entrenador->foto_cedula)) {
-                Storage::disk('images')->delete($entrenador->foto_cedula);
+            if ($entrenador->foto_cedula && Storage::disk('storage')->exists($entrenador->foto_cedula)) {
+                Storage::disk('storage')->delete($entrenador->foto_cedula);
             }
-            $fotoCedulaPath = Storage::disk('images')->putFile('entrenadores/fotos_cedula', $request->file('foto_cedula'));
+            $fotoCedulaPath = Storage::disk('storage')->putFile('entrenadores/fotos_cedula', $request->file('foto_cedula'));
             $entrenadorData['foto_cedula'] = $fotoCedulaPath;
         }
 
         // Manejar archivo_cv
         if ($request->hasFile('archivo_cv')) {
             // Eliminar archivo anterior si existe
-            if ($entrenador->archivo_cv && Storage::disk('images')->exists($entrenador->archivo_cv)) {
-                Storage::disk('images')->delete($entrenador->archivo_cv);
+            if ($entrenador->archivo_cv && Storage::disk('storage')->exists($entrenador->archivo_cv)) {
+                Storage::disk('storage')->delete($entrenador->archivo_cv);
             }
-            $archivoCvPath = Storage::disk('images')->putFile('entrenadores/archivos_cv', $request->file('archivo_cv'));
+            $archivoCvPath = Storage::disk('storage')->putFile('entrenadores/archivos_cv', $request->file('archivo_cv'));
             $entrenadorData['archivo_cv'] = $archivoCvPath;
         }
 
@@ -191,14 +191,14 @@ class EntrenadoresController extends Controller
         $user = User::where('id', $entrenador->user_id)->first();
         
         // Eliminar archivos asociados
-        if ($entrenador->foto_carnet && Storage::disk('images')->exists($entrenador->foto_carnet)) {
-            Storage::disk('images')->delete($entrenador->foto_carnet);
+        if ($entrenador->foto_carnet && Storage::disk('storage')->exists($entrenador->foto_carnet)) {
+            Storage::disk('storage')->delete($entrenador->foto_carnet);
         }
-        if ($entrenador->foto_cedula && Storage::disk('images')->exists($entrenador->foto_cedula)) {
-            Storage::disk('images')->delete($entrenador->foto_cedula);
+        if ($entrenador->foto_cedula && Storage::disk('storage')->exists($entrenador->foto_cedula)) {
+            Storage::disk('storage')->delete($entrenador->foto_cedula);
         }
-        if ($entrenador->archivo_cv && Storage::disk('images')->exists($entrenador->archivo_cv)) {
-            Storage::disk('images')->delete($entrenador->archivo_cv);
+        if ($entrenador->archivo_cv && Storage::disk('storage')->exists($entrenador->archivo_cv)) {
+            Storage::disk('storage')->delete($entrenador->archivo_cv);
         }
         
         $entrenador->delete();
