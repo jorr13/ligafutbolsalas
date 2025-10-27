@@ -16,7 +16,7 @@
             <!-- Form Card -->
             <div class="card border-0 shadow-lg form-card">
                 <div class="card-body p-5">
-                    <form action="{{ route('perfil.update') }}" method="POST" class="edit-form">
+                    <form action="{{ route('perfil.update') }}" method="POST" enctype="multipart/form-data" class="edit-form">
                         @csrf
                         @method('PUT')
                         
@@ -182,6 +182,124 @@
                                     <strong>{{ $message }}</strong>
                                 </div>
                             @enderror
+                        </div>
+                        @endif
+
+                        <!-- Documentos (solo para entrenadores y árbitros) -->
+                        @if($datosAdicionales && ($user->rol_id == 'entrenador' || $user->rol_id == 'arbitro'))
+                        <div class="section-header mb-4 mt-5">
+                            <h5 class="fw-bold text-primary">
+                                <i class="fas fa-folder-open me-2"></i>
+                                {{ __('Documentos') }}
+                            </h5>
+                            <p class="text-muted small mb-0">{{ __('Puedes actualizar tus documentos si lo deseas') }}</p>
+                        </div>
+
+                        <div class="row">
+                            <!-- Foto de Carnet -->
+                            <div class="col-md-4 mb-4">
+                                <label for="foto_carnet" class="form-label fw-semibold">
+                                    <i class="fas fa-camera me-2 text-primary"></i>
+                                    {{ __('Foto de Carnet') }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </span>
+                                    <input type="file" 
+                                           class="form-control border-start-0 @error('foto_carnet') is-invalid @enderror" 
+                                           id="foto_carnet" 
+                                           name="foto_carnet" 
+                                           accept="image/jpeg,image/png,image/jpg,image/gif">
+                                </div>
+                                @if($datosAdicionales->foto_carnet)
+                                    @php
+                                        $fotoCarnetUrl = str_starts_with($datosAdicionales->foto_carnet, 'entrenadores/') || str_starts_with($datosAdicionales->foto_carnet, 'arbitros/')
+                                            ? asset('storage/' . $datosAdicionales->foto_carnet)
+                                            : asset('images/' . $datosAdicionales->foto_carnet);
+                                    @endphp
+                                    <small class="text-muted mt-2 d-block">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <a href="{{ $fotoCarnetUrl }}" target="_blank">{{ __('Ver archivo actual') }}</a>
+                                    </small>
+                                @endif
+                                @error('foto_carnet')
+                                    <div class="invalid-feedback d-block mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        <strong>{{ $message }}</strong>
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <!-- Foto de Cédula -->
+                            <div class="col-md-4 mb-4">
+                                <label for="foto_cedula" class="form-label fw-semibold">
+                                    <i class="fas fa-id-badge me-2 text-primary"></i>
+                                    {{ __('Foto de Cédula') }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </span>
+                                    <input type="file" 
+                                           class="form-control border-start-0 @error('foto_cedula') is-invalid @enderror" 
+                                           id="foto_cedula" 
+                                           name="foto_cedula" 
+                                           accept="image/jpeg,image/png,image/jpg,image/gif">
+                                </div>
+                                @if($datosAdicionales->foto_cedula)
+                                    @php
+                                        $fotoCedulaUrl = str_starts_with($datosAdicionales->foto_cedula, 'entrenadores/') || str_starts_with($datosAdicionales->foto_cedula, 'arbitros/')
+                                            ? asset('storage/' . $datosAdicionales->foto_cedula)
+                                            : asset('images/' . $datosAdicionales->foto_cedula);
+                                    @endphp
+                                    <small class="text-muted mt-2 d-block">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <a href="{{ $fotoCedulaUrl }}" target="_blank">{{ __('Ver archivo actual') }}</a>
+                                    </small>
+                                @endif
+                                @error('foto_cedula')
+                                    <div class="invalid-feedback d-block mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        <strong>{{ $message }}</strong>
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <!-- Archivo CV -->
+                            <div class="col-md-4 mb-4">
+                                <label for="archivo_cv" class="form-label fw-semibold">
+                                    <i class="fas fa-file-alt me-2 text-primary"></i>
+                                    {{ __('Currículum Vitae') }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-file-pdf text-muted"></i>
+                                    </span>
+                                    <input type="file" 
+                                           class="form-control border-start-0 @error('archivo_cv') is-invalid @enderror" 
+                                           id="archivo_cv" 
+                                           name="archivo_cv" 
+                                           accept=".pdf,.doc,.docx">
+                                </div>
+                                @if($datosAdicionales->archivo_cv)
+                                    @php
+                                        $archivoCvUrl = str_starts_with($datosAdicionales->archivo_cv, 'entrenadores/') || str_starts_with($datosAdicionales->archivo_cv, 'arbitros/')
+                                            ? asset('storage/' . $datosAdicionales->archivo_cv)
+                                            : asset('images/' . $datosAdicionales->archivo_cv);
+                                    @endphp
+                                    <small class="text-muted mt-2 d-block">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <a href="{{ $archivoCvUrl }}" target="_blank">{{ __('Ver archivo actual') }}</a>
+                                    </small>
+                                @endif
+                                @error('archivo_cv')
+                                    <div class="invalid-feedback d-block mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        <strong>{{ $message }}</strong>
+                                    </div>
+                                @enderror
+                            </div>
                         </div>
                         @endif
 

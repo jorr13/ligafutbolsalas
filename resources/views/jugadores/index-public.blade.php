@@ -284,6 +284,11 @@
                                    title="Transferir jugador">
                                     <i class="fas fa-exchange-alt me-1"></i><span class="d-none d-md-inline">Transferir</span>
                                 </a>
+                                <a href="{{ route('jugadores.edit', $jugador->id) }}" 
+                                   class="btn btn-outline-primary btn-sm"
+                                   title="Editar jugador">
+                                    <i class="fas fa-edit me-1"></i><span class="d-none d-md-inline">Editar</span>
+                                </a>
                                 <a href="{{ route('jugadores.carnet.preview', $jugador->id) }}" 
                                    class="btn btn-outline-success btn-sm"
                                    title="Ver carnet del jugador">

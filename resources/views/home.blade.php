@@ -26,9 +26,9 @@
                     </div>
                     
                     <div class="row g-3 mt-4"  >
-                        <div class="col-6 col-md-3">
+                        <div class="col-12 col-md-4">
                             <div class="bg-white bg-opacity-20 rounded p-3">
-                                <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center" style='justify-content: center;'>
                                                                          <i class="fas fa-user-circle text-dark fs-4 me-2"></i>
                                      <div>
                                          <h5 class="text-dark mb-0 fw-bold">{{ auth()->user()->name }}</h5>
@@ -37,9 +37,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="col-12 col-md-4">
                             <div class="bg-white bg-opacity-20 rounded p-3">
-                                <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center" style='justify-content: center;'>
                                                                          <i class="fas fa-calendar-day text-dark fs-4 me-2"></i>
                                      <div>
                                          <h5 class="text-dark mb-0 fw-bold">{{ now()->format('d/m/Y') }}</h5>
@@ -51,20 +51,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="col-12 col-md-4">
                             <div class="bg-white bg-opacity-20 rounded p-3">
-                                <div class="d-flex align-items-center">
-                                                                         <i class="fas fa-clock text-dark fs-4 me-2"></i>
-                                     <div>
-                                         <h5 class="text-dark mb-0 fw-bold">{{ \Carbon\Carbon::now()->format('g:i A'); }}</h5>
-                                         <small class="text-dark">Hora actual</small>
-                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="bg-white bg-opacity-20 rounded p-3">
-                                <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center" style='justify-content: center;'>
                                                                          <i class="fas fa-server text-dark fs-4 me-2"></i>
                                      <div>
                                          <h5 class="text-dark mb-0 fw-bold">Sistema</h5>
