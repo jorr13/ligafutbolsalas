@@ -319,7 +319,7 @@ class JugadoresController extends Controller
         
         $jugador->delete();
     
-        return redirect()->route('jugadores.index')->with('success', 'Jugador eliminado exitosamente.');
+        return redirect()->route('entrenador.clubes.jugadores', $jugador->club_id)->with('success', 'Jugador eliminado exitosamente.');
     }
 
     /**

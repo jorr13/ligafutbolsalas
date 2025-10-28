@@ -484,6 +484,11 @@
         </div>
     </div>
 </div>
+<!-- Formulario oculto para acciones -->
+<form id="actionForm" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
 <script>
     function getJugador(id){
         // Mostrar spinner y ocultar contenido
@@ -629,7 +634,15 @@
             }
         }, 100);
     }
-    
+        // Función para confirmar acciones
+        function confirmAction(url, message) {
+            console.log(url, message);
+            if (confirm(message)) {
+                const form = document.getElementById('actionForm');
+                form.action = url;
+                form.submit();
+            }
+        }
     // Event listeners para búsqueda
     $('#searchInput').on('keyup', filterJugadores);
     
@@ -658,6 +671,7 @@
          // Cerrar modal usando Bootstrap
          $('#staticBackdrop').modal('hide');
      });
+
 
     // Tooltips para los botones
     $('[title]').tooltip();
