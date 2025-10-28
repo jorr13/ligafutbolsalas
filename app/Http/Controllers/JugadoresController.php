@@ -150,14 +150,12 @@ class JugadoresController extends Controller
     public function edit(Jugadores $jugadores, $id)
     {
         $jugador = Jugadores::where('id', $id)->first();
-        
         // Validar que el jugador existe y pertenece al entrenador
         if (!$jugador) {
             return redirect()->route('jugadores.index')
                 ->with('error', 'Jugador no encontrado.');
         }
         
-        //dd($jugadores);
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
         
         // Validar que el entrenador tenga un club asignado
@@ -167,11 +165,12 @@ class JugadoresController extends Controller
         }
         
         // Validar que el jugador pertenece al club del entrenador
-        if ($jugador->club_id !== $clubs->id) {
-            return redirect()->route('jugadores.index')
-                ->with('error', 'No tienes permisos para editar este jugador.');
+        if(auth()->user()->rol_id != 'administrador'){
+            if ($jugador->club_id !== $clubs->id) {
+                return redirect()->route('jugadores.index')
+                    ->with('error', 'No tienes permisos para editar este jugador.');
+            }
         }
-        
         $categorias = Categorias::getCategoriasPorClub($clubs->id);
         return view('jugadores.edit', compact('jugador', 'categorias'));
     }

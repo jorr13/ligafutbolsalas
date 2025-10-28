@@ -676,7 +676,7 @@
 
                                 <!-- Action Buttons -->
                                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                                    <a href="{{ route('jugadores.index') }}" class="btn btn-outline-secondary btn-lg">
+                                    <a href="{{ route('entrenador.clubes.jugadores', $jugador->club_id) }}" class="btn btn-outline-secondary btn-lg">
                                         <i class="fas fa-arrow-left me-2"></i>
                                         {{ __('Cancelar') }}
                                     </a>

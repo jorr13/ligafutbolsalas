@@ -103,8 +103,9 @@
 
                     <!-- Botones de acción -->
                     <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                        <a href="{{ route('jugadores.index') }}" class="btn btn-outline-secondary btn-lg">
-                            <i class="fas fa-arrow-left me-2"></i>Cancelar
+                        <a href="{{ route('entrenador.clubes.jugadores', $jugador->club_id) }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            {{ __('Cancelar') }}
                         </a>
                         
                         <button type="submit" class="btn btn-primary btn-lg px-4">

@@ -284,7 +284,7 @@
                                    title="Transferir jugador">
                                     <i class="fas fa-exchange-alt me-1"></i><span class="d-none d-md-inline">Transferir</span>
                                 </a>
-                                <a href="{{ route('jugadores.edit', $jugador->id) }}" 
+                                <a href="{{ route('admin.jugadores.edit', $jugador->id) }}" 
                                    class="btn btn-outline-primary btn-sm"
                                    title="Editar jugador">
                                     <i class="fas fa-edit me-1"></i><span class="d-none d-md-inline">Editar</span>
@@ -299,6 +299,12 @@
                                    title="Ver historial">
                                     <i class="fas fa-history me-1"></i><span class="d-none d-md-inline">Historial</span>
                                 </a>
+                                <button type="button" 
+                                    class="btn btn-outline-danger btn-sm"
+                                    onclick="confirmAction('{{ route('jugadores.destroy', $jugador->id) }}', '¿Estás seguro de Eliminar este jugador?')"
+                                    title="Eliminar">
+                                    <i class="fas fa-times me-1"></i><span class="d-none d-md-inline">Eliminar</span>
+                                </button>
                                 @endif
                                 <button type="button" class="btn btn-outline-primary btn-sm" 
                                         data-bs-toggle="modal" data-bs-target="#staticBackdrop" 

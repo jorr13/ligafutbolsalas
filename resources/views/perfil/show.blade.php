@@ -53,13 +53,7 @@
                                 </div>
                             </div>
 
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-calendar text-primary me-2"></i>
-                                    {{ __('Fecha de Registro') }}
-                                </div>
-                                <div class="info-value">{{ $user->created_at->format('d/m/Y') }}</div>
-                            </div>
+         
                         </div>
 
                         <!-- Información Adicional (si aplica) -->

@@ -466,10 +466,6 @@
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-                                                                         <img src="{{ $entrenador->foto_carnet ? asset('images/' . $entrenador->foto_carnet) : '/images/default-avatar.png' }}" 
-                                         alt="Foto de {{ $entrenador->nombre }}" 
-                                         class="rounded-circle border-2 border-light shadow-sm entrenador-avatar" 
-                                         style="width: 45px; height: 45px; object-fit: cover;">
                                     <div class="position-absolute bottom-0 end-0 bg-{{ $entrenador->estatus == 'activo' ? 'success' : 'secondary' }} rounded-circle border-2 border-white" 
                                          style="width: 12px; height: 12px;"></div>
                                 </div>

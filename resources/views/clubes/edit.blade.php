@@ -21,7 +21,12 @@
                         <div class="card-body p-4 text-center">
                             <div class="club-image-container mb-3">
                                 @if($clubes->logo)
-                                                                                                             <img src="{{ asset('images/' . $clubes->logo) }}" 
+                                @php
+                                $logoUrl = str_starts_with($clubes->logo, 'logos/') 
+                                    ? asset('storage/' . $clubes->logo) 
+                                    : asset('images/' . $clubes->logo);
+                            @endphp
+                                       <img src="{{ $logoUrl }}" 
                                          alt="Logo de {{ $clubes->logo }}" 
                                          class="club-logo img-fluid rounded"
                                          id="currentLogo">

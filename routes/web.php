@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('jugadores/{id}/transferir', [App\Http\Controllers\TransferenciaController::class, 'showTransferForm'])->name('admin.jugadores.transferir');
         Route::post('jugadores/{id}/transferir', [App\Http\Controllers\TransferenciaController::class, 'transferirJugador'])->name('admin.jugadores.transferir.store');
         Route::get('jugadores/{id}/historial', [App\Http\Controllers\TransferenciaController::class, 'mostrarHistorial'])->name('admin.jugadores.historial');
+        Route::get('jugadores/{id}/edit', [App\Http\Controllers\JugadoresController::class, 'edit'])->name('admin.jugadores.edit');
         
         // Rutas para sistema de carnets
         Route::get('jugadores/{id}/carnet', [App\Http\Controllers\CarnetController::class, 'generar'])->name('jugadores.carnet');
