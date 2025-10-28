@@ -299,11 +299,12 @@ class JugadoresController extends Controller
         
         // Validar permisos: que el jugador pertenezca al club del entrenador
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        if (!$clubs || $jugador->club_id !== $clubs->id) {
-            return redirect()->route('jugadores.index')
-                ->with('error', 'No tienes permisos para eliminar este jugador.');
+        if(auth()->user()->rol_id != 'administrador'){
+            if (!$clubs || $jugador->club_id !== $clubs->id) {
+                return redirect()->route('jugadores.index')
+                    ->with('error', 'No tienes permisos para eliminar este jugador.');
+            }
         }
-        
         // Eliminar archivos asociados
         if ($jugador->foto_carnet && Storage::disk('storage')->exists($jugador->foto_carnet)) {
             Storage::disk('storage')->delete($jugador->foto_carnet);
