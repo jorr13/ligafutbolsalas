@@ -21,15 +21,15 @@
                             <p><strong>Club:</strong> {{ $jugador->club->nombre ?? 'N/A' }}</p>
                             <p><strong>Categoría:</strong> {{ $jugador->categoria->nombre ?? 'N/A' }}</p>
                             <p><strong>Nivel:</strong> 
-                                <span class="badge badge-{{ $jugador->nivel == 'elite' ? 'warning' : 'info' }}">
+                                <span class="btn btn-info">
                                     {{ ucfirst($jugador->nivel ?? 'iniciante') }}
                                 </span>
                             </p>
                         </div>
                         <div class="col-md-6">
                             <h6><strong>Estado:</strong></h6>
-                            <span class="badge badge-{{ $jugador->status == 'Activo' ? 'success' : 'warning' }}">
-                                {{ ucfirst($jugador->status ?? 'activo') }}
+                            <span class="btn btn-success">
+                                {{ ucfirst($jugador->status ?? 'Activo') }}
                             </span>
                             
                             @if($jugador->observacion)

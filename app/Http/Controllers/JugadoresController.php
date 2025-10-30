@@ -222,11 +222,12 @@ class JugadoresController extends Controller
         ]);
 
         // Procesar archivos de fotos
+        // Se inicializan con los valores actuales para preservarlos si no se envía una nueva imagen
         $fotoCarnetPath = $jugador->foto_carnet;
         $fotoCedulaPath = $jugador->foto_cedula;
         $fotoIdentificacionPath = $jugador->foto_identificacion;
 
-        // Procesar foto carnet
+        // Procesar foto carnet - Solo se actualiza si se envía un nuevo archivo
         if ($request->hasFile('foto_carnet')) {
             // Eliminar archivo anterior si existe
             if ($jugador->foto_carnet && Storage::disk('storage')->exists($jugador->foto_carnet)) {
@@ -235,7 +236,7 @@ class JugadoresController extends Controller
             $fotoCarnetPath = Storage::disk('storage')->putFile('jugadores/fotos_carnet', $request->file('foto_carnet'));
         }
 
-        // Procesar foto cédula
+        // Procesar foto cédula - Solo se actualiza si se envía un nuevo archivo
         if ($request->hasFile('foto_cedula')) {
             // Eliminar archivo anterior si existe
             if ($jugador->foto_cedula && Storage::disk('storage')->exists($jugador->foto_cedula)) {
@@ -244,7 +245,7 @@ class JugadoresController extends Controller
             $fotoCedulaPath = Storage::disk('storage')->putFile('jugadores/fotos_cedula', $request->file('foto_cedula'));
         }
 
-        // Procesar foto identificación
+        // Procesar foto identificación - Solo se actualiza si se envía un nuevo archivo
         if ($request->hasFile('foto_identificacion')) {
             // Eliminar archivo anterior si existe
             if ($jugador->foto_identificacion && Storage::disk('storage')->exists($jugador->foto_identificacion)) {
@@ -260,7 +261,6 @@ class JugadoresController extends Controller
             'direccion' => $request->direccion,
             'foto_carnet' => $fotoCarnetPath,
             'foto_cedula' => $fotoCedulaPath,
-            'status' => 'pendiente',
             'email' => $request->email,
             'numero_dorsal' => $request->numero_dorsal,
             'edad'  => $request->edad,
@@ -276,9 +276,9 @@ class JugadoresController extends Controller
         ]);
     
         // Regenerar QR Code si es necesario
-        $jugador->generarQRCode();
+        //$jugador->generarQRCode();
     
-        return redirect()->route('jugadores.index')->with('success', 'Jugador editado exitosamente.');
+        return redirect()->route('entrenador.clubes.jugadores', $jugador->club_id)->with('success', 'Jugador editado exitosamente.');
     }
 
     /**
