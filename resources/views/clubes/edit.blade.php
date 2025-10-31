@@ -88,6 +88,67 @@
                                         </div>
                                     @enderror
                         </div>
+
+                                <!-- Logo del Club -->
+                                <div class="form-group mb-4">
+                                    <label for="logo" class="form-label fw-semibold">
+                                        <i class="fas fa-image me-2 text-primary"></i>
+                                        {{ __('Logo del Club') }}
+                                        <small class="text-muted d-block mt-1">{{ __('Opcional: Deja en blanco para mantener el logo actual') }}</small>
+                                    </label>
+                                    <div class="file-upload-container">
+                                        <div class="file-upload-area" id="fileUploadArea" style="display: none;">
+                                            <div class="file-upload-content">
+                                                <i class="fas fa-cloud-upload-alt text-primary fs-1 mb-3"></i>
+                                                <h5 class="text-muted mb-2">{{ __('Arrastra tu logo aquí') }}</h5>
+                                                <p class="text-muted small mb-3">
+                                                    <span class="d-none d-md-inline">{{ __('o haz clic para seleccionar') }}</span>
+                                                    <span class="d-md-none">{{ __('Toca para seleccionar archivo') }}</span>
+                                                </p>
+                                                <button type="button" class="btn btn-outline-primary btn-sm" id="selectFileBtn">
+                                                    <i class="fas fa-folder-open me-2"></i>
+                                                    {{ __('Seleccionar Archivo') }}
+                                                </button>
+                                            </div>
+                                            <input type="file" 
+                                                   id="logo" 
+                                                   name="logo" 
+                                                   accept="image/*" 
+                                                   class="file-input"
+                                                   style="display: none;">
+                                        </div>
+                                        <div class="file-preview" id="filePreview">
+                                            @if($clubes->logo)
+                                            @php
+                                            $logoUrl = str_starts_with($clubes->logo, 'logos/') 
+                                                ? asset('storage/' . $clubes->logo) 
+                                                : asset('images/' . $clubes->logo);
+                                            @endphp
+                                            <img id="previewImage" src="{{ $logoUrl }}" alt="Logo actual" class="img-fluid rounded">
+                                            @else
+                                            <div class="no-image-placeholder">
+                                                <i class="fas fa-image text-muted fs-1"></i>
+                                                <p class="text-muted mt-2">{{ __('Sin logo') }}</p>
+                                            </div>
+                                            <img id="previewImage" src="" alt="Preview" class="img-fluid rounded" style="display: none;">
+                                            @endif
+                                            <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="changeFileBtn">
+                                                <i class="fas fa-edit me-1"></i>
+                                                {{ __('Cambiar Logo') }}
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeFileBtn" style="display: none;">
+                                                <i class="fas fa-trash me-1"></i>
+                                                {{ __('Remover Nuevo') }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    @error('logo')
+                                        <div class="invalid-feedback d-block mt-2">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
+                                </div>
                         
                                 <!-- Localidad -->
                                 <div class="form-group mb-4">
@@ -317,6 +378,54 @@
     font-size: 0.9rem;
 }
 
+/* File Upload Styles */
+.file-upload-container {
+    position: relative;
+}
+
+.file-upload-area {
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+.file-upload-area:hover {
+    border-color: var(--primary-color);
+    background: rgba(143, 0, 0, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(143, 0, 0, 0.1);
+}
+
+.file-upload-area.dragover {
+    border-color: var(--primary-color);
+    background: rgba(143, 0, 0, 0.1);
+    transform: scale(1.02);
+}
+
+.file-upload-content {
+    pointer-events: auto;
+}
+
+.file-preview {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.file-preview img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
 /* Button Styles */
 .btn {
     border-radius: 12px;
@@ -344,6 +453,29 @@
 .btn-outline-secondary:hover {
     background: #f8fafc;
     border-color: var(--text-light);
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.btn-outline-danger {
+    border: 2px solid #fed7d7;
+    color: #e53e3e;
+}
+
+.btn-outline-danger:hover {
+    background: #e53e3e;
+    color: var(--white);
     transform: translateY(-2px);
 }
 
@@ -446,6 +578,18 @@
     .club-logo {
         max-height: 150px;
     }
+    
+    .file-upload-area {
+        padding: 1.5rem;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .file-upload-content {
+        width: 100%;
+    }
 }
 
 @media (max-width: 576px) {
@@ -485,6 +629,19 @@
     .no-image-placeholder {
         height: 120px;
     }
+    
+    .file-upload-area {
+        padding: 1rem;
+        min-height: 100px;
+    }
+    
+    .file-upload-content h5 {
+        font-size: 1rem;
+    }
+    
+    .file-upload-content p {
+        font-size: 0.8rem;
+    }
 }
 
 /* Staggered animation for cards */
@@ -499,6 +656,131 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // File upload functionality
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const fileInput = document.getElementById('logo');
+    const selectFileBtn = document.getElementById('selectFileBtn');
+    const changeFileBtn = document.getElementById('changeFileBtn');
+    const filePreview = document.getElementById('filePreview');
+    const previewImage = document.getElementById('previewImage');
+    const removeFileBtn = document.getElementById('removeFileBtn');
+    const noImagePlaceholder = filePreview.querySelector('.no-image-placeholder');
+
+    // Select file button
+    if (selectFileBtn) {
+        selectFileBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            fileInput.click();
+        });
+    }
+    
+    // Change file button (to replace existing logo)
+    if (changeFileBtn) {
+        changeFileBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            fileUploadArea.style.display = 'block';
+            fileInput.click();
+        });
+    }
+    
+    // Make entire upload area clickable
+    if (fileUploadArea) {
+        fileUploadArea.addEventListener('click', function(e) {
+            // Don't trigger if clicking on the button (it has its own handler)
+            if (e.target !== selectFileBtn && !selectFileBtn?.contains(e.target)) {
+                fileInput.click();
+            }
+        });
+    }
+
+    // File input change
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            handleFileSelect(this.files[0]);
+        });
+    }
+
+    // Drag and drop functionality
+    if (fileUploadArea) {
+        fileUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+    }
+
+    // Handle file selection
+    function handleFileSelect(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Hide placeholder if exists
+                if (noImagePlaceholder) {
+                    noImagePlaceholder.style.display = 'none';
+                }
+                // Show preview image
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                // Hide upload area, show preview and remove button
+                if (fileUploadArea) {
+                    fileUploadArea.style.display = 'none';
+                }
+                if (filePreview) {
+                    filePreview.style.display = 'block';
+                }
+                if (changeFileBtn) {
+                    changeFileBtn.style.display = 'inline-block';
+                }
+                if (removeFileBtn) {
+                    removeFileBtn.style.display = 'inline-block';
+                }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert('Por favor selecciona un archivo de imagen válido.');
+        }
+    }
+
+    // Remove file
+    if (removeFileBtn) {
+        removeFileBtn.addEventListener('click', function() {
+            fileInput.value = '';
+            const originalSrc = previewImage.dataset.originalSrc || '';
+            
+            // Restore original image or show placeholder
+            if (originalSrc && originalSrc.trim() !== '') {
+                previewImage.src = originalSrc;
+                previewImage.style.display = 'block';
+                if (noImagePlaceholder) {
+                    noImagePlaceholder.style.display = 'none';
+                }
+            } else {
+                // No original image, show placeholder if exists
+                previewImage.style.display = 'none';
+                if (noImagePlaceholder) {
+                    noImagePlaceholder.style.display = 'block';
+                }
+            }
+            if (fileUploadArea) {
+                fileUploadArea.style.display = 'none';
+            }
+            removeFileBtn.style.display = 'none';
+        });
+    }
+    
     // Form submission with loading state
     const editForm = document.querySelector('.edit-form');
     const submitBtn = document.querySelector('.submit-btn');
@@ -533,6 +815,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
     
+    // Store original image source when page loads
+    if (previewImage) {
+        if (previewImage.src && previewImage.src.trim() !== '' && !previewImage.src.includes('data:')) {
+            previewImage.dataset.originalSrc = previewImage.src;
+        }
+        // If placeholder exists initially, ensure image is hidden
+        if (noImagePlaceholder && noImagePlaceholder.style.display !== 'none') {
+            if (previewImage) {
+                previewImage.style.display = 'none';
+            }
+        }
+    }
+    
     // Add touch feedback for mobile
     if ('ontouchstart' in window) {
         const buttons = document.querySelectorAll('.btn');
@@ -545,6 +840,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.transform = 'scale(1)';
             });
         });
+        
+        // Add touch feedback for file upload area
+        if (fileUploadArea) {
+            fileUploadArea.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+                this.style.background = 'rgba(143, 0, 0, 0.1)';
+            });
+            
+            fileUploadArea.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+                this.style.background = '#f8fafc';
+            });
+        }
     }
     
     // Add keyboard navigation

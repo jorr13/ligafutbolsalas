@@ -307,6 +307,7 @@
                                                 id="nivel" 
                                                 name="nivel">
                                             <option value="iniciante" {{ old('nivel', 'iniciante') == 'iniciante' ? 'selected' : '' }}>{{ __('Iniciante') }}</option>
+                                            <option value="formativo" {{ old('nivel', 'formativo') == 'formativo' ? 'selected' : '' }}>{{ __('Formativo') }}</option>
                                             <option value="elite" {{ old('nivel') == 'elite' ? 'selected' : '' }}>{{ __('Élite') }}</option>
                                         </select>
                                     </div>

@@ -506,10 +506,16 @@
                 $('#jugador-content').removeClass('d-none');
                 
                 // Actualizar título del modal
-                $('#staticBackdropLabel').html('<i class="fas fa-user-circle me-2"></i>Perfil del Jugador');
-                let miurl= '{{ asset('images/') }}';
+                $('#staticBackdropLabel').html('<i class="fas fa-user-circle me-2"></i>Perfil del Jugadorrrrrrr');
+                @php
+                    $fotoUrl = $jugador->foto_identificacion 
+                        ? (str_starts_with($jugador->foto_identificacion, 'jugadores/') 
+                            ? asset('storage/' . $jugador->foto_identificacion) 
+                            : asset('images/' . $jugador->foto_identificacion))
+                        : asset('/images/default-avatar.png');
+                @endphp
                 // Llenar datos del jugador
-                $('#jugador-foto').attr('src', miurl+'/'+response.data.foto_identificacion);
+                $('#jugador-foto').attr('src', '{{ $fotoUrl }}');
                 $('#jugador-nombre').text(response.data.nombre || 'Sin nombre');
                 $('#jugador-categoria').text(response.data.categoria_nombre || 'Sin categoría');
                 $('#jugador-cedula').text(response.data.cedula || 'No especificada');

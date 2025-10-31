@@ -329,7 +329,7 @@
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-primary text-white border-0">
                     <h5 class="modal-title fw-bold" id="staticBackdropLabel">
-                        <i class="fas fa-user-circle me-2"></i>Perfil del Jugador
+                        <i class="fas fa-user-circle me-2"></i>Perfil del Jugadorrrrrrrrrr
                     </h5>
                     <button type="button" class="btn-close btn-close-white cerrar-modal"  aria-label="Close"></button>
                 </div>

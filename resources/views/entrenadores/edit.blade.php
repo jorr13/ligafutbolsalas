@@ -153,6 +153,197 @@
                             @enderror
                         </div>
 
+                        <!-- Foto Carnet -->
+                        <div class="form-group mb-4">
+                            <label for="foto_carnet" class="form-label fw-semibold">
+                                <i class="fas fa-camera me-2 text-primary"></i>
+                                {{ __('Foto para Carnet') }}
+                                <small class="text-muted d-block mt-1">{{ __('Opcional: Deja en blanco para mantener la foto actual') }}</small>
+                            </label>
+                            @if($entrenadores->foto_carnet)
+                                <div class="mb-3">
+                                    <img src="{{ asset('storage/' . $entrenadores->foto_carnet) }}" 
+                                         alt="Foto actual" 
+                                         id="currentFotoCarnet"
+                                         class="img-thumbnail" 
+                                         style="max-width: 150px; max-height: 150px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                                    <p class="text-muted small mt-2">{{ __('Foto actual') }}</p>
+                                </div>
+                            @endif
+                            <div class="file-upload-container">
+                                <div class="file-upload-area" id="fotoCarnetUploadArea" style="display: {{ $entrenadores->foto_carnet ? 'none' : 'block' }};">
+                                    <div class="file-upload-content">
+                                        <i class="fas fa-cloud-upload-alt text-primary fs-1 mb-3"></i>
+                                        <h5 class="text-muted mb-2">{{ __('Arrastra tu foto aquí') }}</h5>
+                                        <p class="text-muted small mb-3">
+                                            <span class="d-none d-md-inline">{{ __('o haz clic para seleccionar') }}</span>
+                                            <span class="d-md-none">{{ __('Toca para seleccionar archivo') }}</span>
+                                        </p>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="selectFotoCarnetBtn">
+                                            <i class="fas fa-folder-open me-2"></i>
+                                            {{ __('Seleccionar Archivo') }}
+                                        </button>
+                                    </div>
+                                    <input type="file" 
+                                           id="foto_carnet" 
+                                           name="foto_carnet" 
+                                           accept="image/*" 
+                                           class="file-input"
+                                           style="display: none;">
+                                </div>
+                                <div class="file-preview" id="fotoCarnetPreview" style="display: none;">
+                                    <img id="fotoCarnetPreviewImage" src="" alt="Preview" class="img-fluid rounded">
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeFotoCarnetBtn">
+                                        <i class="fas fa-trash me-1"></i>
+                                        {{ __('Remover Nuevo') }}
+                                    </button>
+                                </div>
+                                @if($entrenadores->foto_carnet)
+                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="changeFotoCarnetBtn">
+                                    <i class="fas fa-edit me-1"></i>
+                                    {{ __('Cambiar Foto') }}
+                                </button>
+                                @endif
+                            </div>
+                            @error('foto_carnet')
+                                <div class="invalid-feedback d-block mt-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @enderror
+                        </div>
+
+                        <!-- Foto Cédula -->
+                        <div class="form-group mb-4">
+                            <label for="foto_cedula" class="form-label fw-semibold">
+                                <i class="fas fa-id-badge me-2 text-primary"></i>
+                                {{ __('Foto de Cédula') }}
+                                <small class="text-muted d-block mt-1">{{ __('Opcional: Deja en blanco para mantener la foto actual') }}</small>
+                            </label>
+                            @if($entrenadores->foto_cedula)
+                                <div class="mb-3">
+                                    <img src="{{ asset('storage/' . $entrenadores->foto_cedula) }}" 
+                                         alt="Foto actual" 
+                                         id="currentFotoCedula"
+                                         class="img-thumbnail" 
+                                         style="max-width: 150px; max-height: 150px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                                    <p class="text-muted small mt-2">{{ __('Foto actual') }}</p>
+                                </div>
+                            @endif
+                            <div class="file-upload-container">
+                                <div class="file-upload-area" id="fotoCedulaUploadArea" style="display: {{ $entrenadores->foto_cedula ? 'none' : 'block' }};">
+                                    <div class="file-upload-content">
+                                        <i class="fas fa-cloud-upload-alt text-primary fs-1 mb-3"></i>
+                                        <h5 class="text-muted mb-2">{{ __('Arrastra tu foto aquí') }}</h5>
+                                        <p class="text-muted small mb-3">
+                                            <span class="d-none d-md-inline">{{ __('o haz clic para seleccionar') }}</span>
+                                            <span class="d-md-none">{{ __('Toca para seleccionar archivo') }}</span>
+                                        </p>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="selectFotoCedulaBtn">
+                                            <i class="fas fa-folder-open me-2"></i>
+                                            {{ __('Seleccionar Archivo') }}
+                                        </button>
+                                    </div>
+                                    <input type="file" 
+                                           id="foto_cedula" 
+                                           name="foto_cedula" 
+                                           accept="image/*" 
+                                           class="file-input"
+                                           style="display: none;">
+                                </div>
+                                <div class="file-preview" id="fotoCedulaPreview" style="display: none;">
+                                    <img id="fotoCedulaPreviewImage" src="" alt="Preview" class="img-fluid rounded">
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeFotoCedulaBtn">
+                                        <i class="fas fa-trash me-1"></i>
+                                        {{ __('Remover Nuevo') }}
+                                    </button>
+                                </div>
+                                @if($entrenadores->foto_cedula)
+                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="changeFotoCedulaBtn">
+                                    <i class="fas fa-edit me-1"></i>
+                                    {{ __('Cambiar Foto') }}
+                                </button>
+                                @endif
+                            </div>
+                            @error('foto_cedula')
+                                <div class="invalid-feedback d-block mt-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @enderror
+                        </div>
+
+                        <!-- Archivo CV -->
+                        <div class="form-group mb-5">
+                            <label for="archivo_cv" class="form-label fw-semibold">
+                                <i class="fas fa-file-alt me-2 text-primary"></i>
+                                {{ __('Currículum Vitae') }}
+                                <small class="text-muted d-block mt-1">{{ __('Opcional: Deja en blanco para mantener el archivo actual') }}</small>
+                            </label>
+                            @if($entrenadores->archivo_cv)
+                                <div class="mb-3">
+                                    <a href="{{ asset('storage/' . $entrenadores->archivo_cv) }}" 
+                                       target="_blank" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-download me-1"></i>
+                                        {{ __('Ver CV actual') }}
+                                    </a>
+                                    <p class="text-muted small mt-2">{{ __('Archivo actual') }}</p>
+                                </div>
+                            @endif
+                            <div class="file-upload-container">
+                                <div class="file-upload-area" id="archivoCvUploadArea" style="display: {{ $entrenadores->archivo_cv ? 'none' : 'block' }};">
+                                    <div class="file-upload-content">
+                                        <i class="fas fa-cloud-upload-alt text-primary fs-1 mb-3"></i>
+                                        <h5 class="text-muted mb-2">{{ __('Arrastra tu CV aquí') }}</h5>
+                                        <p class="text-muted small mb-3">
+                                            <span class="d-none d-md-inline">{{ __('o haz clic para seleccionar') }}</span>
+                                            <span class="d-md-none">{{ __('Toca para seleccionar archivo') }}</span>
+                                        </p>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="selectArchivoCvBtn">
+                                            <i class="fas fa-folder-open me-2"></i>
+                                            {{ __('Seleccionar Archivo') }}
+                                        </button>
+                                    </div>
+                                    <input type="file" 
+                                           id="archivo_cv" 
+                                           name="archivo_cv" 
+                                           accept=".pdf,.doc,.docx" 
+                                           class="file-input"
+                                           style="display: none;">
+                                </div>
+                                <div class="file-preview" id="archivoCvPreview" style="display: none;">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-file-pdf text-danger fs-1 me-3"></i>
+                                        <div>
+                                            <p class="mb-1 fw-semibold" id="archivoCvFileName"></p>
+                                            <small class="text-muted" id="archivoCvFileSize"></small>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeArchivoCvBtn">
+                                        <i class="fas fa-trash me-1"></i>
+                                        {{ __('Remover Nuevo') }}
+                                    </button>
+                                </div>
+                                @if($entrenadores->archivo_cv)
+                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="changeArchivoCvBtn">
+                                    <i class="fas fa-edit me-1"></i>
+                                    {{ __('Cambiar CV') }}
+                                </button>
+                                @endif
+                            </div>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ __('Formatos: PDF, DOC, DOCX. Máx: 5MB') }}
+                            </small>
+                            @error('archivo_cv')
+                                <div class="invalid-feedback d-block mt-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @enderror
+                        </div>
+
                         <!-- Action Buttons -->
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                             <a href="{{ route('entrenadores.index') }}" class="btn btn-outline-secondary btn-lg">
@@ -260,6 +451,59 @@
     font-size: 0.9rem;
 }
 
+/* File Upload Styles */
+.file-upload-container {
+    position: relative;
+}
+
+.file-upload-area {
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+.file-upload-area:hover {
+    border-color: var(--primary-color);
+    background: rgba(143, 0, 0, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(143, 0, 0, 0.1);
+}
+
+.file-upload-area.dragover {
+    border-color: var(--primary-color);
+    background: rgba(143, 0, 0, 0.1);
+    transform: scale(1.02);
+}
+
+.file-upload-content {
+    pointer-events: auto;
+}
+
+.file-preview {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.file-preview img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.img-thumbnail {
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
 /* Button Styles */
 .btn {
     border-radius: 12px;
@@ -287,6 +531,18 @@
 .btn-outline-secondary:hover {
     background: #f8fafc;
     border-color: var(--text-light);
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-color);
+    color: var(--white);
     transform: translateY(-2px);
 }
 
@@ -392,6 +648,18 @@
     .btn {
         padding: 0.75rem 1.25rem;
     }
+    
+    .file-upload-area {
+        padding: 1.5rem;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .file-upload-content {
+        width: 100%;
+    }
 }
 
 @media (max-width: 576px) {
@@ -419,11 +687,247 @@
     .btn {
         width: 100%;
     }
+    
+    .file-upload-area {
+        padding: 1rem;
+        min-height: 100px;
+    }
+    
+    .file-upload-content h5 {
+        font-size: 1rem;
+    }
+    
+    .file-upload-content p {
+        font-size: 0.8rem;
+    }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // File upload functionality for multiple files
+    const fileUploadConfigs = [
+        {
+            uploadArea: 'fotoCarnetUploadArea',
+            fileInput: 'foto_carnet',
+            selectBtn: 'selectFotoCarnetBtn',
+            changeBtn: 'changeFotoCarnetBtn',
+            preview: 'fotoCarnetPreview',
+            previewImage: 'fotoCarnetPreviewImage',
+            removeBtn: 'removeFotoCarnetBtn',
+            currentImage: 'currentFotoCarnet',
+            accept: 'image/*',
+            isImage: true
+        },
+        {
+            uploadArea: 'fotoCedulaUploadArea',
+            fileInput: 'foto_cedula',
+            selectBtn: 'selectFotoCedulaBtn',
+            changeBtn: 'changeFotoCedulaBtn',
+            preview: 'fotoCedulaPreview',
+            previewImage: 'fotoCedulaPreviewImage',
+            removeBtn: 'removeFotoCedulaBtn',
+            currentImage: 'currentFotoCedula',
+            accept: 'image/*',
+            isImage: true
+        },
+        {
+            uploadArea: 'archivoCvUploadArea',
+            fileInput: 'archivo_cv',
+            selectBtn: 'selectArchivoCvBtn',
+            changeBtn: 'changeArchivoCvBtn',
+            preview: 'archivoCvPreview',
+            fileName: 'archivoCvFileName',
+            fileSize: 'archivoCvFileSize',
+            removeBtn: 'removeArchivoCvBtn',
+            accept: '.pdf,.doc,.docx',
+            isImage: false
+        }
+    ];
+
+    // Initialize file upload for each configuration
+    fileUploadConfigs.forEach(config => {
+        const uploadArea = document.getElementById(config.uploadArea);
+        const fileInput = document.getElementById(config.fileInput);
+        const selectBtn = document.getElementById(config.selectBtn);
+        const changeBtn = document.getElementById(config.changeBtn);
+        const preview = document.getElementById(config.preview);
+        const removeBtn = document.getElementById(config.removeBtn);
+        const currentImage = config.currentImage ? document.getElementById(config.currentImage) : null;
+
+        if (!fileInput) return;
+
+        // Store original image source when page loads
+        if (config.isImage && config.previewImage) {
+            const previewImage = document.getElementById(config.previewImage);
+            if (previewImage && currentImage) {
+                previewImage.dataset.originalSrc = currentImage.src;
+            }
+        }
+
+        // Select file button
+        if (selectBtn) {
+            selectBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                fileInput.click();
+            });
+        }
+        
+        // Change file button (to replace existing file)
+        if (changeBtn) {
+            changeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (uploadArea) {
+                    uploadArea.style.display = 'block';
+                }
+                fileInput.click();
+            });
+        }
+        
+        // Make entire upload area clickable
+        if (uploadArea) {
+            uploadArea.addEventListener('click', function(e) {
+                if (e.target !== selectBtn && !selectBtn?.contains(e.target)) {
+                    fileInput.click();
+                }
+            });
+        }
+
+        // File input change
+        fileInput.addEventListener('change', function() {
+            handleFileSelect(this.files[0], config);
+        });
+
+        // Drag and drop functionality
+        if (uploadArea) {
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect(files[0], config);
+                }
+            });
+        }
+
+        // Remove file
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function() {
+                fileInput.value = '';
+                
+                if (config.isImage && config.previewImage) {
+                    const previewImage = document.getElementById(config.previewImage);
+                    if (previewImage) {
+                        const originalSrc = previewImage.dataset.originalSrc || '';
+                        
+                        // Restore original image or hide
+                        if (originalSrc && originalSrc.trim() !== '') {
+                            previewImage.src = originalSrc;
+                            previewImage.style.display = 'block';
+                            if (currentImage) {
+                                currentImage.style.display = 'block';
+                            }
+                        } else {
+                            previewImage.style.display = 'none';
+                        }
+                    }
+                }
+                
+                if (preview) {
+                    preview.style.display = 'none';
+                }
+                if (uploadArea) {
+                    uploadArea.style.display = 'block';
+                }
+                if (removeBtn) {
+                    removeBtn.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    // Handle file selection
+    function handleFileSelect(file, config) {
+        if (!file) return;
+
+        // Validate file type
+        if (config.isImage && !file.type.startsWith('image/')) {
+            alert('Por favor selecciona un archivo de imagen válido.');
+            return;
+        }
+
+        if (!config.isImage) {
+            const allowedTypes = ['.pdf', '.doc', '.docx'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            if (!allowedTypes.includes(fileExtension)) {
+                alert('Por favor selecciona un archivo PDF, DOC o DOCX válido.');
+                return;
+            }
+        }
+
+        if (config.isImage) {
+            // Handle image files
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImage = document.getElementById(config.previewImage);
+                const currentImage = config.currentImage ? document.getElementById(config.currentImage) : null;
+                const uploadArea = document.getElementById(config.uploadArea);
+                const preview = document.getElementById(config.preview);
+                const removeBtn = document.getElementById(config.removeBtn);
+                
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                
+                if (currentImage) {
+                    currentImage.style.display = 'none';
+                }
+                if (uploadArea) {
+                    uploadArea.style.display = 'none';
+                }
+                if (preview) {
+                    preview.style.display = 'block';
+                }
+                if (removeBtn) {
+                    removeBtn.style.display = 'inline-block';
+                }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Handle document files
+            const fileName = document.getElementById(config.fileName);
+            const fileSize = document.getElementById(config.fileSize);
+            const uploadArea = document.getElementById(config.uploadArea);
+            const preview = document.getElementById(config.preview);
+            const removeBtn = document.getElementById(config.removeBtn);
+            
+            if (fileName) fileName.textContent = file.name;
+            if (fileSize) fileSize.textContent = formatFileSize(file.size);
+            
+            if (uploadArea) uploadArea.style.display = 'none';
+            if (preview) preview.style.display = 'block';
+            if (removeBtn) removeBtn.style.display = 'inline-block';
+        }
+    }
+
+    // Format file size
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
     // Form submission with loading state
     const editForm = document.querySelector('.edit-form');
     const submitBtn = document.querySelector('.submit-btn');
@@ -469,6 +973,22 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('touchend', function() {
                 this.style.transform = 'scale(1)';
             });
+        });
+        
+        // Add touch feedback for file upload areas
+        fileUploadConfigs.forEach(config => {
+            const uploadArea = document.getElementById(config.uploadArea);
+            if (uploadArea) {
+                uploadArea.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                    this.style.background = 'rgba(143, 0, 0, 0.1)';
+                });
+                
+                uploadArea.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.background = '#f8fafc';
+                });
+            }
         });
     }
     

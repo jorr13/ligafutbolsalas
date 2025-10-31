@@ -194,9 +194,11 @@ class JugadoresController extends Controller
         
         // Validar permisos: que el jugador pertenezca al club del entrenador
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        if (!$clubs || $jugador->club_id !== $clubs->id) {
-            return redirect()->route('jugadores.index')
-                ->with('error', 'No tienes permisos para actualizar este jugador.');
+        if(auth()->user()->rol_id != 'administrador'){
+            if (!$clubs || $jugador->club_id !== $clubs->id) {
+                return redirect()->route('jugadores.index')
+                    ->with('error', 'No tienes permisos para actualizar este jugador.');
+            }
         }
         
         // Validación de campos
