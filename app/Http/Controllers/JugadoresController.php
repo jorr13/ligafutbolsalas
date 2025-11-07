@@ -159,11 +159,12 @@ class JugadoresController extends Controller
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
         
         // Validar que el entrenador tenga un club asignado
-        if (!$clubs) {
-            return redirect()->route('jugadores.index')
-                ->with('error', 'No tienes un club asignado. Contacta al administrador para asignarte a un club antes de editar jugadores.');
+        if(auth()->user()->rol_id != 'administrador'){
+            if (!$clubs || $jugador->club_id !== $clubs->id) {
+                return redirect()->route('jugadores.index')
+                    ->with('error', 'No tienes permisos para eliminar este jugador.');
+            }
         }
-        
         // Validar que el jugador pertenece al club del entrenador
         if(auth()->user()->rol_id != 'administrador'){
             if ($jugador->club_id !== $clubs->id) {
@@ -172,7 +173,7 @@ class JugadoresController extends Controller
             }
         }
         $categorias = Categorias::getCategoriasPorClub($clubs->id);
-        return view('jugadores.edit', compact('jugador', 'categorias'));
+
     }
 
     /**
@@ -200,7 +201,6 @@ class JugadoresController extends Controller
                     ->with('error', 'No tienes permisos para actualizar este jugador.');
             }
         }
-        
         // Validación de campos
         $request->validate([
             'nombre' => 'required|string|max:255',
