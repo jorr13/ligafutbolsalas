@@ -506,7 +506,7 @@
                 $('#jugador-content').removeClass('d-none');
                 
                 // Actualizar título del modal
-                $('#staticBackdropLabel').html('<i class="fas fa-user-circle me-2"></i>Perfil del Jugadorrrrrrr');
+                $('#staticBackdropLabel').html('<i class="fas fa-user-circle me-2"></i>Perfil del Jugador');
                 @php
                     $fotoUrl = $jugador->foto_identificacion 
                         ? (str_starts_with($jugador->foto_identificacion, 'jugadores/') 
