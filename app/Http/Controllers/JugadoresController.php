@@ -368,14 +368,28 @@ class JugadoresController extends Controller
             ->first();
         
         if($jugadores){
-            // Si el usuario es entrenador, ocultar datos sensibles
-            if(auth()->user()->rol_id === 'entrenador'){
-                $jugadores->telefono = '[Oculto]';
-                $jugadores->email = '[Oculto]';
+            $rolUsuario = auth()->user()->rol_id ?? null;
+            $mostrarContacto = false;
+            
+            // Aplicar lógica de permisos
+            if ($rolUsuario == 'administrador') {
+                $mostrarContacto = true;
+            } elseif ($rolUsuario == 'entrenador') {
+                $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
+                if ($entrenador && $jugadores->club_id == $entrenador->club_id) {
+                    $mostrarContacto = true;
+                }
+            }
+            
+            // Si no tiene permisos, ocultar datos sensibles
+            if (!$mostrarContacto) {
+                $jugadores->telefono = null;
+                $jugadores->email = null;
             }
             
             return response()->json([
                 'data' => $jugadores,
+                'mostrar_contacto' => $mostrarContacto,
                 'code' => 200,
                 'type' => 'success'
             ]);

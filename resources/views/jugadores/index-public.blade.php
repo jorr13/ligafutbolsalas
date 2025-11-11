@@ -423,7 +423,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-6" id="jugador-telefono-container">
                                                 <div class="d-flex align-items-center p-3 bg-light rounded">
                                                     <i class="fas fa-phone text-muted me-3"></i>
                                                     <div>
@@ -432,7 +432,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-6" id="jugador-email-container">
                                                 <div class="d-flex align-items-center p-3 bg-light rounded">
                                                     <i class="fas fa-envelope text-muted me-3"></i>
                                                     <div>
@@ -554,8 +554,42 @@
                 $('#jugador-nombre').text(response.data.nombre || 'Sin nombre');
                 $('#jugador-categoria').text(response.data.categoria_nombre || 'Sin categoría');
                 $('#jugador-cedula').text(response.data.cedula || 'No especificada');
-                $('#jugador-telefono').text(response.data.telefono || 'No especificado');
-                $('#jugador-email').text(response.data.email || 'No especificado');
+                
+                // Aplicar lógica de permisos para teléfono y email
+                if (response.mostrar_contacto && response.data.telefono) {
+                    $('#jugador-telefono').text(response.data.telefono);
+                    $('#jugador-telefono-container').show();
+                } else {
+                    $('#jugador-telefono-container').html(`
+                        <div class="d-flex align-items-center p-3 bg-light rounded">
+                            <i class="fas fa-phone text-muted me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Teléfono</small>
+                                <span class="text-muted fst-italic">
+                                    <i class="fas fa-lock text-muted me-1"></i>{{ __('Información restringida') }}
+                                </span>
+                            </div>
+                        </div>
+                    `);
+                }
+                
+                if (response.mostrar_contacto && response.data.email) {
+                    $('#jugador-email').text(response.data.email);
+                    $('#jugador-email-container').show();
+                } else {
+                    $('#jugador-email-container').html(`
+                        <div class="d-flex align-items-center p-3 bg-light rounded">
+                            <i class="fas fa-envelope text-muted me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Email</small>
+                                <span class="text-muted fst-italic">
+                                    <i class="fas fa-lock text-muted me-1"></i>{{ __('Información restringida') }}
+                                </span>
+                            </div>
+                        </div>
+                    `);
+                }
+                
                 $('#jugador-dorsal').text(response.data.numero_dorsal || 'No especificado');
                 $('#jugador-nivel').text(response.data.nivel || 'No especificado');
                 // Información del representante
@@ -573,13 +607,13 @@
                 const statusBadgeClass = status === 'activo' ? 'bg-success' : 'bg-warning';
                 $('#status-badge').removeClass('bg-success bg-warning').addClass(statusBadgeClass);
                 
-                                 // Configurar botones de acción
-                 if (response.data.telefono) {
+                                 // Configurar botones de acción solo si tiene permisos
+                 if (response.mostrar_contacto && response.data.telefono) {
                      $('.btn-outline-primary').off('click').on('click', function() {
                          window.open('tel:' + response.data.telefono);
                      });
                  }
-                 if (response.data.email) {
+                 if (response.mostrar_contacto && response.data.email) {
                      $('.btn-outline-success').off('click').on('click', function() {
                          window.open('mailto:' + response.data.email);
                      });
@@ -618,8 +652,24 @@
          $('#jugador-nombre').text('');
          $('#jugador-categoria').text('');
          $('#jugador-cedula').text('');
-         $('#jugador-telefono').text('');
-         $('#jugador-email').text('');
+         $('#jugador-telefono-container').html(`
+             <div class="d-flex align-items-center p-3 bg-light rounded">
+                 <i class="fas fa-phone text-muted me-3"></i>
+                 <div>
+                     <small class="text-muted d-block">Teléfono</small>
+                     <strong id="jugador-telefono"></strong>
+                 </div>
+             </div>
+         `);
+         $('#jugador-email-container').html(`
+             <div class="d-flex align-items-center p-3 bg-light rounded">
+                 <i class="fas fa-envelope text-muted me-3"></i>
+                 <div>
+                     <small class="text-muted d-block">Email</small>
+                     <strong id="jugador-email"></strong>
+                 </div>
+             </div>
+         `);
          $('#jugador-dorsal').text('');
          $('#jugador-representante-nombre').text('');
          $('#jugador-representante-cedula').text('');
