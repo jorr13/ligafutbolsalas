@@ -114,6 +114,17 @@
         </div>
     @endif
 
+    @php
+        // Obtener información del usuario autenticado una sola vez
+        $rolUsuario = auth()->user()->rol_id ?? null;
+        $entrenador = null;
+        $clubIdEntrenador = null;
+        
+        if ($rolUsuario == 'entrenador') {
+            $entrenador = \App\Models\Entrenadores::where('user_id', auth()->user()->id)->first();
+            $clubIdEntrenador = $entrenador->club_id ?? null;
+        }
+    @endphp
 
     <!-- Header con estadísticas -->
     <div class="row mb-4">
@@ -247,16 +258,34 @@
                             <span class="fw-medium text-dark">{{ $jugador->cedula }}</span>
                         </td>
                         <td class="py-3 px-4">
-                            <div class="d-flex flex-column">
-                                <span class="fw-medium text-dark">
-                                    <i class="fas fa-phone text-muted me-1"></i>{{ $jugador->telefono ?? 'No especificado' }}
-                                </span>
-                                @if($jugador->email)
-                                <small class="text-muted">
-                                    <i class="fas fa-envelope text-muted me-1"></i>{{ $jugador->email }}
-                                </small>
-                                @endif
-                            </div>
+                            @php
+                                $mostrarContacto = false;
+                                
+                                if ($rolUsuario == 'administrador') {
+                                    $mostrarContacto = true;
+                                } elseif ($rolUsuario == 'entrenador' && $clubIdEntrenador && $jugador->club_id == $clubIdEntrenador) {
+                                    $mostrarContacto = true;
+                                }
+                            @endphp
+                            
+                            @if($mostrarContacto)
+                                <div class="d-flex flex-column">
+                                    <span class="fw-medium text-dark">
+                                        <i class="fas fa-phone text-muted me-1"></i>{{ $jugador->telefono ?? 'No especificado' }}
+                                    </span>
+                                    @if($jugador->email)
+                                    <small class="text-muted">
+                                        <i class="fas fa-envelope text-muted me-1"></i>{{ $jugador->email }}
+                                    </small>
+                                    @endif
+                                </div>
+                            @else
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted fst-italic">
+                                        <i class="fas fa-lock text-muted me-1"></i>{{ __('Información restringida') }}
+                                    </span>
+                                </div>
+                            @endif
                         </td>
                         <td class="py-3 px-4">
                             <div class="text-center">
