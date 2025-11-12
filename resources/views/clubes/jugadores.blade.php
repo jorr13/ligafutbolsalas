@@ -250,7 +250,6 @@
                                 </div>
                                 <div>
                                     <h6 class="mb-0 fw-bold text-dark">{{ $jugador->nombre }}</h6>
-                                    <small class="text-muted">{{ $jugador->email ?? 'Sin email' }}</small>
                                 </div>
                             </div>
                         </td>
