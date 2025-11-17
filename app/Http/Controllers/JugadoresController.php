@@ -151,11 +151,12 @@ class JugadoresController extends Controller
     {
         $jugador = Jugadores::where('id', $id)->first();
         // Validar que el jugador existe y pertenece al entrenador
+    
         if (!$jugador) {
             return redirect()->route('jugadores.index')
                 ->with('error', 'Jugador no encontrado.');
         }
-        
+      
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
         
         // Validar que el entrenador tenga un club asignado
@@ -165,6 +166,7 @@ class JugadoresController extends Controller
                     ->with('error', 'No tienes permisos para eliminar este jugador.');
             }
         }
+
         // Validar que el jugador pertenece al club del entrenador
         if(auth()->user()->rol_id != 'administrador'){
             if ($jugador->club_id !== $clubs->id) {
@@ -173,7 +175,7 @@ class JugadoresController extends Controller
             }
         }
         $categorias = Categorias::getCategoriasPorClub($clubs->id);
-
+return view('jugadores.edit', compact('jugador', 'categorias'));
     }
 
     /**
