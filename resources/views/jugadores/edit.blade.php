@@ -224,7 +224,31 @@
                                             @enderror
                                         </div>
                             </div>
-                                    
+                                                   
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fecha_nacimiento" class="form-label fw-semibold">
+                                        <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                                        {{ __('Fecha de Nacimiento') }}
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-calendar text-muted"></i>
+                                        </span>
+                                        <input type="date" 
+                                               class="form-control border-start-0 @error('fecha_nacimiento') is-invalid @enderror" 
+                                               id="fecha_nacimiento" 
+                                               name="fecha_nacimiento" 
+                                               value="{{ old('fecha_nacimiento', $jugador->fecha_nacimiento) }}">
+                                    </div>
+                                    @error('fecha_nacimiento')
+                                        <div class="invalid-feedback d-block mt-2">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
+                                </div>
+                    </div>
                             <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="edad" class="form-label fw-semibold">
@@ -240,7 +264,7 @@
                                                        id="edad" 
                                                        name="edad" 
                                                        placeholder="Ej: 18"
-                                                       value="{{ old('edad', $jugador->edad) }}">
+                                                       value="{{ old('edad', $jugador->edad) }}" disabled>
                                             </div>
                                             @error('edad')
                                                 <div class="invalid-feedback d-block mt-2">
@@ -250,31 +274,7 @@
                                             @enderror
                                         </div>
                             </div>
-                                    
-                            <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="fecha_nacimiento" class="form-label fw-semibold">
-                                                <i class="fas fa-calendar-alt me-2 text-primary"></i>
-                                                {{ __('Fecha de Nacimiento') }}
-                                            </label>
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-light border-end-0">
-                                                    <i class="fas fa-calendar text-muted"></i>
-                                                </span>
-                                                <input type="date" 
-                                                       class="form-control border-start-0 @error('fecha_nacimiento') is-invalid @enderror" 
-                                                       id="fecha_nacimiento" 
-                                                       name="fecha_nacimiento" 
-                                                       value="{{ old('fecha_nacimiento', $jugador->fecha_nacimiento) }}">
-                                            </div>
-                                            @error('fecha_nacimiento')
-                                                <div class="invalid-feedback d-block mt-2">
-                                                    <i class="fas fa-exclamation-circle me-1"></i>
-                                                    <strong>{{ $message }}</strong>
-                                                </div>
-                                            @enderror
-                                        </div>
-                            </div>
+                     
                                     
                             <div class="col-md-6">
                                         <div class="form-group">
@@ -301,7 +301,7 @@
                                             @enderror
                                         </div>
                             </div>
-                                    
+                                    @if(auth()->user()->rol_id == 'administrador')
                             <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="status" class="form-label fw-semibold">
@@ -317,6 +317,7 @@
                                                         name="status">
                                                     <option value="activo" {{ old('status', $jugador->status) == 'activo' ? 'selected' : '' }}>{{ __('Activo') }}</option>
                                                     <option value="inactivo" {{ old('status', $jugador->status) == 'inactivo' ? 'selected' : '' }}>{{ __('Inactivo') }}</option>
+                                                    <option value="pendiente" {{ old('status', $jugador->status) == 'pendiente' ? 'selected' : '' }}>{{ __('Pendiente') }}</option>
                                 </select>
                             </div>
                                             @error('status')
@@ -327,7 +328,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+                                    @endif
                              
                                     
                             <div class="col-md-6">
@@ -1235,6 +1236,45 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+      // Calcular edad automáticamente desde fecha de nacimiento
+      const fechaNacimientoInput = document.getElementById('fecha_nacimiento');
+      const edadInput = document.getElementById('edad');
+      
+      if (fechaNacimientoInput && edadInput) {
+          fechaNacimientoInput.addEventListener('blur', function() {
+              const fechaNacimiento = new Date(this.value);
+              
+              if (fechaNacimiento && !isNaN(fechaNacimiento.getTime())) {
+                  const hoy = new Date();
+                  let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+                  const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+                  
+                  // Ajustar la edad si aún no ha cumplido años este año
+                  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+                      edad--;
+                  }
+                  
+                  // Validar que la edad sea válida (no negativa y razonable)
+                  if (edad >= 0 && edad <= 120) {
+                      edadInput.value = edad;
+                  } else if (edad < 0) {
+                      alert('La fecha de nacimiento no puede ser mayor a la fecha actual.');
+                      this.value = '';
+                      edadInput.value = '';
+                  } else {
+                      alert('Por favor verifica la fecha de nacimiento ingresada.');
+                      edadInput.value = '';
+                  }
+              } else {
+                  edadInput.value = '';
+              }
+          });
+          
+          // También calcular si ya hay una fecha de nacimiento al cargar la página (por ejemplo, si hay un error de validación)
+          if (fechaNacimientoInput.value) {
+              fechaNacimientoInput.dispatchEvent(new Event('blur'));
+          }
+      }
     
     // Character counters
     function addCharacterCounter(input, maxLength) {

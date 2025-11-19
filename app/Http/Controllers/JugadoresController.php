@@ -10,9 +10,36 @@ use App\Models\Entrenadores;
 use Endroid\QrCode\Builder\Builder;
  use Endroid\QrCode\Writer\PngWriter;
  use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class JugadoresController extends Controller
 {
+    /**
+     * Calcular la edad basándose en la fecha de nacimiento
+     *
+     * @param  string|null  $fechaNacimiento
+     * @return int|null
+     */
+    private function calcularEdad($fechaNacimiento)
+    {
+        if (!$fechaNacimiento) {
+            return null;
+        }
+        
+        try {
+            $fecha = Carbon::parse($fechaNacimiento);
+            $edad = $fecha->age;
+            
+            // Validar que la edad sea razonable (0-120 años)
+            if ($edad >= 0 && $edad <= 120) {
+                return $edad;
+            }
+            
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
     public function index()
     {
         if(auth()->user()->rol_id == 'entrenador'){
@@ -50,8 +77,9 @@ class JugadoresController extends Controller
     public function store(Request $request)
     {
         $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
-        $clubs = Clubes::where('entrenador_id', $entrenador->id)->first();
-        
+      
+        $clubs = Clubes::where('id', $entrenador->club_id)->first();
+        //dd($entrenador,$clubs);
         // Validar que el entrenador tenga un club asignado
         if (!$clubs) {
             return redirect()->route('jugadores.index')
@@ -100,6 +128,15 @@ class JugadoresController extends Controller
             $fotoIdentificacionPath = Storage::disk('storage')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
         }
         
+        // Calcular edad automáticamente si se proporciona fecha de nacimiento
+        $edad = $request->edad;
+        if ($request->fecha_nacimiento) {
+            $edadCalculada = $this->calcularEdad($request->fecha_nacimiento);
+            if ($edadCalculada !== null) {
+                $edad = $edadCalculada;
+            }
+        }
+        
         $createJugador = Jugadores::create([
             'nombre' => $request->nombre,
             'cedula' => $request->cedula,
@@ -111,7 +148,7 @@ class JugadoresController extends Controller
             'status' => 'pendiente',
             'email' => $request->email,
             'numero_dorsal' => $request->numero_dorsal,
-            'edad'  => $request->edad,
+            'edad'  => $edad,
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'tipo_sangre' => $request->tipo_sangre,
             'observacion' => $request->observacion,
@@ -157,25 +194,24 @@ class JugadoresController extends Controller
                 ->with('error', 'Jugador no encontrado.');
         }
       
-        $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        
-        // Validar que el entrenador tenga un club asignado
+        // Validar que el entrenador tenga un club asignado y permisos para editar
+        //dd(auth()->user()->rol_id);
         if(auth()->user()->rol_id != 'administrador'){
+            $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
+      
+            $clubs = Clubes::where('id', $entrenador->club_id)->first();
             if (!$clubs || $jugador->club_id !== $clubs->id) {
-                return redirect()->route('jugadores.index')
-                    ->with('error', 'No tienes permisos para eliminar este jugador.');
-            }
-        }
-
-        // Validar que el jugador pertenece al club del entrenador
-        if(auth()->user()->rol_id != 'administrador'){
-            if ($jugador->club_id !== $clubs->id) {
                 return redirect()->route('jugadores.index')
                     ->with('error', 'No tienes permisos para editar este jugador.');
             }
+        } else {
+            // Si es administrador, obtener el club del jugador
+            $clubs = Clubes::find($jugador->club_id);
         }
+        
         $categorias = Categorias::getCategoriasPorClub($clubs->id);
-return view('jugadores.edit', compact('jugador', 'categorias'));
+        
+        return view('jugadores.edit', compact('jugador', 'categorias'));
     }
 
     /**
@@ -257,7 +293,21 @@ return view('jugadores.edit', compact('jugador', 'categorias'));
             }
             $fotoIdentificacionPath = Storage::disk('storage')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
         }
-
+        if(isset($request->status)){
+            $status = $request->status;
+        }else{
+            $status = $jugador->status;
+        }
+        
+        // Calcular edad automáticamente si se proporciona fecha de nacimiento
+        $edad = $request->edad ?? $jugador->edad;
+        if ($request->fecha_nacimiento) {
+            $edadCalculada = $this->calcularEdad($request->fecha_nacimiento);
+            if ($edadCalculada !== null) {
+                $edad = $edadCalculada;
+            }
+        }
+        //dd($edad);
         $jugador->update([
             'nombre' => $request->nombre,
             'cedula' => $request->cedula,
@@ -267,7 +317,7 @@ return view('jugadores.edit', compact('jugador', 'categorias'));
             'foto_cedula' => $fotoCedulaPath,
             'email' => $request->email,
             'numero_dorsal' => $request->numero_dorsal,
-            'edad'  => $request->edad,
+            'edad'  => $edad,
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'tipo_sangre' => $request->tipo_sangre,
             'observacion' => $request->observacion,
@@ -276,7 +326,8 @@ return view('jugadores.edit', compact('jugador', 'categorias'));
             'cedula_representante' => $request->cedula_representante,
             'telefono_representante' => $request->telefono_representante,
             'categoria_id' => $request->categoria_id,
-            'nivel' => $request->nivel,
+            'nivel' => $request->nivel, 
+            'status' => $status,
         ]);
     
         // Regenerar QR Code si es necesario

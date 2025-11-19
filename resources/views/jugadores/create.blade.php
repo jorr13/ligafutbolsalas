@@ -185,33 +185,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="edad" class="form-label fw-semibold">
-                                        <i class="fas fa-birthday-cake me-2 text-primary"></i>
-                                        {{ __('Edad') }}
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-calendar text-muted"></i>
-                                        </span>
-                                        <input type="number" 
-                                               class="form-control border-start-0 @error('edad') is-invalid @enderror" 
-                                               id="edad" 
-                                               name="edad" 
-                                               placeholder="Ej: 18"
-                                               value="{{ old('edad') }}">
-                                    </div>
-                                    @error('edad')
-                                        <div class="invalid-feedback d-block mt-2">
-                                            <i class="fas fa-exclamation-circle me-1"></i>
-                                            <strong>{{ $message }}</strong>
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="fecha_nacimiento" class="form-label fw-semibold">
@@ -236,6 +209,33 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="edad" class="form-label fw-semibold">
+                                        <i class="fas fa-birthday-cake me-2 text-primary"></i>
+                                        {{ __('Edad') }}
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-calendar text-muted"></i>
+                                        </span>
+                                        <input type="number" 
+                                               class="form-control border-start-0 @error('edad') is-invalid @enderror" 
+                                               id="edad" 
+                                               name="edad" 
+                                               placeholder="Ej: 18"
+                                               value="{{ old('edad') }}" disabled>
+                                    </div>
+                                    @error('edad')
+                                        <div class="invalid-feedback d-block mt-2">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+    
                             
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -306,6 +306,7 @@
                                         <select class="form-select border-start-0 @error('nivel') is-invalid @enderror" 
                                                 id="nivel" 
                                                 name="nivel">
+                                            <option value="" hidden selected disabled>{{ __('Seleccione un nivel...') }}</option>
                                             <option value="iniciante" {{ old('nivel', 'iniciante') == 'iniciante' ? 'selected' : '' }}>{{ __('Iniciante') }}</option>
                                             <option value="formativo" {{ old('nivel', 'formativo') == 'formativo' ? 'selected' : '' }}>{{ __('Formativo') }}</option>
                                             <option value="elite" {{ old('nivel') == 'elite' ? 'selected' : '' }}>{{ __('Élite') }}</option>
@@ -1085,7 +1086,50 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    
+    // Calcular edad automáticamente desde fecha de nacimiento
+    const fechaNacimientoInput = document.getElementById('fecha_nacimiento');
+    const edadInput = document.getElementById('edad');
+    
+    if (fechaNacimientoInput && edadInput) {
+        fechaNacimientoInput.addEventListener('blur', function() {
+            const fechaNacimiento = new Date(this.value);
+            
+            if (fechaNacimiento && !isNaN(fechaNacimiento.getTime())) {
+                const hoy = new Date();
+                let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+                const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+                
+                // Ajustar la edad si aún no ha cumplido años este año
+                if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+                    edad--;
+                }
+                
+                // Validar que la edad sea válida (no negativa y razonable)
+                if (edad >= 0 && edad <= 120) {
+                    edadInput.value = edad;
+                } else if (edad < 0) {
+                    alert('La fecha de nacimiento no puede ser mayor a la fecha actual.');
+                    this.value = '';
+                    edadInput.value = '';
+                } else {
+                    alert('Por favor verifica la fecha de nacimiento ingresada.');
+                    edadInput.value = '';
+                }
+            } else {
+                edadInput.value = '';
+            }
+        });
+        
+        // También calcular si ya hay una fecha de nacimiento al cargar la página (por ejemplo, si hay un error de validación)
+        if (fechaNacimientoInput.value) {
+            fechaNacimientoInput.dispatchEvent(new Event('blur'));
+        }
+    }
     // Teléfono format validation
+    /*const telefonoInput = document.getElementById('telefono');
+    const telefonoRepresentanteInput = document.getElementById('telefono_representante');
+    
     [telefonoInput, telefonoRepresentanteInput].forEach(input => {
         if (input) {
             input.addEventListener('input', function() {
@@ -1096,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.value = value;
             });
         }
-    });
+    });*/
     
     // Character counters
     function addCharacterCounter(input, maxLength) {
