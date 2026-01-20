@@ -227,22 +227,24 @@ class CarnetController extends Controller
         ];
 
         try {
-            // Generar el PDF con tamaño personalizado 80mm x 50mm (ancho x alto) en horizontal
-            // Dompdf usa puntos (pt): 1mm ≈ 2.83465pt → 80mm ≈ 226.77pt, 50mm ≈ 141.73pt
-            // Para landscape: ancho x alto = 226.77 x 141.73
+            // Generar el PDF con tamaño EXACTO 8cm x 5cm (80mm x 50mm) en horizontal
+            // Conversión precisa: 1mm = 2.834645669pt
+            // 80mm = 226.7716535pt ≈ 226.77pt (ancho)
+            // 50mm = 141.7322835pt ≈ 141.73pt (alto)
+            
             $pdf = PDF::loadView('carnet.template', compact('jugador', 'imagenesCorregidas'))
-                ->setPaper([0, 0, 226.77, 141.73], 'landscape')
+                ->setPaper('A4', 'portrait') // Hoja base A4 vertical
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
                     'isRemoteEnabled' => true,
                     'defaultFont' => 'Arial',
-                    'margin_top' => 0,
-                    'margin_bottom' => 0,
-                    'margin_left' => 0,
-                    'margin_right' => 0,
-                    'page_orientation' => 'landscape',
-                    'dpi' => 150,
-                    'enable_font_subsetting' => false
+                    'dpi' => 96, // DPI estándar para impresión precisa (96 o 72)
+                    'enable_font_subsetting' => false,
+                    'isPhpEnabled' => false,
+                    'isJavascriptEnabled' => false,
+                    'debugKeepTemp' => false,
+                    'debugCss' => false,
+                    'debugLayout' => false
                 ]);
 
             // Nombre del archivo

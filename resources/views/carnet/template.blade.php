@@ -5,14 +5,19 @@
     <title>Carnet de Jugador - {{ $jugador->nombre }}</title>
     <style>
         @page {
-            size: 226.77pt 141.73pt landscape;
+            size: 80mm 50mm landscape;
             margin: 0;
+            padding: 0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            transform-origin: top left;
         }
         img {
             image-orientation: from-image;
@@ -21,8 +26,8 @@
 </head>
 <body>
 
-    <!-- Contenedor principal 80mm x 50mm - TODO EN UNA SOLA PÁGINA -->
-    <table style="width: 80mm; margin: 0; background: #ffffff; border: 0.2mm solid #e9ecef; border-collapse: collapse; table-layout: fixed; page-break-inside: avoid;">
+<!-- PÁGINA 1: Información del carnet -->
+<table style="width: 80mm; margin: 0; padding: 0; background: #ffffff; border: 0.2mm solid #e9ecef; border-collapse: collapse; table-layout: fixed; page-break-after: always;">
         <!-- Header compacto -->
         <tr>
             <td colspan="3" style=" background: #8F0000; color: #ffffff; text-align: center; font-weight: bold; text-transform: uppercase; font-size: 5.5pt; padding: 0.8mm 0; position: relative;">
@@ -135,25 +140,24 @@
             </td>
 
         </tr>
-    </table>
-    <div style="page-break-before: always;break-before: page;"></div>
-    <table  style="width: 80mm; margin: 0; background: #ffffff; border: 0.2mm solid #e9ecef;">
-            <td style="width: 40mm; padding: 0.8mm; vertical-align: top; text-align: center;">
-                @if($jugador->qr_code_image)
-                    <div style="width: 35mm; height: 35mm; border: 0.2mm solid #e9ecef; background: white; margin: 0 auto; padding: 0.5mm;">
-                        <img src="data:image/png;base64,{{ $jugador->qr_code_image }}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">
-                    </div>
-                @endif
-            </td>
-            <td style="width: 40mm; padding: 0.8mm; vertical-align: top; text-align: center;">
-         
-                <div style="width: 32mm; height: 35mm;text-align: center;">
+</table>
 
+<!-- PÁGINA 2: QR Code -->
+<table style="width: 80mm; margin: 0; padding: 0; background: #ffffff; border: 0.2mm solid #e9ecef; border-collapse: collapse; table-layout: fixed;">
+    <tr>
+        <td style="width: 40mm; padding: 0.8mm; vertical-align: middle; text-align: center;">
+            @if($jugador->qr_code_image)
+                <div style="width: 35mm; height: 35mm; border: 0.2mm solid #e9ecef; background: white; margin: 0 auto; padding: 0.5mm;">
+                    <img src="data:image/png;base64,{{ $jugador->qr_code_image }}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
-                {{-- <div style="font-size: 5pt; text-align: center;">Sello</div> --}} 
-            </td>
-    </table>           
-
+            @endif
+        </td>
+        <td style="width: 40mm; padding: 0.8mm; vertical-align: middle; text-align: center;">
+            <div style="width: 32mm; height: 35mm; text-align: center; margin: 0 auto;">
+                <!-- Espacio para sello -->
+            </div>
+        </td>
+    </tr>
+</table>
 </body>
 </html>
-
