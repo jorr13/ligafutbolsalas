@@ -240,107 +240,172 @@
         }
     }
     
-    /* Estilos para el paginador */
-    .pagination {
-        margin: 0;
-        justify-content: center;
-    }
-    
-    .pagination .page-link {
-        color: #007bff;
-        border: 1px solid #dee2e6;
-        padding: 0.5rem 0.75rem;
-        margin: 0 2px;
-        border-radius: 6px;
-        transition: all 0.2s ease;
-    }
-    
-    .pagination .page-link:hover {
-        color: #0056b3;
-        background-color: #e9ecef;
-        border-color: #adb5bd;
-        transform: translateY(-1px);
-    }
-    
-    .pagination .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
-    }
-    
-    .pagination .page-item.disabled .page-link {
-        color: #6c757d;
-        background-color: #fff;
-        border-color: #dee2e6;
-        cursor: not-allowed;
+    /* Estilos minimalistas para el paginador */
+    .pagination-container {
+        background: #ffffff;
+        border-top: 1px solid #e9ecef;
+        padding: 1.5rem 1rem;
+        margin-top: 0;
     }
     
     .pagination-wrapper {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    
+    .pagination-info {
+        color: #6c757d;
+        font-size: 0.9rem;
+        font-weight: 400;
+    }
+    
+    .pagination-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    
+    /* Ocultar el texto "Showing X to Y of Z results" que Laravel muestra por defecto */
+    .pagination-box > div:first-child {
+        display: none !important;
+    }
+    
+    .pagination {
+        margin: 0;
+        display: flex;
+        list-style: none;
+        padding: 0;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .pagination .page-item {
+        margin: 0;
+    }
+    
+    .pagination .page-link {
+        color: #333333;
+        background: transparent;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        margin: 0;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        font-weight: 400;
+    }
+    
+    .pagination .page-link:hover:not(.disabled):not(.active-link) {
+        color: #007bff;
+        text-decoration: underline;
+    }
+    
+    /* Botón Siguiente con estilo azul */
+    .pagination .page-item:last-child .page-link:not(.disabled) {
+        background-color: #007bff;
+        color: #ffffff !important;
+        font-weight: 400;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+    }
+    
+    .pagination .page-item:last-child .page-link:not(.disabled):hover {
+        background-color: #0056b3;
+        text-decoration: none;
+        color: #ffffff !important;
+    }
+    
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        color: #ffffff;
+        font-weight: 500;
+        border-radius: 4px;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .pagination .page-item.active .page-link:hover {
+        text-decoration: none;
+    }
+    
+    .pagination .page-item.disabled .page-link {
+        color: #999999;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.6;
+    }
+    
+    .pagination .page-item.disabled .page-link:hover {
+        text-decoration: none;
+    }
+    
+    /* Ocultar números de página que no sean necesarios, solo mostrar Anterior/Siguiente y página actual */
+    .pagination .page-item:not(.active):not(.disabled):not(:first-child):not(:last-child) {
+        display: none;
+    }
+    
+    /* Ocultar cualquier texto adicional que Laravel pueda mostrar */
+    .pagination-box > div:not(.pagination):not(nav) {
+        display: none !important;
+    }
+    
+    .pagination-box > p,
+    .pagination-box > small {
+        display: none !important;
     }
     
     /* Responsive para el paginador */
     @media (max-width: 768px) {
-        .pagination {
-            flex-wrap: wrap;
-            gap: 0.25rem;
-        }
-        
-        .pagination .page-link {
-            padding: 0.375rem 0.5rem;
-            font-size: 0.875rem;
-            margin: 0 1px;
-        }
-        
-        .card-footer .d-flex {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
-        }
-        
-        .card-footer .text-muted {
-            order: 2;
+        .pagination-container {
+            padding: 1.25rem 0.75rem;
         }
         
         .pagination-wrapper {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .pagination-info {
+            order: 2;
+            text-align: center;
+        }
+        
+        .pagination-box {
             order: 1;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .pagination {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .pagination .page-link {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
         }
     }
     
     @media (max-width: 576px) {
+        .pagination-container {
+            padding: 1rem 0.5rem;
+        }
+        
+        .pagination-info {
+            font-size: 0.85rem;
+        }
+        
         .pagination .page-link {
-            padding: 0.25rem 0.375rem;
-            font-size: 0.8rem;
-            min-width: 32px;
-            text-align: center;
-        }
-        
-        .pagination .page-item:not(.active):not(.disabled) .page-link {
-            display: none;
-        }
-        
-        .pagination .page-item:first-child,
-        .pagination .page-item:last-child,
-        .pagination .page-item.active,
-        .pagination .page-item:has(.page-link[aria-label*="Previous"]),
-        .pagination .page-item:has(.page-link[aria-label*="Next"]) {
-            display: block;
-        }
-        
-        .pagination .page-item:has(.page-link[aria-label*="Previous"]) .page-link::before {
-            content: "‹";
-        }
-        
-        .pagination .page-item:has(.page-link[aria-label*="Next"]) .page-link::before {
-            content: "›";
-        }
-        
-        .pagination .page-item:has(.page-link[aria-label*="Previous"]) .page-link,
-        .pagination .page-item:has(.page-link[aria-label*="Next"]) .page-link {
-            font-size: 0;
+            padding: 0.5rem 0.7rem;
+            font-size: 0.85rem;
         }
     }
 </style>
@@ -496,17 +561,18 @@
             </table>
         </div>
         
-        <!-- Paginador -->
+        <!-- Paginador minimalista -->
         @if($categorias->hasPages())
-        <div class="card-footer bg-white border-0 py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="text-muted">
-                    <small>
-                        Mostrando {{ $categorias->firstItem() }} a {{ $categorias->lastItem() }} de {{ $categorias->total() }} categorías
-                    </small>
+        @php
+            app()->setLocale('es');
+        @endphp
+        <div class="pagination-container">
+            <div class="pagination-wrapper">
+                <div class="pagination-info">
+                    Mostrando {{ $categorias->firstItem() }} a {{ $categorias->lastItem() }} de {{ $categorias->total() }} categorías
                 </div>
-                <div class="pagination-wrapper">
-                    {{ $categorias->links() }}
+                <div class="pagination-box">
+                    {{ $categorias->appends(request()->query())->links('pagination::bootstrap-4') }}
                 </div>
             </div>
         </div>

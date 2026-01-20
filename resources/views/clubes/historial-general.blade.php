@@ -188,8 +188,18 @@
 
                     <!-- Paginación -->
                     @if($historial->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $historial->appends(request()->query())->links() }}
+                    @php
+                        app()->setLocale('es');
+                    @endphp
+                    <div class="pagination-container mt-4">
+                        <div class="pagination-wrapper">
+                            <div class="pagination-info">
+                                Mostrando {{ $historial->firstItem() }} a {{ $historial->lastItem() }} de {{ $historial->total() }} registros
+                            </div>
+                            <div class="pagination-box">
+                                {{ $historial->appends(request()->query())->links('pagination::bootstrap-4') }}
+                            </div>
+                        </div>
                     </div>
                     @endif
                 </div>
@@ -216,6 +226,170 @@
 
 .text-muted {
     font-size: 0.85em;
+}
+
+/* Estilos minimalistas para el paginador */
+.pagination-container {
+    background: #ffffff;
+    border-top: 1px solid #e9ecef;
+    padding: 1.5rem 1rem;
+    margin-top: 0;
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.pagination-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.pagination-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.pagination-box > div:first-child {
+    display: none !important;
+}
+
+.pagination {
+    margin: 0;
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.pagination .page-item {
+    margin: 0;
+}
+
+.pagination .page-link {
+    color: #333333;
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+.pagination .page-link:hover:not(.disabled):not(.active-link) {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.pagination .page-item:last-child .page-link:not(.disabled) {
+    background-color: #007bff;
+    color: #ffffff !important;
+    font-weight: 400;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+}
+
+.pagination .page-item:last-child .page-link:not(.disabled):hover {
+    background-color: #0056b3;
+    text-decoration: none;
+    color: #ffffff !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: #ffffff;
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+}
+
+.pagination .page-item.active .page-link:hover {
+    text-decoration: none;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #999999;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.pagination .page-item.disabled .page-link:hover {
+    text-decoration: none;
+}
+
+.pagination .page-item:not(.active):not(.disabled):not(:first-child):not(:last-child) {
+    display: none;
+}
+
+.pagination-box > div:not(.pagination):not(nav) {
+    display: none !important;
+}
+
+.pagination-box > p,
+.pagination-box > small {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .pagination-container {
+        padding: 1.25rem 0.75rem;
+    }
+    
+    .pagination-wrapper {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .pagination-info {
+        order: 2;
+        text-align: center;
+    }
+    
+    .pagination-box {
+        order: 1;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .pagination {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .pagination .page-link {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .pagination-container {
+        padding: 1rem 0.5rem;
+    }
+    
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+    
+    .pagination .page-link {
+        padding: 0.5rem 0.7rem;
+        font-size: 0.85rem;
+    }
 }
 </style>
 @endpush
