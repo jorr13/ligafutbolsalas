@@ -11,6 +11,7 @@ use Endroid\QrCode\Builder\Builder;
  use Endroid\QrCode\Writer\PngWriter;
  use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 
 class JugadoresController extends Controller
 {
@@ -91,7 +92,16 @@ class JugadoresController extends Controller
             'nombre' => 'required|string|max:255',
             'cedula' => 'required|string|max:20',
             'telefono' => 'nullable|string|max:15',
-            'email' => 'nullable|email|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if ($value && Jugadores::where('email', $value)->exists()) {
+                        $fail('El correo electrónico ya está registrado. Por favor, utiliza otro correo.');
+                    }
+                },
+            ],
             'direccion' => 'nullable|string|max:255',
             'numero_dorsal' => 'nullable|string|min:1|max:99',
             'edad' => 'nullable|integer|min:1|max:100',
@@ -137,33 +147,45 @@ class JugadoresController extends Controller
             }
         }
         
-        $createJugador = Jugadores::create([
-            'nombre' => $request->nombre,
-            'cedula' => $request->cedula,
-            'telefono' => $request->telefono,
-            'direccion' => $request->direccion,
-            'club_id' => $clubs->id,
-            'foto_carnet' => $fotoCarnetPath,
-            'foto_cedula' => $fotoCedulaPath,
-            'status' => 'pendiente',
-            'email' => $request->email,
-            'numero_dorsal' => $request->numero_dorsal,
-            'edad'  => $edad,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
-            'tipo_sangre' => $request->tipo_sangre,
-            'observacion' => $request->observacion,
-            'foto_identificacion' => $fotoIdentificacionPath,
-            'nombre_representante' => $request->nombre_representante,
-            'cedula_representante' => $request->cedula_representante,
-            'telefono_representante' => $request->telefono_representante,
-            'categoria_id' => $request->categoria_id,
-            'nivel' => $request->nivel,
-        ]);
+        try {
+            $createJugador = Jugadores::create([
+                'nombre' => $request->nombre,
+                'cedula' => $request->cedula,
+                'telefono' => $request->telefono,
+                'direccion' => $request->direccion,
+                'club_id' => $clubs->id,
+                'foto_carnet' => $fotoCarnetPath,
+                'foto_cedula' => $fotoCedulaPath,
+                'status' => 'pendiente',
+                'email' => $request->email,
+                'numero_dorsal' => $request->numero_dorsal,
+                'edad'  => $edad,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'tipo_sangre' => $request->tipo_sangre,
+                'observacion' => $request->observacion,
+                'foto_identificacion' => $fotoIdentificacionPath,
+                'nombre_representante' => $request->nombre_representante,
+                'cedula_representante' => $request->cedula_representante,
+                'telefono_representante' => $request->telefono_representante,
+                'categoria_id' => $request->categoria_id,
+                'nivel' => $request->nivel,
+            ]);
 
-        // Generar QR Code automáticamente
-        $createJugador->generarQRCode();
+            // Generar QR Code automáticamente
+            $createJugador->generarQRCode();
 
-        return redirect()->route('jugadores.index')->with('success', 'Jugador creado exitosamente, Debe esperar a que el administrador lo acepte.');
+            return redirect()->route('jugadores.index')->with('success', 'Jugador creado exitosamente, Debe esperar a que el administrador lo acepte.');
+        } catch (QueryException $e) {
+            // Verificar si es un error de email duplicado
+            if ($e->getCode() == 23000 && str_contains($e->getMessage(), 'jugadores_email_unique')) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['email' => 'El correo electrónico ya está registrado. Por favor, utiliza otro correo.']);
+            }
+            
+            // Si es otro error de base de datos, lanzarlo de nuevo
+            throw $e;
+        }
     }
 
  /**
@@ -244,7 +266,16 @@ class JugadoresController extends Controller
             'nombre' => 'required|string|max:255',
             'cedula' => 'required|string|max:20',
             'telefono' => 'nullable|string|max:15',
-            'email' => 'nullable|email|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                function ($attribute, $value, $fail) use ($jugador) {
+                    if ($value && Jugadores::where('email', $value)->where('id', '!=', $jugador->id)->exists()) {
+                        $fail('El correo electrónico ya está registrado. Por favor, utiliza otro correo.');
+                    }
+                },
+            ],
             'direccion' => 'nullable|string|max:255',
             'numero_dorsal' => 'nullable|string|min:1|max:99',
             'edad' => 'nullable|integer|min:1|max:100',
@@ -308,32 +339,44 @@ class JugadoresController extends Controller
             }
         }
         //dd($edad);
-        $jugador->update([
-            'nombre' => $request->nombre,
-            'cedula' => $request->cedula,
-            'telefono' => $request->telefono,
-            'direccion' => $request->direccion,
-            'foto_carnet' => $fotoCarnetPath,
-            'foto_cedula' => $fotoCedulaPath,
-            'email' => $request->email,
-            'numero_dorsal' => $request->numero_dorsal,
-            'edad'  => $edad,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
-            'tipo_sangre' => $request->tipo_sangre,
-            'observacion' => $request->observacion,
-            'foto_identificacion' => $fotoIdentificacionPath,
-            'nombre_representante' => $request->nombre_representante,
-            'cedula_representante' => $request->cedula_representante,
-            'telefono_representante' => $request->telefono_representante,
-            'categoria_id' => $request->categoria_id,
-            'nivel' => $request->nivel, 
-            'status' => $status,
-        ]);
-    
-        // Regenerar QR Code si es necesario
-        //$jugador->generarQRCode();
-    
-        return redirect()->route('jugadores.index', $jugador->club_id)->with('success', 'Jugador editado exitosamente.');
+        try {
+            $jugador->update([
+                'nombre' => $request->nombre,
+                'cedula' => $request->cedula,
+                'telefono' => $request->telefono,
+                'direccion' => $request->direccion,
+                'foto_carnet' => $fotoCarnetPath,
+                'foto_cedula' => $fotoCedulaPath,
+                'email' => $request->email,
+                'numero_dorsal' => $request->numero_dorsal,
+                'edad'  => $edad,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'tipo_sangre' => $request->tipo_sangre,
+                'observacion' => $request->observacion,
+                'foto_identificacion' => $fotoIdentificacionPath,
+                'nombre_representante' => $request->nombre_representante,
+                'cedula_representante' => $request->cedula_representante,
+                'telefono_representante' => $request->telefono_representante,
+                'categoria_id' => $request->categoria_id,
+                'nivel' => $request->nivel, 
+                'status' => $status,
+            ]);
+        
+            // Regenerar QR Code si es necesario
+            //$jugador->generarQRCode();
+        
+            return redirect()->route('jugadores.index', $jugador->club_id)->with('success', 'Jugador editado exitosamente.');
+        } catch (QueryException $e) {
+            // Verificar si es un error de email duplicado
+            if ($e->getCode() == 23000 && str_contains($e->getMessage(), 'jugadores_email_unique')) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['email' => 'El correo electrónico ya está registrado. Por favor, utiliza otro correo.']);
+            }
+            
+            // Si es otro error de base de datos, lanzarlo de nuevo
+            throw $e;
+        }
     }
 
     /**
