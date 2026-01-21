@@ -235,12 +235,16 @@
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
                                     @php
-                                        $fotoUrl = $jugador->fotos_carnet 
-                                            ? (str_starts_with($jugador->fotos_carnet, 'jugadores/') 
-                                                ? asset('storage/' . $jugador->fotos_carnet) 
-                                                : asset('images/' . $jugador->fotos_carnet))
+                                        $fotoUrl = $jugador->foto_carnet 
+                                            ? (str_starts_with($jugador->foto_carnet, 'jugadores/') 
+                                                ? asset('storage/' . $jugador->foto_carnet) 
+                                                : asset('images/' . $jugador->foto_carnet))
                                             : asset('/images/default-avatar.png');
                                     @endphp
+                                    <img src="{{ $fotoUrl }}"  
+                                         alt="Foto de {{ $jugador->nombre }}" 
+                                         class="rounded-circle border-2 border-light shadow-sm" 
+                                         style="width: 45px; height: 45px; object-fit: cover;">
                           
                                 </div>
                                 <div>
