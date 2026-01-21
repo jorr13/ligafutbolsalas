@@ -537,11 +537,11 @@
                 
                 // Construir URL de la foto usando los datos de la respuesta
                 let fotoUrl = '{{ asset("/images/default-avatar.png") }}';
-                if (response.data.foto_identificacion) {
-                    if (response.data.foto_identificacion.startsWith('jugadores/')) {
-                        fotoUrl = '{{ asset("storage/") }}/' + response.data.foto_identificacion;
+                if (response.data.foto_carnet) {
+                    if (response.data.foto.startsWith('jugadores/')) {
+                        fotoUrl = '{{ asset("storage/") }}/' + response.data.foto_carnet;
                     } else {
-                        fotoUrl = '{{ asset("images/") }}/' + response.data.foto_identificacion;
+                        fotoUrl = '{{ asset("images/") }}/' + response.data.foto_carnet;
                     }
                 }
                 
