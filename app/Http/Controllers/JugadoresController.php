@@ -555,7 +555,8 @@ class JugadoresController extends Controller
         }*/
 
         $clubes = Clubes::with(['categorias'])
-            ->leftJoin('users', 'clubes.entrenador_id', '=', 'users.id')
+            ->leftJoin('entrenadores', 'entrenadores.id', '=', 'clubes.entrenador_id')
+            ->leftJoin('users', 'users.id', '=', 'entrenadores.user_id')
             ->select('clubes.*', 'users.name as entrenador_nombre')
             ->withCount(['jugadoresActivos' => function($query) {
                 $query->where('status', 'activo');
