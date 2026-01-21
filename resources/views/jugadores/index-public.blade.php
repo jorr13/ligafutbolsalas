@@ -678,9 +678,10 @@
     // Funcionalidad de búsqueda en tiempo real
     function filterJugadores() {
         const searchTerm = $('#searchInput').val().toLowerCase();
+        const categoriaFilter = $('#categoriaFilter').val();
         const rows = $('.jugador-row');
         
-        if (searchTerm !== '') {
+        if (searchTerm !== '' || categoriaFilter !== '') {
             $('.jugador-row').addClass('opacity-50');
         }
         
@@ -688,8 +689,15 @@
             rows.each(function() {
                 const row = $(this);
                 const nombre = row.find('h6').text().toLowerCase();
+                const categoria = row.find('td:eq(4)').text().trim(); // Columna de categoría (índice 4)
                 
-                if (nombre.includes(searchTerm)) {
+                // Verificar filtro de nombre
+                const matchesNombre = searchTerm === '' || nombre.includes(searchTerm);
+                
+                // Verificar filtro de categoría
+                const matchesCategoria = categoriaFilter === '' || categoria === categoriaFilter;
+                
+                if (matchesNombre && matchesCategoria) {
                     row.show();
                     row.addClass('highlight-row');
                     row.removeClass('opacity-50');
@@ -701,15 +709,15 @@
             
             // Mostrar mensaje si no hay resultados
             const visibleRows = rows.filter(':visible');
-            if (visibleRows.length === 0 && searchTerm !== '') {
+            if (visibleRows.length === 0 && (searchTerm !== '' || categoriaFilter !== '')) {
                 if ($('#no-results').length === 0) {
-                    $('#jugadores-table tbody').append(`
+                    $('#jugadoresTable tbody').append(`
                         <tr id="no-results">
                             <td colspan="7" class="text-center py-4">
                                 <div class="py-3">
                                     <i class="fas fa-search fa-3x text-muted mb-3"></i>
                                     <h6 class="text-muted mb-2">No se encontraron resultados</h6>
-                                    <p class="text-muted mb-0">Intenta con otros términos de búsqueda</p>
+                                    <p class="text-muted mb-0">Intenta con otros términos de búsqueda o categoría</p>
                                     <button class="btn btn-outline-primary btn-sm mt-2" onclick="clearFilters()">
                                         <i class="fas fa-times me-1"></i>Limpiar filtros
                                     </button>
@@ -735,9 +743,13 @@
     // Event listeners para búsqueda
     $('#searchInput').on('keyup', filterJugadores);
     
+    // Event listener para filtro de categoría
+    $('#categoriaFilter').on('change', filterJugadores);
+    
     // Limpiar filtros
     function clearFilters() {
         $('#searchInput').val('');
+        $('#categoriaFilter').val('');
         filterJugadores();
     }
 
