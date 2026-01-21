@@ -98,7 +98,7 @@ class JugadoresController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'tipo_sangre' => 'nullable|string|max:10',
             'categoria_id' => 'required|exists:categorias,id',
-            'nivel' => 'required|in:iniciante,elite',
+            'nivel' => 'required|in:iniciante,formativo,elite',
             'nombre_representante' => 'nullable|string|max:255',
             'cedula_representante' => 'nullable|string|max:20',
             'telefono_representante' => 'nullable|string|max:15',
@@ -233,7 +233,7 @@ class JugadoresController extends Controller
         
         // Validar permisos: que el jugador pertenezca al club del entrenador
         $clubs = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        if(auth()->user()->rol_id != 'administrador'){
+        if(auth()->user()->rol_id == 'arbitro'){
             if (!$clubs || $jugador->club_id !== $clubs->id) {
                 return redirect()->route('jugadores.index')
                     ->with('error', 'No tienes permisos para actualizar este jugador.');
@@ -251,7 +251,7 @@ class JugadoresController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'tipo_sangre' => 'nullable|string|max:10',
             'categoria_id' => 'required|exists:categorias,id',
-            'nivel' => 'required|in:iniciante,elite',
+            'nivel' => 'required|in:iniciante,formativo,elite',
             'nombre_representante' => 'nullable|string|max:255',
             'cedula_representante' => 'nullable|string|max:20',
             'telefono_representante' => 'nullable|string|max:15',
@@ -333,7 +333,7 @@ class JugadoresController extends Controller
         // Regenerar QR Code si es necesario
         //$jugador->generarQRCode();
     
-        return redirect()->route('entrenador.clubes.jugadores', $jugador->club_id)->with('success', 'Jugador editado exitosamente.');
+        return redirect()->route('jugadores.index', $jugador->club_id)->with('success', 'Jugador editado exitosamente.');
     }
 
     /**
