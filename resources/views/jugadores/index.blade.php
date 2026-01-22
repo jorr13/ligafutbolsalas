@@ -563,8 +563,7 @@
                                     <img src="{{ $fotoCarnetUrl }}"  
                                          alt="Foto de {{ $jugador->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm jugador-avatar" 
-                                         style="width: 45px; height: 45px; object-fit: cover;"
-                                         onerror="this.src='/images/default-avatar.png'">
+                                         style="width: 45px; height: 45px; object-fit: cover;">
                                     <div class="position-absolute bottom-0 end-0 bg-{{ $jugador->status == 'activo' ? 'success' : 'warning' }} rounded-circle border-2 border-white" 
                                          style="width: 12px; height: 12px;"></div>
                                 </div>
