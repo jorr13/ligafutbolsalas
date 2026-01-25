@@ -41,22 +41,23 @@ class JugadoresController extends Controller
             return null;
         }
     }
-    public function index()
+    public function index(Request $request)
     {
+        $club = null;
         if(auth()->user()->rol_id == 'entrenador'){
-        $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
-        $club = Clubes::where('entrenador_id', $entrenador->id)->first();
+            $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
+            $club = Clubes::where('entrenador_id', $entrenador->id)->first();
 
-        // Verificar si el entrenador tiene un club asignado
+            // Verificar si el entrenador tiene un club asignado
             $hasClub = !is_null($club);
         }else{
             $hasClub = false;
         }
         
-        $jugadores = Jugadores::Getjugadores()->paginate(10); // Paginación de 10 jugadores por página
-        // dd($jugadores);
+        $search = $request->get('search', '');
+        $jugadores = Jugadores::Getjugadores($search)->paginate(10)->appends($request->query()); // Paginación de 10 jugadores por página
         
-        return view('jugadores.index', compact('jugadores', 'hasClub', 'club'));
+        return view('jugadores.index', compact('jugadores', 'hasClub', 'club', 'search'));
     }
 
     public function create()
@@ -435,24 +436,28 @@ class JugadoresController extends Controller
         return view('jugadores.publico', compact('jugador'));
     }
 
-    public function aceptarJugador($id)
+    public function aceptarJugador($id, Request $request)
     {
         // dd($id);
         $jugador = Jugadores::where('id', $id)->first();
         $jugador->update([
             'status' => 'activo',
         ]);
-        $jugadores = Jugadores::GetjugadoresPending()->paginate(10); 
-        return view('jugadores.index', compact('jugadores'))->with('success', 'Jugador aceptado exitosamente.');
+        $search = $request->get('search', '');
+        $jugadores = Jugadores::GetjugadoresPending($search)->paginate(10)->appends($request->query()); 
+        return view('jugadores.index', compact('jugadores', 'search'))->with('success', 'Jugador aceptado exitosamente.');
     }
 
-    public function indexAdmin()
+    public function indexAdmin(Request $request)
     {
         // $club = Clubes::where('entrenador_id', auth()->user()->id)->first();
-        $jugadores = Jugadores::GetjugadoresPending()->paginate(10); 
+        $hasClub = false;
+        $club = null;
+        $search = $request->get('search', '');
+        $jugadores = Jugadores::GetjugadoresPending($search)->paginate(10)->appends($request->query()); 
         // $jugadores = Jugadores::Getjugadores(); 
         // dd($jugadores);
-        return view('jugadores.index', compact('jugadores'));
+        return view('jugadores.index', compact('jugadores', 'hasClub', 'club', 'search'));
     }
 
     public function getJugador(Request $request)

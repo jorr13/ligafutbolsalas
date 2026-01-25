@@ -501,12 +501,24 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="d-flex justify-content-end align-items-center gap-3">
-                        <div class="input-group" style="max-width: 300px;">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-search text-muted"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar jugador...">
-                        </div>
+                        <form method="GET" action="{{ route('jugadores.index') }}" class="d-flex align-items-center" id="searchForm" style="max-width: 300px;">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control border-start-0" 
+                                       id="searchInput" 
+                                       name="search" 
+                                       placeholder="Buscar jugador..." 
+                                       value="{{ $search ?? '' }}">
+                                @if(isset($search) && $search != '')
+                                <button type="button" class="btn btn-outline-secondary border-start-0" onclick="clearSearch()" title="Limpiar búsqueda">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                @endif
+                            </div>
+                        </form>
                         @if(auth()->user()->rol_id!="administrador")
                             @if($hasClub)
                                 <a href="{{ route('jugadores.create') }}" class="btn btn-primary">
@@ -845,51 +857,34 @@
 </form>
 
 <script>
-    // Funcionalidad de búsqueda en tiempo real
+    // Funcionalidad de búsqueda global con debounce
+    let searchTimeout;
     $('#searchInput').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        const rows = $('.jugador-row');
+        clearTimeout(searchTimeout);
+        const searchTerm = $(this).val();
         
-        rows.each(function() {
-            const row = $(this);
-            const text = row.text().toLowerCase();
-            
-            if (text.includes(searchTerm)) {
-                row.show();
-                row.addClass('highlight-row');
-            } else {
-                row.hide();
-                row.removeClass('highlight-row');
+        // Esperar 500ms después de que el usuario deje de escribir
+        searchTimeout = setTimeout(function() {
+            if (searchTerm.length >= 2 || searchTerm.length === 0) {
+                $('#searchForm').submit();
             }
-        });
-        
-        // Mostrar mensaje si no hay resultados
-        const visibleRows = rows.filter(':visible');
-        if (visibleRows.length === 0 && searchTerm !== '') {
-            if ($('#no-results').length === 0) {
-                $('#jugadoresTable tbody').append(`
-                    <tr id="no-results">
-                        <td colspan="6" class="text-center py-4">
-                            <div class="py-3">
-                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                                <h6 class="text-muted mb-2">No se encontraron resultados</h6>
-                                <p class="text-muted mb-0">Intenta con otros términos de búsqueda</p>
-                            </div>
-                        </td>
-                    </tr>
-                `);
-            }
-        } else {
-            $('#no-results').remove();
+        }, 500);
+    });
+    
+    // Permitir búsqueda inmediata al presionar Enter
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            $('#searchForm').submit();
         }
     });
-
-    // Limpiar búsqueda
-    $('#searchInput').on('focus', function() {
-        if ($(this).val() === '') {
-            $('.jugador-row').removeClass('highlight-row');
-        }
-    });
+    
+    // Función para limpiar búsqueda
+    function clearSearch() {
+        $('#searchInput').val('');
+        window.location.href = '{{ route("jugadores.index") }}';
+    }
 
     // Efectos hover en las filas
     $('.jugador-row').hover(
