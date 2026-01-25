@@ -44,18 +44,41 @@ class JugadoresController extends Controller
     public function index(Request $request)
     {
         $club = null;
+        $search = $request->get('search', '');
+        
         if(auth()->user()->rol_id == 'entrenador'){
             $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
             $club = Clubes::where('entrenador_id', $entrenador->id)->first();
 
             // Verificar si el entrenador tiene un club asignado
             $hasClub = !is_null($club);
-        }else{
+            
+            // Para entrenadores, usar Getjugadores que filtra por club
+            $jugadores = Jugadores::Getjugadores($search)->paginate(10)->appends($request->query());
+        } else {
+            // Para administradores, mostrar todos los jugadores
             $hasClub = false;
+            $jugadores = Jugadores::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
+                ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+                ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as categoria_nombre');
+            
+            // Búsqueda global en múltiples campos para administradores
+            if (!empty($search)) {
+                $jugadores->where(function($q) use ($search) {
+                    $q->where('jugadores.nombre', 'LIKE', '%' . $search . '%')
+                      ->orWhere('jugadores.cedula', 'LIKE', '%' . $search . '%')
+                      ->orWhere('jugadores.email', 'LIKE', '%' . $search . '%')
+                      ->orWhere('jugadores.telefono', 'LIKE', '%' . $search . '%')
+                      ->orWhere('clubes.nombre', 'LIKE', '%' . $search . '%')
+                      ->orWhere('categorias.nombre', 'LIKE', '%' . $search . '%')
+                      ->orWhere('jugadores.numero_dorsal', 'LIKE', '%' . $search . '%')
+                      ->orWhere('jugadores.nombre_representante', 'LIKE', '%' . $search . '%')
+                      ->orWhere('jugadores.cedula_representante', 'LIKE', '%' . $search . '%');
+                });
+            }
+            
+            $jugadores = $jugadores->paginate(10)->appends($request->query());
         }
-        
-        $search = $request->get('search', '');
-        $jugadores = Jugadores::Getjugadores($search)->paginate(10)->appends($request->query()); // Paginación de 10 jugadores por página
         
         return view('jugadores.index', compact('jugadores', 'hasClub', 'club', 'search'));
     }

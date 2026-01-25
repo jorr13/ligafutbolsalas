@@ -34,33 +34,40 @@ class Jugadores extends Model
 
     public static function Getjugadores($search = '') {
         $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
+        
+        // Verificar que el entrenador existe antes de acceder a sus propiedades
+        if (!$entrenador) {
+            return self::whereRaw('1 = 0'); // Return empty query builder if no entrenador is found
+        }
+        
         $club = Clubes::where('entrenador_id', $entrenador->id)->first();
-        // dd(auth()->user()->id);
+        
+        // Verificar que el club existe
         if (!$club) {
             return self::whereRaw('1 = 0'); // Return empty query builder if no club is found
-        }else {
-            $query = self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
-                ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
-                ->where('jugadores.club_id', $club->id)
-                ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as categoria_nombre');
-            
-            // Búsqueda global en múltiples campos
-            if (!empty($search)) {
-                $query->where(function($q) use ($search) {
-                    $q->where('jugadores.nombre', 'LIKE', '%' . $search . '%')
-                      ->orWhere('jugadores.cedula', 'LIKE', '%' . $search . '%')
-                      ->orWhere('jugadores.email', 'LIKE', '%' . $search . '%')
-                      ->orWhere('jugadores.telefono', 'LIKE', '%' . $search . '%')
-                      ->orWhere('clubes.nombre', 'LIKE', '%' . $search . '%')
-                      ->orWhere('categorias.nombre', 'LIKE', '%' . $search . '%')
-                      ->orWhere('jugadores.numero_dorsal', 'LIKE', '%' . $search . '%')
-                      ->orWhere('jugadores.nombre_representante', 'LIKE', '%' . $search . '%')
-                      ->orWhere('jugadores.cedula_representante', 'LIKE', '%' . $search . '%');
-                });
-            }
-            
-            return $query;
         }
+        
+        $query = self::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
+            ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+            ->where('jugadores.club_id', $club->id)
+            ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as categoria_nombre');
+        
+        // Búsqueda global en múltiples campos
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('jugadores.nombre', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.cedula', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.email', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.telefono', 'LIKE', '%' . $search . '%')
+                  ->orWhere('clubes.nombre', 'LIKE', '%' . $search . '%')
+                  ->orWhere('categorias.nombre', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.numero_dorsal', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.nombre_representante', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.cedula_representante', 'LIKE', '%' . $search . '%');
+            });
+        }
+        
+        return $query;
     }
     
     public static function GetjugadoresCollection() {
