@@ -501,7 +501,7 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="d-flex justify-content-end align-items-center gap-3">
-                        <form method="GET" action="{{ route('jugadores.index') }}" class="d-flex align-items-center" id="searchForm" style="max-width: 300px;">
+                        <form method="GET" action="{{ url()->current() }}" class="d-flex align-items-center" id="searchForm" style="max-width: 300px;">
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="fas fa-search text-muted"></i>
@@ -866,7 +866,11 @@
         // Esperar 500ms después de que el usuario deje de escribir
         searchTimeout = setTimeout(function() {
             if (searchTerm.length >= 2 || searchTerm.length === 0) {
-                $('#searchForm').submit();
+                // Resetear a página 1 al buscar
+                const url = new URL(window.location.href);
+                url.searchParams.set('search', searchTerm);
+                url.searchParams.set('page', '1');
+                window.location.href = url.toString();
             }
         }, 500);
     });
@@ -876,14 +880,24 @@
         if (e.which === 13) {
             e.preventDefault();
             clearTimeout(searchTimeout);
-            $('#searchForm').submit();
+            const searchTerm = $(this).val();
+            // Resetear a página 1 al buscar
+            const url = new URL(window.location.href);
+            url.searchParams.set('search', searchTerm);
+            url.searchParams.set('page', '1');
+            window.location.href = url.toString();
         }
     });
     
     // Función para limpiar búsqueda
     function clearSearch() {
         $('#searchInput').val('');
-        window.location.href = '{{ route("jugadores.index") }}';
+        // Obtener la URL actual sin el parámetro search
+        const url = new URL(window.location.href);
+        url.searchParams.delete('search');
+        // Resetear a la página 1 al limpiar la búsqueda
+        url.searchParams.set('page', '1');
+        window.location.href = url.toString();
     }
 
     // Efectos hover en las filas
