@@ -630,11 +630,17 @@ class JugadoresController extends Controller
         $club = Clubes::findOrFail($clubId);
         $categorias = Categorias::getCategoriasPorClub($clubId);
         $search = $request->get('search', '');
+        $categoria = $request->get('categoria', '');
         
         $query = Jugadores::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
             ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
             ->where('jugadores.club_id', $clubId)
             ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as categoria_nombre');
+        
+        // Filtro por categoría
+        if (!empty($categoria)) {
+            $query->where('categorias.nombre', $categoria);
+        }
         
         // Búsqueda global en múltiples campos
         if (!empty($search)) {
@@ -652,6 +658,6 @@ class JugadoresController extends Controller
         
         $jugadores = $query->paginate(10)->appends($request->query());
         //dd($jugadores);
-        return view('jugadores.index-public', compact('jugadores', 'club', 'categorias', 'search'));
+        return view('jugadores.index-public', compact('jugadores', 'club', 'categorias', 'search', 'categoria'));
     }
 }

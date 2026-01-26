@@ -365,10 +365,12 @@
                             </form>
                         </div>
                         <div class="col-md-5">
-                            <select class="form-select" id="categoriaFilter">
+                            <select class="form-select" id="categoriaFilter" name="categoria">
                                 <option value="">Todas las categorías</option>
-                                @foreach($categorias as $categoria)
-                                    <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
+                                @foreach($categorias as $categoriaItem)
+                                    <option value="{{ $categoriaItem->nombre }}" {{ (isset($categoria) && $categoria == $categoriaItem->nombre) ? 'selected' : '' }}>
+                                        {{ $categoriaItem->nombre }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -905,6 +907,22 @@
         }
     });
     
+    // Filtro de categoría - enviar al servidor cuando cambie
+    $('#categoriaFilter').on('change', function() {
+        const categoria = $(this).val();
+        const url = new URL(window.location.href);
+        
+        if (categoria) {
+            url.searchParams.set('categoria', categoria);
+        } else {
+            url.searchParams.delete('categoria');
+        }
+        
+        // Resetear a página 1 al cambiar categoría
+        url.searchParams.set('page', '1');
+        window.location.href = url.toString();
+    });
+    
     // Función para limpiar búsqueda
     function clearSearch() {
         $('#searchInput').val('');
@@ -923,6 +941,7 @@
         // Obtener la URL actual sin los parámetros de búsqueda
         const url = new URL(window.location.href);
         url.searchParams.delete('search');
+        url.searchParams.delete('categoria');
         url.searchParams.set('page', '1');
         window.location.href = url.toString();
     }
