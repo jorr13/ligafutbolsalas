@@ -617,7 +617,10 @@ class JugadoresController extends Controller
     /**
      * Mostrar jugadores de un club específico (solo lectura para entrenadores)
      */
-    public function verJugadoresClub($clubId)
+    /**
+     * Mostrar jugadores de un club específico (solo lectura para entrenadores)
+     */
+    public function verJugadoresClub($clubId, Request $request)
     {
         // Verificar que el usuario sea entrenador
        /* if (auth()->user()->rol_id !== 'entrenador') {  
@@ -626,12 +629,29 @@ class JugadoresController extends Controller
 
         $club = Clubes::findOrFail($clubId);
         $categorias = Categorias::getCategoriasPorClub($clubId);
-        $jugadores = Jugadores::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
+        $search = $request->get('search', '');
+        
+        $query = Jugadores::join('clubes', 'jugadores.club_id', '=', 'clubes.id')
             ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
             ->where('jugadores.club_id', $clubId)
-            ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as categoria_nombre')
-            ->paginate(10);
+            ->select('jugadores.*', 'clubes.nombre as club_nombre', 'categorias.nombre as categoria_nombre');
+        
+        // Búsqueda global en múltiples campos
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('jugadores.nombre', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.cedula', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.email', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.telefono', 'LIKE', '%' . $search . '%')
+                  ->orWhere('categorias.nombre', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.numero_dorsal', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.nombre_representante', 'LIKE', '%' . $search . '%')
+                  ->orWhere('jugadores.cedula_representante', 'LIKE', '%' . $search . '%');
+            });
+        }
+        
+        $jugadores = $query->paginate(10)->appends($request->query());
         //dd($jugadores);
-        return view('jugadores.index-public', compact('jugadores', 'club', 'categorias'));
+        return view('jugadores.index-public', compact('jugadores', 'club', 'categorias', 'search'));
     }
 }

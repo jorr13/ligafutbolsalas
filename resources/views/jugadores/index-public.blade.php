@@ -345,12 +345,24 @@
                 <div class="col-md-6 text-end">
                     <div class="row g-2">
                         <div class="col-md-5">
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-search text-muted"></i>
-                                </span>
-                                <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar jugador...">
-                            </div>
+                            <form method="GET" action="{{ url()->current() }}" id="searchForm">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-search text-muted"></i>
+                                    </span>
+                                    <input type="text" 
+                                           class="form-control border-start-0" 
+                                           id="searchInput" 
+                                           name="search" 
+                                           placeholder="Buscar jugador..." 
+                                           value="{{ $search ?? '' }}">
+                                    @if(isset($search) && $search != '')
+                                    <button type="button" class="btn btn-outline-secondary border-start-0" onclick="clearSearch()" title="Limpiar búsqueda">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    @endif
+                                </div>
+                            </form>
                         </div>
                         <div class="col-md-5">
                             <select class="form-select" id="categoriaFilter">
@@ -861,82 +873,58 @@
          $('#jugador-status').removeClass('bg-success bg-warning').text('');
      });
 
-    // Funcionalidad de búsqueda en tiempo real
-    function filterJugadores() {
-        const searchTerm = $('#searchInput').val().toLowerCase();
-        const categoriaFilter = $('#categoriaFilter').val();
-        const rows = $('.jugador-row');
+    // Funcionalidad de búsqueda global con debounce
+    let searchTimeout;
+    $('#searchInput').on('keyup', function() {
+        clearTimeout(searchTimeout);
+        const searchTerm = $(this).val();
         
-        if (searchTerm !== '' || categoriaFilter !== '') {
-            $('.jugador-row').addClass('opacity-50');
-        }
-        
-        setTimeout(() => {
-            rows.each(function() {
-                const row = $(this);
-                const nombre = row.find('h6').text().toLowerCase();
-                const categoria = row.find('td:eq(4)').text().trim(); // Columna de categoría (índice 4)
-                
-                // Verificar filtro de nombre
-                const matchesNombre = searchTerm === '' || nombre.includes(searchTerm);
-                
-                // Verificar filtro de categoría
-                const matchesCategoria = categoriaFilter === '' || categoria === categoriaFilter;
-                
-                if (matchesNombre && matchesCategoria) {
-                    row.show();
-                    row.addClass('highlight-row');
-                    row.removeClass('opacity-50');
-                } else {
-                    row.hide();
-                    row.removeClass('highlight-row');
-                }
-            });
-            
-            // Mostrar mensaje si no hay resultados
-            const visibleRows = rows.filter(':visible');
-            if (visibleRows.length === 0 && (searchTerm !== '' || categoriaFilter !== '')) {
-                if ($('#no-results').length === 0) {
-                    $('#jugadoresTable tbody').append(`
-                        <tr id="no-results">
-                            <td colspan="7" class="text-center py-4">
-                                <div class="py-3">
-                                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                                    <h6 class="text-muted mb-2">No se encontraron resultados</h6>
-                                    <p class="text-muted mb-0">Intenta con otros términos de búsqueda o categoría</p>
-                                    <button class="btn btn-outline-primary btn-sm mt-2" onclick="clearFilters()">
-                                        <i class="fas fa-times me-1"></i>Limpiar filtros
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `);
-                }
-            } else {
-                $('#no-results').remove();
+        // Esperar 500ms después de que el usuario deje de escribir
+        searchTimeout = setTimeout(function() {
+            if (searchTerm.length >= 2 || searchTerm.length === 0) {
+                // Resetear a página 1 al buscar
+                const url = new URL(window.location.href);
+                url.searchParams.set('search', searchTerm);
+                url.searchParams.set('page', '1');
+                window.location.href = url.toString();
             }
-        }, 100);
+        }, 500);
+    });
+    
+    // Permitir búsqueda inmediata al presionar Enter
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            const searchTerm = $(this).val();
+            // Resetear a página 1 al buscar
+            const url = new URL(window.location.href);
+            url.searchParams.set('search', searchTerm);
+            url.searchParams.set('page', '1');
+            window.location.href = url.toString();
+        }
+    });
+    
+    // Función para limpiar búsqueda
+    function clearSearch() {
+        $('#searchInput').val('');
+        // Obtener la URL actual sin el parámetro search
+        const url = new URL(window.location.href);
+        url.searchParams.delete('search');
+        // Resetear a la página 1 al limpiar la búsqueda
+        url.searchParams.set('page', '1');
+        window.location.href = url.toString();
     }
-        // Función para confirmar acciones
-        function confirmAction(url, message) {
-            console.log(url, message);
-            if (confirm(message)) {
-                const form = document.getElementById('actionForm');
-                form.action = url;
-                form.submit();
-            }
-        }
-    // Event listeners para búsqueda
-    $('#searchInput').on('keyup', filterJugadores);
     
-    // Event listener para filtro de categoría
-    $('#categoriaFilter').on('change', filterJugadores);
-    
-    // Limpiar filtros
+    // Función para limpiar todos los filtros
     function clearFilters() {
         $('#searchInput').val('');
         $('#categoriaFilter').val('');
-        filterJugadores();
+        // Obtener la URL actual sin los parámetros de búsqueda
+        const url = new URL(window.location.href);
+        url.searchParams.delete('search');
+        url.searchParams.set('page', '1');
+        window.location.href = url.toString();
     }
 
     // Efectos hover en las filas
