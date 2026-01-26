@@ -854,6 +854,7 @@
 <!-- Formulario oculto para acciones -->
 <form id="actionForm" method="POST" style="display: none;">
     @csrf
+    @method('DELETE')
 </form>
 
 <script>

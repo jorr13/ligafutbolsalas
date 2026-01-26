@@ -18,20 +18,30 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clubes = Clubes::select('clubes.*', 'entrenadores.nombre as entrenador_nombre')
+        $search = $request->get('search', '');
+        
+        $query = Clubes::select('clubes.*', 'entrenadores.nombre as entrenador_nombre')
             ->leftJoin('entrenadores', function($join) {
-            $join->on('entrenadores.id', '=', 'clubes.entrenador_id');
-            })
-            ->paginate(10); // Paginación de 10 clubes por página
-            //dd($clubes);
-        // foreach ($clubes as $club) {
-        //     $entrenador = Entrenadores::where('id', $club->entrenador_id)->first();
-        //     $club->entrenador_id = $entrenador->nombre;
-        // }
-   
-        return view('clubes.index', compact('clubes'));
+                $join->on('entrenadores.id', '=', 'clubes.entrenador_id');
+            });
+        
+        // Búsqueda global en múltiples campos
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('clubes.nombre', 'LIKE', '%' . $search . '%')
+                  ->orWhere('clubes.localidad', 'LIKE', '%' . $search . '%')
+                  ->orWhere('clubes.rif', 'LIKE', '%' . $search . '%')
+                  ->orWhere('entrenadores.nombre', 'LIKE', '%' . $search . '%')
+                  ->orWhere('clubes.estatus', 'LIKE', '%' . $search . '%')
+                  ->orWhere('clubes.id', 'LIKE', '%' . $search . '%');
+            });
+        }
+        
+        $clubes = $query->paginate(10)->appends($request->query()); // Paginación de 10 clubes por página
+        
+        return view('clubes.index', compact('clubes', 'search'));
     }
     /**
      * Show the form for creating a new resource.

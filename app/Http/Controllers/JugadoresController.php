@@ -409,7 +409,7 @@ class JugadoresController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Jugadores $jugadores, $id)
+    public function destroy($id)
     {
         $jugador = Jugadores::where('id', $id)->first();
         
@@ -442,6 +442,23 @@ class JugadoresController extends Controller
         
         $jugador->delete();
     
+        // Redirigir según el rol del usuario y mantener parámetros de búsqueda
+        if(auth()->user()->rol_id == 'administrador') {
+            // Obtener parámetros de búsqueda de la petición anterior
+            $search = request()->get('search', '');
+            $queryParams = [];
+            if($search) {
+                $queryParams['search'] = $search;
+            }
+            
+            // Verificar si venía de jugadores-pendientes
+            $referer = request()->headers->get('referer');
+            if($referer && str_contains($referer, 'jugadores-pendientes')) {
+                return redirect()->route('jugadores.indexpendientes', $queryParams)->with('success', 'Jugador rechazado exitosamente.');
+            }
+            return redirect()->route('jugadores.index', $queryParams)->with('success', 'Jugador rechazado exitosamente.');
+        }
+        
         return redirect()->route('entrenador.clubes.jugadores', $jugador->club_id)->with('success', 'Jugador eliminado exitosamente.');
     }
 

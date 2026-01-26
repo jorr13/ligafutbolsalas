@@ -493,12 +493,24 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="d-flex justify-content-end align-items-center gap-3">
-                        <div class="input-group" style="max-width: 300px;">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-search text-muted"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar club...">
-                        </div>
+                        <form method="GET" action="{{ url()->current() }}" class="d-flex align-items-center" id="searchForm" style="max-width: 300px;">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control border-start-0" 
+                                       id="searchInput" 
+                                       name="search" 
+                                       placeholder="Buscar club..." 
+                                       value="{{ $search ?? '' }}">
+                                @if(isset($search) && $search != '')
+                                <button type="button" class="btn btn-outline-secondary border-start-0" onclick="clearSearch()" title="Limpiar búsqueda">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                @endif
+                            </div>
+                        </form>
                         <a href="{{ route('clubes.historial.general') }}" class="btn btn-secondary me-2">
                             <i class="fas fa-history me-2"></i>Historial General
                         </a>
@@ -672,51 +684,48 @@
 </form>
 
 <script>
-    // Funcionalidad de búsqueda en tiempo real
+    // Funcionalidad de búsqueda global con debounce
+    let searchTimeout;
     $('#searchInput').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        const rows = $('.club-row');
+        clearTimeout(searchTimeout);
+        const searchTerm = $(this).val();
         
-        rows.each(function() {
-            const row = $(this);
-            const text = row.text().toLowerCase();
-            
-            if (text.includes(searchTerm)) {
-                row.show();
-                row.addClass('highlight-row');
-            } else {
-                row.hide();
-                row.removeClass('highlight-row');
+        // Esperar 500ms después de que el usuario deje de escribir
+        searchTimeout = setTimeout(function() {
+            if (searchTerm.length >= 2 || searchTerm.length === 0) {
+                // Resetear a página 1 al buscar
+                const url = new URL(window.location.href);
+                url.searchParams.set('search', searchTerm);
+                url.searchParams.set('page', '1');
+                window.location.href = url.toString();
             }
-        });
-        
-        // Mostrar mensaje si no hay resultados
-        const visibleRows = rows.filter(':visible');
-        if (visibleRows.length === 0 && searchTerm !== '') {
-            if ($('#no-results').length === 0) {
-                $('#clubesTable tbody').append(`
-                    <tr id="no-results">
-                        <td colspan="6" class="text-center py-4">
-                            <div class="py-3">
-                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                                <h6 class="text-muted mb-2">No se encontraron resultados</h6>
-                                <p class="text-muted mb-0">Intenta con otros términos de búsqueda</p>
-                            </div>
-                        </td>
-                    </tr>
-                `);
-            }
-        } else {
-            $('#no-results').remove();
+        }, 500);
+    });
+    
+    // Permitir búsqueda inmediata al presionar Enter
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            const searchTerm = $(this).val();
+            // Resetear a página 1 al buscar
+            const url = new URL(window.location.href);
+            url.searchParams.set('search', searchTerm);
+            url.searchParams.set('page', '1');
+            window.location.href = url.toString();
         }
     });
-
-    // Limpiar búsqueda
-    $('#searchInput').on('focus', function() {
-        if ($(this).val() === '') {
-            $('.club-row').removeClass('highlight-row');
-        }
-    });
+    
+    // Función para limpiar búsqueda
+    function clearSearch() {
+        $('#searchInput').val('');
+        // Obtener la URL actual sin el parámetro search
+        const url = new URL(window.location.href);
+        url.searchParams.delete('search');
+        // Resetear a la página 1 al limpiar la búsqueda
+        url.searchParams.set('page', '1');
+        window.location.href = url.toString();
+    }
 
     // Efectos hover en las filas
     $('.club-row').hover(
