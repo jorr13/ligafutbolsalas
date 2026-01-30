@@ -916,6 +916,21 @@
         if (confirm(message)) {
             const form = document.getElementById('actionForm');
             form.action = url;
+            // Aceptar usa POST; Rechazar usa DELETE
+            const methodInput = form.querySelector('input[name="_method"]');
+            if (url.indexOf('aceptar-jugador') !== -1) {
+                if (methodInput) methodInput.remove();
+            } else {
+                if (!methodInput) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = '_method';
+                    input.value = 'DELETE';
+                    form.appendChild(input);
+                } else {
+                    methodInput.value = 'DELETE';
+                }
+            }
             form.submit();
         }
     }
@@ -965,9 +980,9 @@
                 
                 // Actualizar título del modal
                 $('#staticBackdropLabel').html('<i class="fas fa-user-circle me-2"></i>Perfil del Jugador');
-                let miurl= '{{ asset('images/') }}';
+                let miurl= '{{ asset('storage/') }}';
                 // Llenar datos del jugador
-                $('#jugador-foto').attr('src', miurl+'/'+response.data.foto_identificacion);
+                $('#jugador-foto').attr('src', miurl+'/'+response.data.foto_carnet);
                 $('#jugador-nombre').text(response.data.nombre || 'Sin nombre');
                 $('#jugador-categoria').text(response.data.categoria_nombre || 'Sin categoría');
                 $('#jugador-cedula').text(response.data.cedula || 'No especificada');

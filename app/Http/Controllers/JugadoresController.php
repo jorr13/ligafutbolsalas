@@ -478,14 +478,18 @@ class JugadoresController extends Controller
 
     public function aceptarJugador($id, Request $request)
     {
-        // dd($id);
         $jugador = Jugadores::where('id', $id)->first();
         $jugador->update([
             'status' => 'activo',
         ]);
-        $search = $request->get('search', '');
-        $jugadores = Jugadores::GetjugadoresPending($search)->paginate(10)->appends($request->query()); 
-        return view('jugadores.index', compact('jugadores', 'search'))->with('success', 'Jugador aceptado exitosamente.');
+
+        $queryParams = [];
+        if ($request->filled('search')) {
+            $queryParams['search'] = $request->get('search');
+        }
+
+        return redirect()->route('jugadores.indexpendientes', $queryParams)
+            ->with('success', 'Jugador aceptado exitosamente.');
     }
 
     public function indexAdmin(Request $request)
