@@ -521,17 +521,20 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                @if($jugador->foto_carnet)
-                                                @php
-                                                    $fotoCarnetUrl = str_starts_with($jugador->foto_carnet, 'jugadores/') 
-                                                        ? asset('storage/' . $jugador->foto_carnet) 
-                                                        : asset('images/' . $jugador->foto_carnet);
-                                                @endphp
                                                 <small class="d-block mt-2 text-info">
                                                     <i class="fas fa-info-circle me-1"></i>
-                                                    {{ __('Archivo actual') }}: <a href="{{ $fotoCarnetUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    {{ __('Archivo actual') }}:
+                                                    @if($jugador->foto_carnet)
+                                                        @php
+                                                            $fotoCarnetUrl = str_starts_with($jugador->foto_carnet, 'jugadores/') || str_starts_with($jugador->foto_carnet, 'logos/')
+                                                                ? asset('storage/' . $jugador->foto_carnet)
+                                                                : asset('images/' . $jugador->foto_carnet);
+                                                        @endphp
+                                                        <a href="{{ $fotoCarnetUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    @else
+                                                        <span class="text-muted">{{ __('Sin archivo') }}</span>
+                                                    @endif
                                                 </small>
-                                @endif
                                             @error('foto_carnet')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
@@ -576,17 +579,20 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                @if($jugador->foto_cedula)
-                                                @php
-                                                    $fotoCedulaUrl = str_starts_with($jugador->foto_cedula, 'jugadores/') 
-                                                        ? asset('storage/' . $jugador->foto_cedula) 
-                                                        : asset('images/' . $jugador->foto_cedula);
-                                                @endphp
                                                 <small class="d-block mt-2 text-info">
                                                     <i class="fas fa-info-circle me-1"></i>
-                                                    {{ __('Archivo actual') }}: <a href="{{ $fotoCedulaUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    {{ __('Archivo actual') }}:
+                                                    @if($jugador->foto_cedula)
+                                                        @php
+                                                            $fotoCedulaUrl = str_starts_with($jugador->foto_cedula, 'jugadores/') || str_starts_with($jugador->foto_cedula, 'logos/')
+                                                                ? asset('storage/' . $jugador->foto_cedula)
+                                                                : asset('images/' . $jugador->foto_cedula);
+                                                        @endphp
+                                                        <a href="{{ $fotoCedulaUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    @else
+                                                        <span class="text-muted">{{ __('Sin archivo') }}</span>
+                                                    @endif
                                                 </small>
-                                @endif
                                             @error('foto_cedula')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
@@ -631,17 +637,20 @@
                                                     </button>
                                                 </div>
                             </div>
-                                @if($jugador->foto_identificacion)
-                                                @php
-                                                    $fotoIdentificacionUrl = str_starts_with($jugador->foto_identificacion, 'jugadores/') 
-                                                        ? asset('storage/' . $jugador->foto_identificacion) 
-                                                        : asset('images/' . $jugador->foto_identificacion);
-                                                @endphp
                                                 <small class="d-block mt-2 text-info">
                                                     <i class="fas fa-info-circle me-1"></i>
-                                                    {{ __('Archivo actual') }}: <a href="{{ $fotoIdentificacionUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    {{ __('Archivo actual') }}:
+                                                    @if($jugador->foto_identificacion)
+                                                        @php
+                                                            $fotoIdentificacionUrl = str_starts_with($jugador->foto_identificacion, 'jugadores/') || str_starts_with($jugador->foto_identificacion, 'logos/')
+                                                                ? asset('storage/' . $jugador->foto_identificacion)
+                                                                : asset('images/' . $jugador->foto_identificacion);
+                                                        @endphp
+                                                        <a href="{{ $fotoIdentificacionUrl }}" target="_blank" class="text-decoration-none">{{ __('Ver archivo') }}</a>
+                                                    @else
+                                                        <span class="text-muted">{{ __('Sin archivo') }}</span>
+                                                    @endif
                                                 </small>
-                                @endif
                                             @error('foto_identificacion')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
