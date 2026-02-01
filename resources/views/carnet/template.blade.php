@@ -39,10 +39,11 @@
           
         </tr>
         <!-- Cuerpo principal: 3 columnas para aprovechar mejor el espacio -->
-        <tr>
+        <tr style=" margin-top: 14px;  position: relative;"> 
+            
             <!-- Columna izquierda: foto -->
             <td style="width: 20mm; padding: 0.8mm; vertical-align: top; text-align: center;">
-                <div style="width: 16mm; height: 18mm; margin-bottom: 0.6mm;">
+                <div style="width: 16mm; height: 22mm; margin-bottom: 0.6mm;    margin-top: 9px;">
                     @if($jugador->foto_carnet)
                         @if(isset($imagenesCorregidas['foto']) && $imagenesCorregidas['foto'])
                             <img src="{{ $imagenesCorregidas['foto'] }}" alt="" style="width: 20mm; height: 22mm; object-fit: cover; display: block; position: relative; left: 10px; transform: rotate(0deg);">
@@ -64,34 +65,32 @@
             
             <!-- Columna central: datos principales -->
             <td style="width: 35mm; padding: 0.8mm; vertical-align: top;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 4.8pt; line-height: 1.1;">
-                    <tr>
-                        <td style="width: 10mm; color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Apellidos:</td>
-                        <td style="color: #212529; padding: 0.15mm 0; font-size: 4.2pt;">{{ $jugador->apellidos ?? 'N/A' }}</td>
-                    </tr>
+                <div style="margin-top: 10px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 5.5pt; line-height: 1.1;">
+
                     <tr>
                         <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Nombres:</td>
-                        <td style="color: #212529; padding: 0.15mm 0; font-size: 4.2pt;">{{ $jugador->nombre ?? 'N/A' }}</td>
+                        <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ $jugador->nombre ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Cédula:</td>
-                        <td style="color: #212529; padding: 0.15mm 0; font-size: 4.2pt;">{{ $jugador->cedula ?? 'N/A' }}</td>
+                        <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ $jugador->cedula ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Edad:</td>
-                        <td style="color: #212529; padding: 0.15mm 0; font-size: 4.2pt;">{{ $jugador->edad ?? 'N/A' }}</td>
+                        <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ $jugador->edad ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Categoría:</td>
-                        <td style="color: #212529; padding: 0.15mm 0; font-size: 4.2pt;">{{ $jugador->categoria->nombre ?? 'N/A' }}</td>
+                        <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ $jugador->categoria->nombre ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Nivel:</td>
-                        <td style="color: #212529; padding: 0.15mm 0; font-size: 4.2pt;">{{ ucfirst($jugador->nivel ?? 'iniciante') }}</td>
+                        <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ ucfirst($jugador->nivel ?? 'iniciante') }}</td>
                     </tr>
                     <tr>
                         <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Club:</td>
-                        <td style="color: #212529; padding: 0.15mm 0; font-size: 4.2pt;">{{ $jugador->club->nombre ?? 'N/A' }}</td>
+                        <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ $jugador->club->nombre ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Dorsal:</td>
@@ -102,7 +101,7 @@
                         <td style="color: #212529; padding: 0.15mm 0; font-size: 4.2pt;">{{ $jugador->tipo_sangre ?? 'N/A' }}</td>
                     </tr>
                 </table>
-                
+                </div>
                 <!-- Representante compacto -->
                 {{-- @if($jugador->nombre_representante) 
                 <div style="border-top: 0.2mm solid #e9ecef; padding-top: 0.5mm; margin-top: 0.5mm; font-size: 4pt;">
@@ -120,6 +119,7 @@
             
             <!-- Columna derecha: logo y QR -->
             <td style="width: 25mm; padding: 0.8mm; vertical-align: top; text-align: center;">
+                <div style="margin-top: 10px;">
                 <!-- Logo del club -->
                 @if($jugador->club && $jugador->club->logo)
                     @if(isset($imagenesCorregidas['logo']) && $imagenesCorregidas['logo'])
@@ -136,7 +136,7 @@
                 @else
                     <div style="width: 12mm; height: 12mm; background: #f8f9fa; border: 0.2mm solid #e9ecef; color: #6c757d; font-weight: bold; font-size: 5pt; text-align: center; line-height: 12mm; margin: 0 auto 2mm auto;">FS</div>
                 @endif
-                
+                </div>
             </td>
 
         </tr>
