@@ -52,6 +52,9 @@ Route::group(['middleware' => ['auth']], function () {
         // Rutas para sistema de carnets
         Route::get('jugadores/{id}/carnet', [App\Http\Controllers\CarnetController::class, 'generar'])->name('jugadores.carnet');
         Route::get('jugadores/{id}/carnet/preview', [App\Http\Controllers\CarnetController::class, 'vistaPrevia'])->name('jugadores.carnet.preview');
+        
+        // Ruta para marcar pago de jugador
+        Route::post('jugadores/{id}/toggle-pago', [App\Http\Controllers\JugadoresController::class, 'togglePago'])->name('admin.jugadores.togglePago');
     });
 
     // Rutas para historial de clubes

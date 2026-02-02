@@ -71,6 +71,43 @@
         transform: scale(1.05);
     }
     
+    /* Indicador de pago - solo visible para administradores */
+    .pago-badge {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        border: 2px solid white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        cursor: help;
+        z-index: 10;
+    }
+    
+    .pago-badge.pagado {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .pago-badge.no-pagado {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-toggle-pago {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-toggle-pago:hover {
+        transform: scale(1.05);
+    }
+    
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .btn-group {
@@ -576,12 +613,21 @@
                                          alt="Foto de {{ $jugador->nombre }}" 
                                          class="rounded-circle border-2 border-light shadow-sm jugador-avatar" 
                                          style="width: 45px; height: 45px; object-fit: cover;">
-                                    <div class="position-absolute bottom-0 end-0 bg-{{ $jugador->status == 'activo' ? 'success' : 'warning' }} rounded-circle border-2 border-white" 
-                                         style="width: 12px; height: 12px;"></div>
+                               
+                                    
+                                    @if(auth()->user()->rol_id === "administrador")
+                                        <!-- Indicador de pago solo visible para administradores -->
+                                        <div class="pago-badge {{ $jugador->pago == 1 ? 'pagado' : 'no-pagado' }}" 
+                                             title="{{ $jugador->pago == 1 ? 'Pago realizado' : 'Pago pendiente' }}"
+                                             data-jugador-id="{{ $jugador->id }}" style="position: absolute;
+    top: 30px;
+">
+                                            <i class="fas fa-{{ $jugador->pago == 1 ? 'check' : 'times' }}"></i>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div>
                                     <h6 class="mb-0 fw-bold text-dark">{{ $jugador->nombre }}</h6>
-                                    <small class="text-muted">{{ $jugador->email ?? 'Sin email' }}</small>
                                 </div>
                             </div>
                         </td>
@@ -621,6 +667,15 @@
                                 </a>
                                 @endif
                                 @if(auth()->user()->rol_id=="administrador")
+                                <!-- Botón para marcar/desmarcar pago -->
+                                <button type="button" 
+                                        class="btn btn-outline-{{ $jugador->pago == 1 ? 'success' : 'danger' }} btn-sm btn-toggle-pago"
+                                        onclick="togglePago({{ $jugador->id }})"
+                                        title="{{ $jugador->pago == 1 ? 'Marcar como no pagado' : 'Marcar como pagado' }}"
+                                        data-jugador-id="{{ $jugador->id }}">
+                                    <i class="fas fa-{{ $jugador->pago == 1 ? 'check-circle' : 'times-circle' }} me-1"></i>
+                                    <span class="d-none d-md-inline">Pago</span>
+                                </button>
                                 <button type="button" 
                                         class="btn btn-outline-info btn-sm"
                                         onclick="confirmAction('{{ route('jugadores.aceptar', $jugador->id) }}', '¿Estás seguro de aceptar este jugador?')"
@@ -1071,5 +1126,44 @@
 
     // Tooltips para los botones
     $('[title]').tooltip();
+
+    /**
+     * Función para marcar/desmarcar el pago de un jugador
+     */
+    function togglePago(jugadorId) {
+        // Confirmar acción
+        const btn = $(`.btn-toggle-pago[data-jugador-id="${jugadorId}"]`);
+        const isPagado = btn.hasClass('btn-outline-success');
+        const mensaje = isPagado 
+            ? '¿Estás seguro de marcar este jugador como NO pagado?' 
+            : '¿Estás seguro de marcar este jugador como pagado?';
+        
+        if (!confirm(mensaje)) {
+            return;
+        }
+        
+        // Deshabilitar botón durante la petición
+        btn.prop('disabled', true);
+        
+        $.ajax({
+            url: "/admin/jugadores/" + jugadorId + "/toggle-pago",
+            type: "POST",
+            headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+            success: function(response) {
+                if (response.code === 200) {
+                    // Recargar la página para actualizar el icono y estado
+                    location.reload();
+                } else {
+                    alert('Error al actualizar el estado de pago');
+                    btn.prop('disabled', false);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al actualizar pago:', error);
+                alert('Error al actualizar el estado de pago. Por favor, intenta nuevamente.');
+                btn.prop('disabled', false);
+            }
+        });
+    }
 </script>
 @endsection

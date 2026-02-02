@@ -15,7 +15,7 @@ class Jugadores extends Model
     protected $table = 'jugadores';
     protected $fillable = ['nombre','cedula','telefono','direccion',
         'foto_carnet','foto_cedula','foto_identificacion','archivo_cv',
-        'user_id','club_id','status',
+        'user_id','club_id','status','pago',
         'email',
         'numero_dorsal',
         'edad',

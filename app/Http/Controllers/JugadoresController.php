@@ -664,4 +664,43 @@ class JugadoresController extends Controller
         //dd($jugadores);
         return view('jugadores.index-public', compact('jugadores', 'club', 'categorias', 'search', 'categoria'));
     }
+
+    /**
+     * Marcar o desmarcar el pago de un jugador (solo administradores)
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function togglePago($id)
+    {
+        // Verificar que el usuario sea administrador
+        if (auth()->user()->rol_id !== 'administrador') {
+            return response()->json([
+                'message' => 'No tienes permisos para realizar esta acción',
+                'code' => 403,
+                'type' => 'error'
+            ], 403);
+        }
+
+        try {
+            $jugador = Jugadores::findOrFail($id);
+            
+            // Alternar el estado de pago (0 <-> 1)
+            $jugador->pago = $jugador->pago == 1 ? 0 : 1;
+            $jugador->save();
+
+            return response()->json([
+                'message' => $jugador->pago == 1 ? 'Pago marcado como realizado' : 'Pago marcado como pendiente',
+                'pago' => $jugador->pago,
+                'code' => 200,
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el estado de pago',
+                'code' => 500,
+                'type' => 'error'
+            ], 500);
+        }
+    }
 }
