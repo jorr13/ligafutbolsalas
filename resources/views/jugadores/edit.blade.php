@@ -94,11 +94,54 @@
                                         </div>
                             </div>
                                     
-                            <div class="col-md-6">
+                            @php
+                                $tipoCedula = 'V';
+                                $numeroCedula = '';
+                                if (old('tipo_identificacion') || old('cedula')) {
+                                    $tipoCedula = old('tipo_identificacion', 'V');
+                                    $numeroCedula = old('cedula', '');
+                                } elseif (preg_match('/^([VEFP])-?(\d+)$/i', $jugador->cedula ?? '', $matches)) {
+                                    $tipoCedula = strtoupper($matches[1]);
+                                    $numeroCedula = $matches[2];
+                                } elseif (preg_match('/^(\d+)$/', $jugador->cedula ?? '', $matches)) {
+                                    $numeroCedula = $matches[1];
+                                } else {
+                                    $numeroCedula = $jugador->cedula ?? '';
+                                }
+                            @endphp
+                            <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="tipo_identificacion" class="form-label fw-semibold">
+                                                <i class="fas fa-id-badge me-2 text-primary"></i>
+                                                {{ __('Tipo de Identificación') }}
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="fas fa-id-card text-muted"></i>
+                                                </span>
+                                                <select class="form-select border-start-0 @error('tipo_identificacion') is-invalid @enderror" 
+                                                        id="tipo_identificacion" 
+                                                        name="tipo_identificacion"
+                                                        required>
+                                                    <option value="V" {{ $tipoCedula == 'V' ? 'selected' : '' }}>V</option>
+                                                    <option value="E" {{ $tipoCedula == 'E' ? 'selected' : '' }}>E</option>
+                                                    <option value="F" {{ $tipoCedula == 'F' ? 'selected' : '' }}>F</option>
+                                                    <option value="P" {{ $tipoCedula == 'P' ? 'selected' : '' }}>P</option>
+                                                </select>
+                                            </div>
+                                            @error('tipo_identificacion')
+                                                <div class="invalid-feedback d-block mt-2">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                                    <strong>{{ $message }}</strong>
+                                                </div>
+                                            @enderror
+                                        </div>
+                            </div>
+                            <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="cedula" class="form-label fw-semibold">
-                                                <i class="fas fa-id-card me-2 text-primary"></i>
-                                                {{ __('Cédula de Identidad') }}
+                                                <i class="fas fa-hashtag me-2 text-primary"></i>
+                                                {{ __('Número de Cédula') }}
                                             </label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light border-end-0">
@@ -109,8 +152,8 @@
                                                        id="cedula" 
                                                        name="cedula" 
                                                        required 
-                                                       placeholder="Ej: 12345678"
-                                                       value="{{ old('cedula', $jugador->cedula) }}">
+                                                       placeholder="Ej: 24042654"
+                                                       value="{{ $numeroCedula }}">
                                             </div>
                                             @error('cedula')
                                                 <div class="invalid-feedback d-block mt-2">

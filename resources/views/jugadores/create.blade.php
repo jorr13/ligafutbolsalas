@@ -4,6 +4,13 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10 col-xl-9">
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <!-- Header Section -->
             <div class="text-center mb-5">
                 <div class="page-icon mb-3">
@@ -55,11 +62,39 @@
                                 </div>
                             </div>
                             
-                            <div class="col-md-6">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="tipo_identificacion" class="form-label fw-semibold">
+                                        <i class="fas fa-id-badge me-2 text-primary"></i>
+                                        {{ __('Tipo de Identificación') }}
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-id-card text-muted"></i>
+                                        </span>
+                                        <select class="form-select border-start-0 @error('tipo_identificacion') is-invalid @enderror" 
+                                                id="tipo_identificacion" 
+                                                name="tipo_identificacion"
+                                                required>
+                                            <option value="V" {{ old('tipo_identificacion', 'V') == 'V' ? 'selected' : '' }}>V</option>
+                                            <option value="E" {{ old('tipo_identificacion') == 'E' ? 'selected' : '' }}>E</option>
+                                            <option value="F" {{ old('tipo_identificacion') == 'F' ? 'selected' : '' }}>F</option>
+                                            <option value="P" {{ old('tipo_identificacion') == 'P' ? 'selected' : '' }}>P</option>
+                                        </select>
+                                    </div>
+                                    @error('tipo_identificacion')
+                                        <div class="invalid-feedback d-block mt-2">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="cedula" class="form-label fw-semibold">
-                                        <i class="fas fa-id-card me-2 text-primary"></i>
-                                        {{ __('Cédula de Identidad') }}
+                                        <i class="fas fa-hashtag me-2 text-primary"></i>
+                                        {{ __('Número de Cédula') }}
                                     </label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0">
@@ -70,7 +105,7 @@
                                                id="cedula" 
                                                name="cedula" 
                                                required 
-                                               placeholder="Ej: 12345678"
+                                               placeholder="Ej: 24042654"
                                                value="{{ old('cedula') }}">
                                     </div>
                                     @error('cedula')

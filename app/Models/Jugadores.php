@@ -13,7 +13,7 @@ class Jugadores extends Model
 {
  use HasFactory;
     protected $table = 'jugadores';
-    protected $fillable = ['nombre','cedula','telefono','direccion',
+    protected $fillable = ['nombre','cedula','tipo_identificacion','telefono','direccion',
         'foto_carnet','foto_cedula','foto_identificacion','archivo_cv',
         'user_id','club_id','status','pago',
         'email',

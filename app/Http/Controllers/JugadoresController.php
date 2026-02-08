@@ -114,6 +114,7 @@ class JugadoresController extends Controller
         // Validación de campos
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'tipo_identificacion' => 'required|in:V,E,F,P',
             'cedula' => 'required|string|max:20',
             'telefono' => 'nullable|string|max:15',
             'email' => [
@@ -171,10 +172,38 @@ class JugadoresController extends Controller
             }
         }
         
+        // Combinar tipo de identificación + número de cédula (ej: V-24042654)
+        $cedulaCompleta = $request->tipo_identificacion . '-' . preg_replace('/^[VEFP]-?/i', '', $request->cedula);
+
+        // Verificar si la cédula ya existe (en cualquier formato: V-123, V123, 123, E-123, etc.)
+        $numeroCedula = preg_replace('/^[VEFP]-?/i', '', $cedulaCompleta);
+        $jugadorExistente = Jugadores::with('club')
+            ->where(function ($q) use ($cedulaCompleta, $numeroCedula) {
+                $q->where('cedula', $cedulaCompleta)
+                    ->orWhere('cedula', $numeroCedula)
+                    ->orWhere('cedula', 'like', 'V-' . $numeroCedula)
+                    ->orWhere('cedula', 'like', 'V' . $numeroCedula)
+                    ->orWhere('cedula', 'like', 'E-' . $numeroCedula)
+                    ->orWhere('cedula', 'like', 'E' . $numeroCedula)
+                    ->orWhere('cedula', 'like', 'F-' . $numeroCedula)
+                    ->orWhere('cedula', 'like', 'F' . $numeroCedula)
+                    ->orWhere('cedula', 'like', 'P-' . $numeroCedula)
+                    ->orWhere('cedula', 'like', 'P' . $numeroCedula);
+            })
+            ->first();
+
+        if ($jugadorExistente) {
+            $clubNombre = $jugadorExistente->club->nombre ?? 'Sin club asignado';
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "La cédula {$cedulaCompleta} ya está registrada en el club: {$clubNombre}");
+        }
+
         try {
             $createJugador = Jugadores::create([
                 'nombre' => $request->nombre,
-                'cedula' => $request->cedula,
+                'cedula' => $cedulaCompleta,
+                'tipo_identificacion' => $request->tipo_identificacion,
                 'telefono' => $request->telefono,
                 'direccion' => $request->direccion,
                 'club_id' => $clubs->id,
@@ -288,6 +317,7 @@ class JugadoresController extends Controller
         // Validación de campos
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'tipo_identificacion' => 'required|in:V,E,F,P',
             'cedula' => 'required|string|max:20',
             'telefono' => 'nullable|string|max:15',
             'email' => [
@@ -363,10 +393,14 @@ class JugadoresController extends Controller
             }
         }
         //dd($edad);
+        // Combinar tipo de identificación + número de cédula (ej: V-24042654)
+        $cedulaCompleta = $request->tipo_identificacion . '-' . preg_replace('/^[VEFP]-?/i', '', $request->cedula);
+
         try {
             $jugador->update([
                 'nombre' => $request->nombre,
-                'cedula' => $request->cedula,
+                'cedula' => $cedulaCompleta,
+                'tipo_identificacion' => $request->tipo_identificacion,
                 'telefono' => $request->telefono,
                 'direccion' => $request->direccion,
                 'foto_carnet' => $fotoCarnetPath,
