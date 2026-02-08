@@ -482,11 +482,16 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="d-flex justify-content-end align-items-center gap-3">
-                        <div class="input-group" style="max-width: 300px;">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-search text-muted"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar árbitro...">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="input-group" style="max-width: 280px;">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar árbitro...">
+                            </div>
+                            <button type="button" class="btn btn-primary" id="btnBuscar">
+                                <i class="fas fa-search me-1"></i>Buscar
+                            </button>
                         </div>
                         @if(auth()->user()->rol_id=="administrador")
                         <a href="{{ route('arbitros.create') }}" class="btn btn-primary">
@@ -619,9 +624,9 @@
 </form>
 
 <script>
-    // Funcionalidad de búsqueda en tiempo real
-    $('#searchInput').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
+    // Función para ejecutar búsqueda
+    function ejecutarBusqueda() {
+        const searchTerm = $('#searchInput').val().toLowerCase();
         const rows = $('.arbitro-row');
         
         rows.each(function() {
@@ -656,12 +661,16 @@
         } else {
             $('#no-results').remove();
         }
-    });
+    }
 
-    // Limpiar búsqueda
-    $('#searchInput').on('focus', function() {
-        if ($(this).val() === '') {
-            $('.arbitro-row').removeClass('highlight-row');
+    // Búsqueda al hacer clic en botón
+    $('#btnBuscar').on('click', ejecutarBusqueda);
+    
+    // Búsqueda al presionar Enter
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            ejecutarBusqueda();
         }
     });
 
@@ -689,16 +698,6 @@
     
     // Mejoras para móvil
     if (window.innerWidth <= 768) {
-        // Agregar indicador de carga en búsqueda
-        $('#searchInput').on('input', function() {
-            const searchTerm = $(this).val();
-            if (searchTerm.length > 0) {
-                $('.table-responsive').addClass('searching');
-            } else {
-                $('.table-responsive').removeClass('searching');
-            }
-        });
-        
         // Mejorar la experiencia de touch
         $('.btn').on('touchstart', function() {
             $(this).addClass('touch-active');

@@ -493,13 +493,13 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="d-flex justify-content-end align-items-center gap-3">
-                        <form method="GET" action="{{ url()->current() }}" class="d-flex align-items-center" id="searchForm" style="max-width: 300px;">
+                        <form method="GET" action="{{ url()->current() }}" class="d-flex align-items-center gap-2" id="searchForm" style="max-width: 400px;">
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="fas fa-search text-muted"></i>
                                 </span>
                                 <input type="text" 
-                                       class="form-control border-start-0" 
+                                       class="form-control border-start-0 border-end-0" 
                                        id="searchInput" 
                                        name="search" 
                                        placeholder="Buscar club..." 
@@ -510,6 +510,9 @@
                                 </button>
                                 @endif
                             </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-1"></i>Buscar
+                            </button>
                         </form>
                         <a href="{{ route('clubes.historial.general') }}" class="btn btn-secondary me-2">
                             <i class="fas fa-history me-2"></i>Historial General
@@ -684,35 +687,11 @@
 </form>
 
 <script>
-    // Funcionalidad de búsqueda global con debounce
-    let searchTimeout;
-    $('#searchInput').on('keyup', function() {
-        clearTimeout(searchTimeout);
-        const searchTerm = $(this).val();
-        
-        // Esperar 500ms después de que el usuario deje de escribir
-        searchTimeout = setTimeout(function() {
-            if (searchTerm.length >= 2 || searchTerm.length === 0) {
-                // Resetear a página 1 al buscar
-                const url = new URL(window.location.href);
-                url.searchParams.set('search', searchTerm);
-                url.searchParams.set('page', '1');
-                window.location.href = url.toString();
-            }
-        }, 500);
-    });
-    
-    // Permitir búsqueda inmediata al presionar Enter
+    // Permitir búsqueda al presionar Enter
     $('#searchInput').on('keypress', function(e) {
         if (e.which === 13) {
             e.preventDefault();
-            clearTimeout(searchTimeout);
-            const searchTerm = $(this).val();
-            // Resetear a página 1 al buscar
-            const url = new URL(window.location.href);
-            url.searchParams.set('search', searchTerm);
-            url.searchParams.set('page', '1');
-            window.location.href = url.toString();
+            $('#searchForm').submit();
         }
     });
     
@@ -751,16 +730,6 @@
     
     // Mejoras para móvil
     if (window.innerWidth <= 768) {
-        // Agregar indicador de carga en búsqueda
-        $('#searchInput').on('input', function() {
-            const searchTerm = $(this).val();
-            if (searchTerm.length > 0) {
-                $('.table-responsive').addClass('searching');
-            } else {
-                $('.table-responsive').removeClass('searching');
-            }
-        });
-        
         // Mejorar la experiencia de touch
         $('.btn').on('touchstart', function() {
             $(this).addClass('touch-active');

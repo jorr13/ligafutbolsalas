@@ -175,7 +175,7 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="row g-2">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="fas fa-search text-muted"></i>
@@ -183,13 +183,18 @@
                                 <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Buscar jugador...">
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <select class="form-select" id="categoriaFilter">
                                 <option value="">Todas las categorías</option>
                                 @foreach($categorias as $categoria)
                                     <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-primary w-100" onclick="filterJugadores()" title="Buscar">
+                                <i class="fas fa-search me-1"></i>Buscar
+                            </button>
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="clearFilters()" title="Limpiar filtros">
@@ -705,9 +710,14 @@
         }, 100);
     }
     
-    // Event listeners para filtros
-    $('#searchInput').on('keyup', filterJugadores);
-    $('#categoriaFilter').on('change', filterJugadores);
+    // Búsqueda al hacer clic en botón (ya está en onclick="filterJugadores()")
+    // Búsqueda al presionar Enter
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            filterJugadores();
+        }
+    });
     
     // Limpiar filtros
     function clearFilters() {

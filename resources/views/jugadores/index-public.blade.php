@@ -381,9 +381,9 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="row g-2">
-                        <div class="col-md-5">
-                            <form method="GET" action="{{ url()->current() }}" id="searchForm">
-                                <div class="input-group">
+                        <div class="col-12">
+                            <form method="GET" action="{{ url()->current() }}" id="searchForm" class="d-flex flex-wrap gap-2 align-items-center">
+                                <div class="input-group" style="max-width: 280px;">
                                     <span class="input-group-text bg-light border-end-0">
                                         <i class="fas fa-search text-muted"></i>
                                     </span>
@@ -399,22 +399,21 @@
                                     </button>
                                     @endif
                                 </div>
+                                <select class="form-select" id="categoriaFilter" name="categoria" style="max-width: 200px;">
+                                    <option value="">Todas las categorías</option>
+                                    @foreach($categorias as $categoriaItem)
+                                        <option value="{{ $categoriaItem->nombre }}" {{ (isset($categoria) && $categoria == $categoriaItem->nombre) ? 'selected' : '' }}>
+                                            {{ $categoriaItem->nombre }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search me-1"></i>Buscar
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearFilters()" title="Limpiar filtros">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </form>
-                        </div>
-                        <div class="col-md-5">
-                            <select class="form-select" id="categoriaFilter" name="categoria">
-                                <option value="">Todas las categorías</option>
-                                @foreach($categorias as $categoriaItem)
-                                    <option value="{{ $categoriaItem->nombre }}" {{ (isset($categoria) && $categoria == $categoriaItem->nombre) ? 'selected' : '' }}>
-                                        {{ $categoriaItem->nombre }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="clearFilters()" title="Limpiar filtros">
-                                <i class="fas fa-times"></i>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -929,52 +928,12 @@
          $('#jugador-status').removeClass('bg-success bg-warning').text('');
      });
 
-    // Funcionalidad de búsqueda global con debounce
-    let searchTimeout;
-    $('#searchInput').on('keyup', function() {
-        clearTimeout(searchTimeout);
-        const searchTerm = $(this).val();
-        
-        // Esperar 500ms después de que el usuario deje de escribir
-        searchTimeout = setTimeout(function() {
-            if (searchTerm.length >= 2 || searchTerm.length === 0) {
-                // Resetear a página 1 al buscar
-                const url = new URL(window.location.href);
-                url.searchParams.set('search', searchTerm);
-                url.searchParams.set('page', '1');
-                window.location.href = url.toString();
-            }
-        }, 500);
-    });
-    
-    // Permitir búsqueda inmediata al presionar Enter
+    // Permitir búsqueda al presionar Enter
     $('#searchInput').on('keypress', function(e) {
         if (e.which === 13) {
             e.preventDefault();
-            clearTimeout(searchTimeout);
-            const searchTerm = $(this).val();
-            // Resetear a página 1 al buscar
-            const url = new URL(window.location.href);
-            url.searchParams.set('search', searchTerm);
-            url.searchParams.set('page', '1');
-            window.location.href = url.toString();
+            $('#searchForm').submit();
         }
-    });
-    
-    // Filtro de categoría - enviar al servidor cuando cambie
-    $('#categoriaFilter').on('change', function() {
-        const categoria = $(this).val();
-        const url = new URL(window.location.href);
-        
-        if (categoria) {
-            url.searchParams.set('categoria', categoria);
-        } else {
-            url.searchParams.delete('categoria');
-        }
-        
-        // Resetear a página 1 al cambiar categoría
-        url.searchParams.set('page', '1');
-        window.location.href = url.toString();
     });
     
     // Función para limpiar búsqueda
