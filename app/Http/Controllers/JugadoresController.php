@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\Jugadores;
 use App\Models\Clubes;
 use App\Models\Categorias;
@@ -538,6 +539,40 @@ class JugadoresController extends Controller
         return view('jugadores.index', compact('jugadores', 'hasClub', 'club', 'search'));
     }
 
+    /**
+     * Módulo de búsqueda de jugadores (solo administradores).
+     * No muestra datos hasta que se ejecute una búsqueda. Solo jugadores activos.
+     */
+    public function buscarJugador(Request $request)
+    {
+        $search = $request->get('search', '');
+        $filtro = $request->get('filtro', 'nombre'); // nombre o cedula
+        $jugadores = collect();
+
+        if (!empty($search)) {
+            $search = trim($search);
+            $searchTerm = '%' . mb_strtolower($search) . '%';
+
+            $query = Jugadores::select('jugadores.*', 'categorias.nombre as categoria_nombre', 'clubes.nombre as club_nombre')
+                ->leftJoin('categorias', 'jugadores.categoria_id', '=', 'categorias.id')
+                ->leftJoin('clubes', 'jugadores.club_id', '=', 'clubes.id')
+                ->where('jugadores.status', 'activo');
+
+            // Búsqueda con LIKE insensible a mayúsculas/minúsculas (ej: "argenis" coincide con "ARGENIS MARTINEZ")
+            if ($filtro === 'cedula') {
+                $query->whereRaw('LOWER(jugadores.cedula) LIKE ?', [$searchTerm]);
+            } else {
+                $query->whereRaw('LOWER(jugadores.nombre) LIKE ?', [$searchTerm]);
+            }
+
+            $jugadores = $query->orderBy('jugadores.nombre')->paginate(10)->appends($request->query());
+        } else {
+            $jugadores = new LengthAwarePaginator([], 0, 10);
+        }
+
+        return view('jugadores.buscar', compact('jugadores', 'search', 'filtro'));
+    }
+
     public function getJugador(Request $request)
     {
         $jugadores = Jugadores::select('jugadores.*', 'categorias.nombre as categoria_nombre', 'clubes.nombre as club_nombre')
@@ -548,22 +583,15 @@ class JugadoresController extends Controller
         
         if($jugadores){
             $rolUsuario = auth()->user()->rol_id ?? null;
-            $mostrarContacto = false;
-            
-            // Aplicar lógica de permisos
-            if ($rolUsuario == 'administrador') {
-                $mostrarContacto = true;
-            } elseif ($rolUsuario == 'entrenador') {
-                $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
-                if ($entrenador && $jugadores->club_id == $entrenador->club_id) {
-                    $mostrarContacto = true;
-                }
-            }
-            
-            // Si no tiene permisos, ocultar datos sensibles
+            $mostrarContacto = ($rolUsuario == 'administrador');
+
+            // Solo admin puede ver teléfono, email e información del representante
             if (!$mostrarContacto) {
                 $jugadores->telefono = null;
                 $jugadores->email = null;
+                $jugadores->nombre_representante = null;
+                $jugadores->cedula_representante = null;
+                $jugadores->telefono_representante = null;
             }
             
             return response()->json([

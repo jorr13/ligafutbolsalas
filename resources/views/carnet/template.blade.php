@@ -81,6 +81,10 @@
                         <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ $jugador->edad ?? 'N/A' }}</td>
                     </tr>
                     <tr>
+                        <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Nacimiento:</td>
+                        <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ $jugador->fecha_nacimiento ? \Carbon\Carbon::parse($jugador->fecha_nacimiento)->format('d/m/Y') : 'N/A' }}</td>
+                    </tr>
+                    <tr>
                         <td style="color: #495057; font-weight: bold; text-transform: uppercase; padding: 0.15mm 0;">Categoría:</td>
                         <td style="color: #212529; padding: 0.15mm 0; font-size: 5.2pt;">{{ $jugador->categoria->nombre ?? 'N/A' }}</td>
                     </tr>

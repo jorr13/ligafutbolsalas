@@ -102,6 +102,18 @@
                     </div>
                 </a>
             </div>
+
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ route('jugadores.buscar') }}" class="card h-100 border-0 shadow-sm text-decoration-none quick-action-card">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-search text-primary fs-2"></i>
+                        </div>
+                        <h5 class="card-title mb-2 fw-bold">Buscar Jugador</h5>
+                        <p class="text-muted small mb-0">Buscar por cédula o nombre</p>
+                    </div>
+                </a>
+            </div>
         @endif
         @if(auth()->user()->rol_id=="arbitro")
             <!-- Entrenador Dashboard -->
@@ -119,6 +131,18 @@
                         </div>
                         <h5 class="card-title mb-2 fw-bold">Clubes</h5>
                         <p class="text-muted small mb-0">Ver todos los clubes</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ route('jugadores.buscar') }}" class="card h-100 border-0 shadow-sm text-decoration-none quick-action-card">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-search text-primary fs-2"></i>
+                        </div>
+                        <h5 class="card-title mb-2 fw-bold">Buscar Jugador</h5>
+                        <p class="text-muted small mb-0">Buscar por cédula o nombre</p>
                     </div>
                 </a>
             </div>
@@ -141,6 +165,18 @@
                         </div>
                         <h5 class="card-title mb-2 fw-bold">Clubes</h5>
                         <p class="text-muted small mb-0">Gestionar clubes</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ route('jugadores.buscar') }}" class="card h-100 border-0 shadow-sm text-decoration-none quick-action-card">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-search text-primary fs-2"></i>
+                        </div>
+                        <h5 class="card-title mb-2 fw-bold">Buscar Jugador</h5>
+                        <p class="text-muted small mb-0">Buscar por cédula o nombre</p>
                     </div>
                 </a>
             </div>

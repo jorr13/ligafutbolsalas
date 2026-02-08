@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('jugadores', App\Http\Controllers\JugadoresController::class);
     Route::resource('entrenadores', App\Http\Controllers\EntrenadoresController::class);
     Route::get('jugadores-pendientes', [App\Http\Controllers\JugadoresController::class, 'indexAdmin'])->name('jugadores.indexpendientes');
+    Route::get('buscar-jugador', [App\Http\Controllers\JugadoresController::class, 'buscarJugador'])->name('jugadores.buscar');
     Route::post('aceptar-jugador/{id}', [App\Http\Controllers\JugadoresController::class, 'aceptarJugador'])->name('jugadores.aceptar');
     Route::get('club-jugadores/{id}', [App\Http\Controllers\ClubController::class, 'verJugadores'])->name('clubes.getjugadores');
     Route::resource('arbitros', App\Http\Controllers\ArbitrosController::class);
