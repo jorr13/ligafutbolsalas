@@ -133,7 +133,21 @@ class JugadoresController extends Controller
             'edad' => 'nullable|integer|min:1|max:100',
             'fecha_nacimiento' => 'nullable|date',
             'tipo_sangre' => 'nullable|string|max:10',
-            'categoria_id' => 'required|exists:categorias,id',
+            'categoria_id' => [
+                'required',
+                'exists:categorias,id',
+                function ($attr, $value, $fail) use ($request) {
+                    $edad = $request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : $request->edad;
+                    if ($edad !== null) {
+                        $cat = Categorias::find($value);
+                        if ($cat && $cat->edad_min !== null && $cat->edad_max !== null) {
+                            if ($edad < $cat->edad_min || $edad > $cat->edad_max) {
+                                $fail("La categoría seleccionada no corresponde a la edad del jugador ({$edad} años).");
+                            }
+                        }
+                    }
+                },
+            ],
             'nivel' => 'required|in:iniciante,formativo,elite',
             'nombre_representante' => 'nullable|string|max:255',
             'cedula_representante' => 'nullable|string|max:20',
@@ -286,8 +300,13 @@ class JugadoresController extends Controller
         }
         
         $categorias = Categorias::getCategoriasPorClub($clubs->id);
+        $edad = $jugador->fecha_nacimiento ? $this->calcularEdad($jugador->fecha_nacimiento) : $jugador->edad;
+        $categoriasFiltradas = $edad !== null ? Categorias::getCategoriasPorClubYEdad($clubs->id, $edad) : $categorias;
+        if ($categoriasFiltradas->isEmpty()) {
+            $categoriasFiltradas = $categorias;
+        }
         
-        return view('jugadores.edit', compact('jugador', 'categorias'));
+        return view('jugadores.edit', compact('jugador', 'categorias', 'categoriasFiltradas'));
     }
 
     /**
@@ -336,7 +355,21 @@ class JugadoresController extends Controller
             'edad' => 'nullable|integer|min:1|max:100',
             'fecha_nacimiento' => 'nullable|date',
             'tipo_sangre' => 'nullable|string|max:10',
-            'categoria_id' => 'required|exists:categorias,id',
+            'categoria_id' => [
+                'required',
+                'exists:categorias,id',
+                function ($attr, $value, $fail) use ($request) {
+                    $edad = $request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : $request->edad;
+                    if ($edad !== null) {
+                        $cat = Categorias::find($value);
+                        if ($cat && $cat->edad_min !== null && $cat->edad_max !== null) {
+                            if ($edad < $cat->edad_min || $edad > $cat->edad_max) {
+                                $fail("La categoría seleccionada no corresponde a la edad del jugador ({$edad} años).");
+                            }
+                        }
+                    }
+                },
+            ],
             'nivel' => 'required|in:iniciante,formativo,elite',
             'nombre_representante' => 'nullable|string|max:255',
             'cedula_representante' => 'nullable|string|max:20',

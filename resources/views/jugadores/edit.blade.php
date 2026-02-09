@@ -386,14 +386,16 @@
                                                 </span>
                                                 <select class="form-select border-start-0 @error('categoria_id') is-invalid @enderror" 
                                                         id="categoria_id" 
-                                                        name="categoria_id">
-                                                    <option value="" selected disabled>{{ __('Seleccione una categoría...') }}</option>
-                                                    @foreach($categorias as $categoria)
+                                                        name="categoria_id"
+                                                        data-categorias="{{ json_encode($categorias->map(fn($c) => ['id' => $c->id, 'nombre' => $c->nombre, 'edad_min' => $c->edad_min, 'edad_max' => $c->edad_max])) }}">
+                                                    <option value="" disabled>{{ __('Seleccione categoría') }}</option>
+                                                    @foreach($categoriasFiltradas as $categoria)
                                                         <option value="{{ $categoria->id }}" {{ old('categoria_id', $jugador->categoria_id) == $categoria->id ? 'selected' : '' }}>
                                                             {{ $categoria->nombre }}
                                                         </option>
-                                    @endforeach
-                                </select>
+                                                    @endforeach
+                                                </select>
+                                                <small class="text-muted d-block mt-1" id="categoria-ayuda"></small>
                             </div>
                                             @error('categoria_id')
                                                 <div class="invalid-feedback d-block mt-2">
@@ -1289,9 +1291,61 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-      // Calcular edad automáticamente desde fecha de nacimiento
+      // Calcular edad y filtrar categorías por edad
       const fechaNacimientoInput = document.getElementById('fecha_nacimiento');
       const edadInput = document.getElementById('edad');
+      const categoriaSelect = document.getElementById('categoria_id');
+      
+      function actualizarCategoriasPorEdad(edad) {
+          if (!categoriaSelect) return;
+          const categoriasJson = categoriaSelect.getAttribute('data-categorias');
+          if (!categoriasJson) return;
+          const categorias = JSON.parse(categoriasJson);
+          const valorActual = categoriaSelect.value;
+          
+          categoriaSelect.innerHTML = '';
+          const ayuda = document.getElementById('categoria-ayuda');
+          
+          if (edad === null) {
+              const opt = document.createElement('option');
+              opt.value = '';
+              opt.textContent = '{{ __("Seleccione categoría") }}';
+              opt.disabled = true;
+              categoriaSelect.appendChild(opt);
+              categorias.forEach(c => {
+                  const o = document.createElement('option');
+                  o.value = c.id;
+                  o.textContent = c.nombre;
+                  if (c.id == valorActual) o.selected = true;
+                  categoriaSelect.appendChild(o);
+              });
+              if (ayuda) ayuda.textContent = '';
+              return;
+          }
+          
+          const coinciden = categorias.filter(c => 
+              c.edad_min != null && c.edad_max != null && edad >= c.edad_min && edad <= c.edad_max
+          );
+          
+          const optPlaceholder = document.createElement('option');
+          optPlaceholder.value = '';
+          optPlaceholder.textContent = coinciden.length ? '{{ __("Seleccione categoría") }}' : '{{ __("No hay categoría para esta edad") }}';
+          optPlaceholder.disabled = true;
+          categoriaSelect.appendChild(optPlaceholder);
+          
+          coinciden.forEach(c => {
+              const opt = document.createElement('option');
+              opt.value = c.id;
+              opt.textContent = c.nombre;
+              if (c.id == valorActual) opt.selected = true;
+              categoriaSelect.appendChild(opt);
+          });
+          
+          if (coinciden.length === 1 && !categoriaSelect.value) {
+              categoriaSelect.value = coinciden[0].id;
+          }
+          if (ayuda) ayuda.textContent = coinciden.length ? `Categorías para ${edad} años` : 'Edad fuera del rango (6-17 años)';
+      }
       
       if (fechaNacimientoInput && edadInput) {
           fechaNacimientoInput.addEventListener('blur', function() {
@@ -1301,29 +1355,27 @@ document.addEventListener('DOMContentLoaded', function() {
                   const hoy = new Date();
                   let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
                   const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+                  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) edad--;
                   
-                  // Ajustar la edad si aún no ha cumplido años este año
-                  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-                      edad--;
-                  }
-                  
-                  // Validar que la edad sea válida (no negativa y razonable)
                   if (edad >= 0 && edad <= 120) {
                       edadInput.value = edad;
+                      actualizarCategoriasPorEdad(edad);
                   } else if (edad < 0) {
                       alert('La fecha de nacimiento no puede ser mayor a la fecha actual.');
                       this.value = '';
                       edadInput.value = '';
+                      actualizarCategoriasPorEdad(null);
                   } else {
                       alert('Por favor verifica la fecha de nacimiento ingresada.');
                       edadInput.value = '';
+                      actualizarCategoriasPorEdad(null);
                   }
               } else {
                   edadInput.value = '';
+                  actualizarCategoriasPorEdad(null);
               }
           });
           
-          // También calcular si ya hay una fecha de nacimiento al cargar la página (por ejemplo, si hay un error de validación)
           if (fechaNacimientoInput.value) {
               fechaNacimientoInput.dispatchEvent(new Event('blur'));
           }
