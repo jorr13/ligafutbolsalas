@@ -111,7 +111,15 @@ class JugadoresController extends Controller
             return redirect()->route('jugadores.index')
                 ->with('error', 'No tienes un club asignado. Contacta al administrador para asignarte a un club antes de crear jugadores.');
         }
-        
+
+        // Calcular edad antes de validar (desde fecha_nacimiento; el campo edad en el form viene disabled)
+        $edadParaValidar = $request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : null;
+        if ($edadParaValidar !== null && $edadParaValidar >= 18) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['fecha_nacimiento' => __('El jugador sobrepasa la edad máxima permitida (18 años).')]);
+        }
+
         // Validación de campos
         $request->validate([
             'nombre' => 'required|string|max:255',
@@ -136,8 +144,8 @@ class JugadoresController extends Controller
             'categoria_id' => [
                 'required',
                 'exists:categorias,id',
-                function ($attr, $value, $fail) use ($request) {
-                    $edad = $request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : $request->edad;
+                function ($attr, $value, $fail) use ($request, $edadParaValidar) {
+                    $edad = $edadParaValidar ?? ($request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : $request->edad);
                     if ($edad !== null) {
                         $cat = Categorias::find($value);
                         if ($cat && $cat->edad_min !== null && $cat->edad_max !== null) {
@@ -186,7 +194,19 @@ class JugadoresController extends Controller
                 $edad = $edadCalculada;
             }
         }
-        
+
+        // Jugadores de 7 años o menos: asignar categoría Sub-8 del club
+        $categoriaId = $request->categoria_id;
+        if ($edad !== null && $edad <= 7) {
+            $categoriasClub = Categorias::getCategoriasPorClub($clubs->id);
+            $sub8 = $categoriasClub->first(function ($c) {
+                return preg_match('/sub[_\-]?\s*8/i', trim($c->nombre ?? ''));
+            });
+            if ($sub8) {
+                $categoriaId = $sub8->id;
+            }
+        }
+
         // Combinar tipo de identificación + número de cédula (ej: V-24042654)
         $cedulaCompleta = $request->tipo_identificacion . '-' . preg_replace('/^[VEFP]-?/i', '', $request->cedula);
 
@@ -235,7 +255,7 @@ class JugadoresController extends Controller
                 'nombre_representante' => $request->nombre_representante,
                 'cedula_representante' => $request->cedula_representante,
                 'telefono_representante' => $request->telefono_representante,
-                'categoria_id' => $request->categoria_id,
+                'categoria_id' => $categoriaId,
                 'nivel' => $request->nivel,
             ]);
 
@@ -334,6 +354,15 @@ class JugadoresController extends Controller
                     ->with('error', 'No tienes permisos para actualizar este jugador.');
             }
         }
+
+        // Calcular edad antes de validar; rechazar si >= 18
+        $edadParaValidar = $request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : null;
+        if ($edadParaValidar !== null && $edadParaValidar >= 18) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['fecha_nacimiento' => __('El jugador sobrepasa la edad máxima permitida (18 años).')]);
+        }
+
         // Validación de campos
         $request->validate([
             'nombre' => 'required|string|max:255',
@@ -358,8 +387,8 @@ class JugadoresController extends Controller
             'categoria_id' => [
                 'required',
                 'exists:categorias,id',
-                function ($attr, $value, $fail) use ($request) {
-                    $edad = $request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : $request->edad;
+                function ($attr, $value, $fail) use ($request, $edadParaValidar) {
+                    $edad = $edadParaValidar ?? ($request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : $request->edad);
                     if ($edad !== null) {
                         $cat = Categorias::find($value);
                         if ($cat && $cat->edad_min !== null && $cat->edad_max !== null) {
@@ -426,7 +455,19 @@ class JugadoresController extends Controller
                 $edad = $edadCalculada;
             }
         }
-        //dd($edad);
+
+        // Jugadores de 7 años o menos: asignar categoría Sub-8 del club del jugador
+        $categoriaId = $request->categoria_id;
+        if ($edad !== null && $edad <= 7) {
+            $categoriasClub = Categorias::getCategoriasPorClub($jugador->club_id);
+            $sub8 = $categoriasClub->first(function ($c) {
+                return preg_match('/sub[_\-]?\s*8/i', trim($c->nombre ?? ''));
+            });
+            if ($sub8) {
+                $categoriaId = $sub8->id;
+            }
+        }
+
         // Combinar tipo de identificación + número de cédula (ej: V-24042654)
         $cedulaCompleta = $request->tipo_identificacion . '-' . preg_replace('/^[VEFP]-?/i', '', $request->cedula);
 
@@ -449,7 +490,7 @@ class JugadoresController extends Controller
                 'nombre_representante' => $request->nombre_representante,
                 'cedula_representante' => $request->cedula_representante,
                 'telefono_representante' => $request->telefono_representante,
-                'categoria_id' => $request->categoria_id,
+                'categoria_id' => $categoriaId,
                 'nivel' => $request->nivel, 
                 'status' => $status,
             ]);

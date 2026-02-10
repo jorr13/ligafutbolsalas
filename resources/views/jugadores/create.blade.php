@@ -304,13 +304,14 @@
                                         <i class="fas fa-tags me-2 text-primary"></i>
                                         {{ __('Categoría') }}
                                     </label>
+                                    <input type="hidden" name="categoria_id" id="categoria_id_hidden" value="{{ old('categoria_id') }}">
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="fas fa-tag text-muted"></i>
                                         </span>
                                         <select class="form-select border-start-0 @error('categoria_id') is-invalid @enderror" 
                                                 id="categoria_id" 
-                                                name="categoria_id"
+                                                disabled
                                                 data-categorias="{{ json_encode($categorias->map(fn($c) => ['id' => $c->id, 'nombre' => $c->nombre, 'edad_min' => $c->edad_min, 'edad_max' => $c->edad_max])) }}">
                                             <option value="" selected disabled>{{ __('Ingrese fecha de nacimiento para ver categorías') }}</option>
                                     @foreach($categorias as $categoria)
@@ -320,6 +321,7 @@
                                     @endforeach
                                 </select>
                                 <small class="text-muted d-block mt-1" id="categoria-ayuda"></small>
+                                <small class="text-danger d-none mt-1" id="categoria-error-edad"></small>
                             </div>
                                     @error('categoria_id')
                                         <div class="invalid-feedback d-block mt-2">
@@ -1055,7 +1057,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitBtn = document.querySelector('.submit-btn');
     
     if (createForm && submitBtn) {
-        createForm.addEventListener('submit', function() {
+        createForm.addEventListener('submit', function(e) {
+            syncCategoriaHidden();
+            const errorEdad = document.getElementById('categoria-error-edad');
+            if (errorEdad && !errorEdad.classList.contains('d-none')) {
+                e.preventDefault();
+                alert('{{ __("El jugador sobrepasa la edad máxima permitida (17 años). No se puede registrar.") }}');
+                return false;
+            }
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
         });
@@ -1140,15 +1149,21 @@ document.addEventListener('DOMContentLoaded', function() {
         return (edad >= 0 && edad <= 120) ? edad : null;
     }
     
+    function syncCategoriaHidden() {
+        const hidden = document.getElementById('categoria_id_hidden');
+        if (hidden && categoriaSelect) hidden.value = categoriaSelect.value || '';
+    }
+
     function actualizarCategoriasPorEdad(edad) {
         if (!categoriaSelect) return;
         const categoriasJson = categoriaSelect.getAttribute('data-categorias');
         if (!categoriasJson) return;
         const categorias = JSON.parse(categoriasJson);
-        
-        categoriaSelect.innerHTML = '';
         const ayuda = document.getElementById('categoria-ayuda');
-        
+        const errorEdad = document.getElementById('categoria-error-edad');
+        categoriaSelect.innerHTML = '';
+        if (errorEdad) { errorEdad.classList.add('d-none'); errorEdad.textContent = ''; }
+
         if (edad === null) {
             const opt = document.createElement('option');
             opt.value = '';
@@ -1157,33 +1172,69 @@ document.addEventListener('DOMContentLoaded', function() {
             opt.selected = true;
             categoriaSelect.appendChild(opt);
             if (ayuda) ayuda.textContent = '';
+            syncCategoriaHidden();
             return;
         }
-        
-        let coinciden = categorias.filter(c => 
+
+        // Edad >= 18: no permitir (sobrepasa la edad)
+        if (edad >= 18) {
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = '{{ __("Ingrese fecha de nacimiento para ver categorías") }}';
+            opt.disabled = true;
+            opt.selected = true;
+            categoriaSelect.appendChild(opt);
+            if (ayuda) ayuda.textContent = '';
+            if (errorEdad) {
+                errorEdad.textContent = '{{ __("El jugador sobrepasa la edad máxima permitida (18 años).") }}';
+                errorEdad.classList.remove('d-none');
+            }
+            syncCategoriaHidden();
+            return;
+        }
+
+        // Edad <= 7: asignar automáticamente Sub-8
+        if (edad <= 7) {
+            const sub8 = categorias.find(c => /sub[_\-]?\s*8/i.test((c.nombre || '').trim()));
+            const optPlaceholder = document.createElement('option');
+            optPlaceholder.value = '';
+            optPlaceholder.textContent = sub8 ? '{{ __("Sub-8") }}' : '{{ __("No hay categoría Sub-8 para este club") }}';
+            optPlaceholder.disabled = true;
+            categoriaSelect.appendChild(optPlaceholder);
+            if (sub8) {
+                const opt = document.createElement('option');
+                opt.value = sub8.id;
+                opt.textContent = sub8.nombre;
+                opt.selected = true;
+                categoriaSelect.appendChild(opt);
+            }
+            if (ayuda) ayuda.textContent = '{{ __("Categoría asignada por edad (≤7 años)") }}';
+            syncCategoriaHidden();
+            return;
+        }
+
+        // 8 <= edad < 18: filtrar categorías por rango
+        let coinciden = categorias.filter(c =>
             c.edad_min != null && c.edad_max != null && edad >= c.edad_min && edad <= c.edad_max
         );
-        if (coinciden.length === 0) {
-            coinciden = categorias;
-        }
-        
+        if (coinciden.length === 0) coinciden = categorias;
+
         const optPlaceholder = document.createElement('option');
         optPlaceholder.value = '';
         optPlaceholder.textContent = coinciden.length ? '{{ __("Seleccione categoría") }}' : '{{ __("No hay categoría para esta edad") }}';
         optPlaceholder.disabled = true;
         categoriaSelect.appendChild(optPlaceholder);
-        
         coinciden.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c.id;
             opt.textContent = c.nombre;
             categoriaSelect.appendChild(opt);
         });
-        
         if (coinciden.length === 1 && categorias.some(c => c.edad_min != null)) {
             categoriaSelect.value = coinciden[0].id;
         }
-        if (ayuda) ayuda.textContent = coinciden.length ? `Categorías para ${edad} años` : 'Edad fuera del rango (6-17 años)';
+        if (ayuda) ayuda.textContent = coinciden.length ? `{{ __("Categorías para") }} ${edad} {{ __("años") }}` : '{{ __("Edad fuera del rango (8-17 años)") }}';
+        syncCategoriaHidden();
     }
     
     if (fechaNacimientoInput && edadInput) {
