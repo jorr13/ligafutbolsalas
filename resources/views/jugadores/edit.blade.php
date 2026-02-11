@@ -1300,7 +1300,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-      // Calcular edad y filtrar categorías por edad (misma lógica que create: ≤7 Sub-8, ≥18 error, categoría disabled)
+      // Categoría por año de nacimiento (tabla L.F.S.C.). Sub-8: edad 0-7; Sub-10 a Sub-18: por año.
       const fechaNacimientoInput = document.getElementById('fecha_nacimiento');
       const edadInput = document.getElementById('edad');
       const categoriaSelect = document.getElementById('categoria_id');
@@ -1309,8 +1309,24 @@ document.addEventListener('DOMContentLoaded', function() {
           const hidden = document.getElementById('categoria_id_hidden');
           if (hidden && categoriaSelect) hidden.value = categoriaSelect.value || '';
       }
+      function getClaveCategoriaPorAnoYEdad(añoNacimiento, edad) {
+          if (edad === null) return null;
+          if (edad >= 18) return null;
+          if (edad <= 7) return 'sub8';
+          const añoActual = new Date().getFullYear();
+          if ([añoActual - 17, añoActual - 16].includes(añoNacimiento)) return 'sub18';
+          if ([añoActual - 15, añoActual - 14].includes(añoNacimiento)) return 'sub16';
+          if ([añoActual - 13, añoActual - 12].includes(añoNacimiento)) return 'sub14';
+          if ([añoActual - 11, añoActual - 10].includes(añoNacimiento)) return 'sub12';
+          if ([añoActual - 9, añoActual - 8].includes(añoNacimiento)) return 'sub10';
+          return 'sub8';
+      }
+      function findCategoriaPorClave(categorias, clave) {
+          const numero = parseInt(String(clave).replace(/\D/g, ''), 10);
+          return categorias.find(c => new RegExp('sub[_\\-]?\\s*' + numero + '\\b', 'i').test((c.nombre || '').trim()));
+      }
 
-      function actualizarCategoriasPorEdad(edad) {
+      function actualizarCategoriasPorEdad(edad, añoNacimiento) {
           if (!categoriaSelect) return;
           const categoriasJson = categoriaSelect.getAttribute('data-categorias');
           if (!categoriasJson) return;
@@ -1356,76 +1372,51 @@ document.addEventListener('DOMContentLoaded', function() {
               return;
           }
 
-          if (edad <= 7) {
-              const sub8 = categorias.find(c => /sub[_\-]?\s*8/i.test((c.nombre || '').trim()));
-              const optPlaceholder = document.createElement('option');
-              optPlaceholder.value = '';
-              optPlaceholder.textContent = sub8 ? '{{ __("Sub-8") }}' : '{{ __("No hay categoría Sub-8 para este club") }}';
-              optPlaceholder.disabled = true;
-              categoriaSelect.appendChild(optPlaceholder);
-              if (sub8) {
-                  const opt = document.createElement('option');
-                  opt.value = sub8.id;
-                  opt.textContent = sub8.nombre;
-                  opt.selected = true;
-                  categoriaSelect.appendChild(opt);
-              }
-              if (ayuda) ayuda.textContent = '{{ __("Categoría asignada por edad (≤7 años)") }}';
-              syncCategoriaHidden();
-              return;
-          }
-
-          let coinciden = categorias.filter(c =>
-              c.edad_min != null && c.edad_max != null && edad >= c.edad_min && edad <= c.edad_max
-          );
+          const clave = getClaveCategoriaPorAnoYEdad(añoNacimiento != null ? añoNacimiento : (new Date().getFullYear() - edad), edad);
+          const cat = clave ? findCategoriaPorClave(categorias, clave) : null;
           const optPlaceholder = document.createElement('option');
           optPlaceholder.value = '';
-          optPlaceholder.textContent = coinciden.length ? '{{ __("Seleccione categoría") }}' : '{{ __("No hay categoría para esta edad") }}';
+          optPlaceholder.textContent = cat ? cat.nombre : (clave === 'sub8' ? '{{ __("Sub-8") }}' : '{{ __("No hay categoría para este año de nacimiento") }}');
           optPlaceholder.disabled = true;
           categoriaSelect.appendChild(optPlaceholder);
-          coinciden.forEach(c => {
+          if (cat) {
               const opt = document.createElement('option');
-              opt.value = c.id;
-              opt.textContent = c.nombre;
-              if (String(c.id) === String(valorActual)) opt.selected = true;
+              opt.value = cat.id;
+              opt.textContent = cat.nombre;
+              opt.selected = true;
               categoriaSelect.appendChild(opt);
-          });
-          if (coinciden.length === 1 && !categoriaSelect.value) {
-              categoriaSelect.value = coinciden[0].id;
-          }
-          if (ayuda) ayuda.textContent = coinciden.length ? `{{ __("Categorías para") }} ${edad} {{ __("años") }}` : '{{ __("Edad fuera del rango (8-17 años)") }}';
+              if (ayuda) ayuda.textContent = edad <= 7 ? '{{ __("Categoría asignada por edad (0-7 años)") }}' : '{{ __("Categoría por año de nacimiento") }}';
+          } else if (ayuda) ayuda.textContent = '';
           syncCategoriaHidden();
       }
 
       if (fechaNacimientoInput && edadInput) {
           fechaNacimientoInput.addEventListener('blur', function() {
               const fechaNacimiento = new Date(this.value);
-
               if (fechaNacimiento && !isNaN(fechaNacimiento.getTime())) {
                   const hoy = new Date();
                   let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
                   const mes = hoy.getMonth() - fechaNacimiento.getMonth();
                   if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) edad--;
-
+                  const añoNacimiento = fechaNacimiento.getFullYear();
                   if (edad >= 0 && edad <= 120) {
                       edadInput.value = edad;
-                      actualizarCategoriasPorEdad(edad);
+                      actualizarCategoriasPorEdad(edad, añoNacimiento);
                   } else if (edad < 0) {
                       alert('La fecha de nacimiento no puede ser mayor a la fecha actual.');
                       this.value = '';
                       edadInput.value = '';
-                      actualizarCategoriasPorEdad(null);
+                      actualizarCategoriasPorEdad(null, null);
                   } else {
                       alert('Por favor verifica la fecha de nacimiento ingresada.');
                       edadInput.value = '';
-                      actualizarCategoriasPorEdad(null);
+                      actualizarCategoriasPorEdad(null, null);
                   }
               } else {
                   edadInput.value = '';
-                  actualizarCategoriasPorEdad(null);
+                  actualizarCategoriasPorEdad(null, null);
               }
           });
-
           if (fechaNacimientoInput.value) {
               fechaNacimientoInput.dispatchEvent(new Event('blur'));
           }

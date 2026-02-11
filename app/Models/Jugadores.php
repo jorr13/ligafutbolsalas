@@ -32,6 +32,17 @@ class Jugadores extends Model
         'qr_code_url'
     ];
 
+    /** Guardar nombre y nombre del representante en mayúsculas */
+    public function setNombreAttribute($value): void
+    {
+        $this->attributes['nombre'] = $value ? mb_strtoupper($value, 'UTF-8') : $value;
+    }
+
+    public function setNombreRepresentanteAttribute($value): void
+    {
+        $this->attributes['nombre_representante'] = $value ? mb_strtoupper($value, 'UTF-8') : $value;
+    }
+
     public static function Getjugadores($search = '') {
         $entrenador = Entrenadores::where('user_id', auth()->user()->id)->first();
         

@@ -24,6 +24,12 @@ class Arbitros extends Model
         'estatus'
     ];
 
+    /** Guardar nombre en mayúsculas */
+    public function setNombreAttribute($value): void
+    {
+        $this->attributes['nombre'] = $value ? mb_strtoupper($value, 'UTF-8') : $value;
+    }
+
     /**
      * Relación con el usuario
      */

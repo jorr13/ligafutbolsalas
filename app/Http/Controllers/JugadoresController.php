@@ -141,21 +141,7 @@ class JugadoresController extends Controller
             'edad' => 'nullable|integer|min:1|max:100',
             'fecha_nacimiento' => 'nullable|date',
             'tipo_sangre' => 'nullable|string|max:10',
-            'categoria_id' => [
-                'required',
-                'exists:categorias,id',
-                function ($attr, $value, $fail) use ($request, $edadParaValidar) {
-                    $edad = $edadParaValidar ?? ($request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : $request->edad);
-                    if ($edad !== null) {
-                        $cat = Categorias::find($value);
-                        if ($cat && $cat->edad_min !== null && $cat->edad_max !== null) {
-                            if ($edad < $cat->edad_min || $edad > $cat->edad_max) {
-                                $fail("La categoría seleccionada no corresponde a la edad del jugador ({$edad} años).");
-                            }
-                        }
-                    }
-                },
-            ],
+            'categoria_id' => 'required|exists:categorias,id',
             'nivel' => 'required|in:iniciante,formativo,elite',
             'nombre_representante' => 'nullable|string|max:255',
             'cedula_representante' => 'nullable|string|max:20',
@@ -195,15 +181,16 @@ class JugadoresController extends Controller
             }
         }
 
-        // Jugadores de 7 años o menos: asignar categoría Sub-8 del club
+        // Categoría por año de nacimiento (Sub-8 por edad 0-7; Sub-10 a Sub-18 por año según tabla L.F.S.C.)
+        $categoriasClub = Categorias::getCategoriasPorClub($clubs->id);
         $categoriaId = $request->categoria_id;
-        if ($edad !== null && $edad <= 7) {
-            $categoriasClub = Categorias::getCategoriasPorClub($clubs->id);
-            $sub8 = $categoriasClub->first(function ($c) {
-                return preg_match('/sub[_\-]?\s*8/i', trim($c->nombre ?? ''));
-            });
-            if ($sub8) {
-                $categoriaId = $sub8->id;
+        if ($request->fecha_nacimiento) {
+            $clave = Categorias::getClaveCategoriaPorFechaNacimiento($request->fecha_nacimiento);
+            if ($clave !== null) {
+                $idPorClave = Categorias::findCategoriaIdPorClave($categoriasClub, $clave);
+                if ($idPorClave !== null) {
+                    $categoriaId = $idPorClave;
+                }
             }
         }
 
@@ -384,21 +371,7 @@ class JugadoresController extends Controller
             'edad' => 'nullable|integer|min:1|max:100',
             'fecha_nacimiento' => 'nullable|date',
             'tipo_sangre' => 'nullable|string|max:10',
-            'categoria_id' => [
-                'required',
-                'exists:categorias,id',
-                function ($attr, $value, $fail) use ($request, $edadParaValidar) {
-                    $edad = $edadParaValidar ?? ($request->fecha_nacimiento ? $this->calcularEdad($request->fecha_nacimiento) : $request->edad);
-                    if ($edad !== null) {
-                        $cat = Categorias::find($value);
-                        if ($cat && $cat->edad_min !== null && $cat->edad_max !== null) {
-                            if ($edad < $cat->edad_min || $edad > $cat->edad_max) {
-                                $fail("La categoría seleccionada no corresponde a la edad del jugador ({$edad} años).");
-                            }
-                        }
-                    }
-                },
-            ],
+            'categoria_id' => 'required|exists:categorias,id',
             'nivel' => 'required|in:iniciante,formativo,elite',
             'nombre_representante' => 'nullable|string|max:255',
             'cedula_representante' => 'nullable|string|max:20',
@@ -456,15 +429,16 @@ class JugadoresController extends Controller
             }
         }
 
-        // Jugadores de 7 años o menos: asignar categoría Sub-8 del club del jugador
+        // Categoría por año de nacimiento (Sub-8 por edad 0-7; Sub-10 a Sub-18 por año según tabla L.F.S.C.)
+        $categoriasClub = Categorias::getCategoriasPorClub($jugador->club_id);
         $categoriaId = $request->categoria_id;
-        if ($edad !== null && $edad <= 7) {
-            $categoriasClub = Categorias::getCategoriasPorClub($jugador->club_id);
-            $sub8 = $categoriasClub->first(function ($c) {
-                return preg_match('/sub[_\-]?\s*8/i', trim($c->nombre ?? ''));
-            });
-            if ($sub8) {
-                $categoriaId = $sub8->id;
+        if ($request->fecha_nacimiento) {
+            $clave = Categorias::getClaveCategoriaPorFechaNacimiento($request->fecha_nacimiento);
+            if ($clave !== null) {
+                $idPorClave = Categorias::findCategoriaIdPorClave($categoriasClub, $clave);
+                if ($idPorClave !== null) {
+                    $categoriaId = $idPorClave;
+                }
             }
         }
 
