@@ -60,9 +60,12 @@ class EntrenadoresController extends Controller
             'status' => 1,
         ]);
 
+        // Cédula: tipo de documento + número (ej. V-24042654)
+        $cedulaCompleta = ($request->tipo_identificacion ?? 'V') . '-' . preg_replace('/^[VEFP]-?/i', '', $request->cedula ?? '');
+
         $entrenadorData = [
             'nombre' => $request->nombre,
-            'cedula' => $request->cedula,
+            'cedula' => $cedulaCompleta,
             'email' => $request->email,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
@@ -136,9 +139,12 @@ class EntrenadoresController extends Controller
             'email' => $request->email,
         ]);
 
+        // Cédula: tipo de documento + número (ej. V-24042654)
+        $cedulaCompleta = ($request->tipo_identificacion ?? 'V') . '-' . preg_replace('/^[VEFP]-?/i', '', $request->cedula ?? '');
+
         $entrenadorData = [
             'nombre' => $request->nombre,
-            'cedula' => $request->cedula,
+            'cedula' => $cedulaCompleta,
             'email' => $request->email,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,

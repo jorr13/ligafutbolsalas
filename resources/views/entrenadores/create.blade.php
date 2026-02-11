@@ -45,30 +45,62 @@
                             @enderror
                         </div>
 
-                        <!-- Cédula -->
-                        <div class="form-group mb-4">
-                            <label for="cedula" class="form-label fw-semibold">
-                                <i class="fas fa-id-card me-2 text-primary"></i>
-                                {{ __('Cédula de Identidad') }}
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-hashtag text-muted"></i>
-                                </span>
-                                <input type="text" 
-                                       class="form-control border-start-0 @error('cedula') is-invalid @enderror" 
-                                       id="cedula" 
-                                       name="cedula" 
-                                       required 
-                                       placeholder="Ej: V-12345678"
-                                       value="{{ old('cedula') }}">
-                            </div>
-                            @error('cedula')
-                                <div class="invalid-feedback d-block mt-2">
-                                    <i class="fas fa-exclamation-circle me-1"></i>
-                                    <strong>{{ $message }}</strong>
+                        <!-- Tipo de identificación y Cédula -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="tipo_identificacion" class="form-label fw-semibold">
+                                        <i class="fas fa-id-badge me-2 text-primary"></i>
+                                        {{ __('Tipo') }}
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-id-card text-muted"></i>
+                                        </span>
+                                        <select class="form-select border-start-0 @error('tipo_identificacion') is-invalid @enderror" 
+                                                id="tipo_identificacion" 
+                                                name="tipo_identificacion"
+                                                required>
+                                            <option value="V" {{ old('tipo_identificacion', 'V') == 'V' ? 'selected' : '' }}>V</option>
+                                            <option value="E" {{ old('tipo_identificacion') == 'E' ? 'selected' : '' }}>E</option>
+                                            <option value="F" {{ old('tipo_identificacion') == 'F' ? 'selected' : '' }}>F</option>
+                                            <option value="P" {{ old('tipo_identificacion') == 'P' ? 'selected' : '' }}>P</option>
+                                        </select>
+                                    </div>
+                                    @error('tipo_identificacion')
+                                        <div class="invalid-feedback d-block mt-2">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
                                 </div>
-                            @enderror
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label for="cedula" class="form-label fw-semibold">
+                                        <i class="fas fa-hashtag me-2 text-primary"></i>
+                                        {{ __('Número de Cédula') }}
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-hashtag text-muted"></i>
+                                        </span>
+                                        <input type="text" 
+                                               class="form-control border-start-0 @error('cedula') is-invalid @enderror" 
+                                               id="cedula" 
+                                               name="cedula" 
+                                               required 
+                                               placeholder="Ej: 24042654"
+                                               value="{{ old('cedula') }}">
+                                    </div>
+                                    @error('cedula')
+                                        <div class="invalid-feedback d-block mt-2">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Teléfono -->
