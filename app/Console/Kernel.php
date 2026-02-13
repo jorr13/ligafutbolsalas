@@ -15,7 +15,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Actualizar categorías de jugadores cada 1 de enero a las 00:00
+        // Esto asegura que las categorías se ajusten al inicio de cada temporada
+        $schedule->command('jugadores:actualizar-categorias')
+                 ->yearlyOn(1, 1, '00:00')
+                 ->timezone('America/Caracas');
     }
 
     /**

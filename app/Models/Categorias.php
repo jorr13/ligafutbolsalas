@@ -41,9 +41,17 @@ class Categorias extends Model
     }
 
     /**
-     * Clave de categoría por año de nacimiento (tabla L.F.S.C.): Sub-18 (2009-2010), Sub-16 (2011-2012), etc.
-     * Sub-8 es excepción: se asigna por edad 0-7 años, no por año.
-     * Retorna 'sub8','sub10',...,'sub18' o null si edad >= 18.
+     * Determina la categoría según el año de nacimiento (tabla L.F.S.C.).
+     * TODAS las categorías se asignan por año de nacimiento, no por edad actual.
+     * Basado en:
+     * - SUB-8:  2019-2020 (6 y 7 años)
+     * - SUB-10: 2017-2018 (8 y 9 años)
+     * - SUB-12: 2015-2016 (10 y 11 años)
+     * - SUB-14: 2013-2014 (12 y 13 años)
+     * - SUB-16: 2011-2012 (14 y 15 años)
+     * - SUB-18: 2009-2010 (16 y 17 años)
+     * 
+     * Retorna 'sub8','sub10',...,'sub18' o null si es mayor de 18 años.
      */
     public static function getClaveCategoriaPorFechaNacimiento(?string $fechaNacimiento): ?string
     {
@@ -52,34 +60,47 @@ class Categorias extends Model
         }
         try {
             $fecha = \Carbon\Carbon::parse($fechaNacimiento);
-            $edad = $fecha->age;
             $añoNacimiento = (int) $fecha->format('Y');
             $añoActual = (int) date('Y');
+            $edadEnAñoActual = $añoActual - $añoNacimiento;
 
-            if ($edad >= 18) {
+            // Mayor de 18 años
+            if ($edadEnAñoActual >= 18) {
                 return null;
             }
-            // Sub-8: edades 0 a 7 (por edad, no por año)
-            if ($edad <= 7) {
-                return 'sub8';
-            }
-            // Resto por año de nacimiento (Sub-18 a Sub-10)
+
+            // SUB-18: nacidos 2009-2010 (16 y 17 años)
             if (in_array($añoNacimiento, [$añoActual - 17, $añoActual - 16])) {
                 return 'sub18';
             }
+
+            // SUB-16: nacidos 2011-2012 (14 y 15 años)
             if (in_array($añoNacimiento, [$añoActual - 15, $añoActual - 14])) {
                 return 'sub16';
             }
+
+            // SUB-14: nacidos 2013-2014 (12 y 13 años)
             if (in_array($añoNacimiento, [$añoActual - 13, $añoActual - 12])) {
                 return 'sub14';
             }
+
+            // SUB-12: nacidos 2015-2016 (10 y 11 años)
             if (in_array($añoNacimiento, [$añoActual - 11, $añoActual - 10])) {
                 return 'sub12';
             }
+
+            // SUB-10: nacidos 2017-2018 (8 y 9 años)
             if (in_array($añoNacimiento, [$añoActual - 9, $añoActual - 8])) {
                 return 'sub10';
             }
-            return 'sub8';
+
+            // SUB-8: nacidos 2019-2020 (6 y 7 años) y menores
+            // Jugadores menores de 6 años también van a SUB-8
+            if ($edadEnAñoActual <= 7) {
+                return 'sub8';
+            }
+
+            return null;
         } catch (\Exception $e) {
             return null;
         }
