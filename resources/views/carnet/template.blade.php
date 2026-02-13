@@ -43,7 +43,7 @@
             
             <!-- Columna izquierda: foto -->
             <td style="width: 20mm; padding: 0.8mm; vertical-align: top; text-align: center;">
-                <div style="width: 16mm; height: 22mm; margin-bottom: 0.6mm;    margin-top: 9px;">
+                <div style="width: 16mm; height: 22mm; margin-bottom: 0.6mm;    margin-top: 12px;">
                     @if($jugador->foto_carnet)
                         @if(isset($imagenesCorregidas['foto']) && $imagenesCorregidas['foto'])
                             <img src="{{ $imagenesCorregidas['foto'] }}" alt="" style="width: 20mm; height: 22mm; object-fit: cover; display: block; position: relative; left: 10px; transform: rotate(0deg);">
@@ -65,7 +65,7 @@
             
             <!-- Columna central: datos principales -->
             <td style="width: 35mm; padding: 0.8mm; vertical-align: top;">
-                <div style="margin-top: 10px;">
+                <div style="margin-top: 13px;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 5.5pt; line-height: 1.1;">
 
                     <tr>
@@ -123,7 +123,7 @@
             
             <!-- Columna derecha: logo y QR -->
             <td style="width: 25mm; padding: 0.8mm; vertical-align: top; text-align: center;">
-                <div style="margin-top: 10px;">
+                <div style="margin-top: 13px;">
                 <!-- Logo del club -->
                 @if($jugador->club && $jugador->club->logo)
                     @if(isset($imagenesCorregidas['logo']) && $imagenesCorregidas['logo'])
