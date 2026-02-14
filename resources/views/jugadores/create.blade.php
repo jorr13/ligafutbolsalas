@@ -1154,18 +1154,35 @@ document.addEventListener('DOMContentLoaded', function() {
         if (hidden && categoriaSelect) hidden.value = categoriaSelect.value || '';
     }
 
-    // Categoría por año de nacimiento (tabla L.F.S.C.). Sub-8: por edad 0-7; Sub-10 a Sub-18: por año.
+    // Categoría por año de nacimiento (tabla L.F.S.C.)
+    // TODAS las categorías se asignan por año de nacimiento según:
+    // SUB-8: 2019-2020, SUB-10: 2017-2018, SUB-12: 2015-2016, SUB-14: 2013-2014, SUB-16: 2011-2012, SUB-18: 2009-2010
     function getClaveCategoriaPorAnoYEdad(añoNacimiento, edad) {
         if (edad === null) return null;
         if (edad >= 18) return null;
-        if (edad <= 7) return 'sub8';
+        
         const añoActual = new Date().getFullYear();
+        const edadEnAñoActual = añoActual - añoNacimiento;
+        
+        // SUB-18: nacidos 2009-2010 (16 y 17 años)
         if ([añoActual - 17, añoActual - 16].includes(añoNacimiento)) return 'sub18';
+        
+        // SUB-16: nacidos 2011-2012 (14 y 15 años)
         if ([añoActual - 15, añoActual - 14].includes(añoNacimiento)) return 'sub16';
+        
+        // SUB-14: nacidos 2013-2014 (12 y 13 años)
         if ([añoActual - 13, añoActual - 12].includes(añoNacimiento)) return 'sub14';
+        
+        // SUB-12: nacidos 2015-2016 (10 y 11 años)
         if ([añoActual - 11, añoActual - 10].includes(añoNacimiento)) return 'sub12';
+        
+        // SUB-10: nacidos 2017-2018 (8 y 9 años)
         if ([añoActual - 9, añoActual - 8].includes(añoNacimiento)) return 'sub10';
-        return 'sub8';
+        
+        // SUB-8: nacidos 2019-2020 (6 y 7 años) y menores
+        if (edadEnAñoActual <= 7) return 'sub8';
+        
+        return null;
     }
     function findCategoriaPorClave(categorias, clave) {
         const numero = parseInt(String(clave).replace(/\D/g, ''), 10);
@@ -1223,7 +1240,7 @@ document.addEventListener('DOMContentLoaded', function() {
             opt.textContent = cat.nombre;
             opt.selected = true;
             categoriaSelect.appendChild(opt);
-            if (ayuda) ayuda.textContent = edad <= 7 ? '{{ __("Categoría asignada por edad (0-7 años)") }}' : '{{ __("Categoría por año de nacimiento") }}';
+            if (ayuda) ayuda.textContent = '{{ __("Categoría asignada por año de nacimiento") }}';
         } else if (ayuda) ayuda.textContent = '';
         syncCategoriaHidden();
     }

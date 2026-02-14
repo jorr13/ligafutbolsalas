@@ -155,11 +155,14 @@ También puedes ejecutarlo manualmente cuando:
 ✅ **Creados:**
 - `app/Console/Commands/ActualizarCategoriasJugadores.php`
 - `docs/COMANDO_ACTUALIZAR_CATEGORIAS.md`
-- `docs/RESUMEN_ACTUALIZACION_CATEGORIAS.md` (este archivo)
+- `docs/RESUMEN_ACTUALIZACION_CATEGORIAS.md`
+- `docs/CORRECCION_FORMULARIOS_CATEGORIAS.md`
 
 ✅ **Modificados:**
 - `app/Models/Categorias.php` → Método `getClaveCategoriaPorFechaNacimiento()`
 - `app/Console/Kernel.php` → Programación automática
+- `resources/views/jugadores/create.blade.php` → Función JavaScript `getClaveCategoriaPorAnoYEdad()`
+- `resources/views/jugadores/edit.blade.php` → Función JavaScript `getClaveCategoriaPorAnoYEdad()`
 
 ---
 
@@ -176,13 +179,15 @@ Ambos métodos deben mantener la misma lógica para garantizar consistencia.
 
 ## ✨ Mejoras Implementadas
 
-- 🎨 Interfaz visual con colores y emojis
-- 📊 Tabla detallada de cada jugador
-- 🔍 Modo de prueba seguro
+- 🎨 Interfaz visual con colores y emojis en el comando
+- 📊 Tabla detallada de cada jugador procesado
+- 🔍 Modo de prueba seguro (`--dry-run`)
 - ⚙️ Configuración flexible (año de referencia)
-- 📅 Ejecución automática programada
+- 📅 Ejecución automática programada cada 1 de enero
 - 🛡️ Manejo robusto de errores
 - 📖 Documentación completa
+- ✅ **Corrección de formularios web** (create y edit) para calcular categoría correctamente en tiempo real
+- 🔄 **Consistencia total** entre backend (PHP) y frontend (JavaScript)
 
 ---
 
