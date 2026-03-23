@@ -56,9 +56,15 @@ class EntrenadoresController extends Controller
         $request->merge(['cedula' => CedulaNumero::soloDigitosMax8($request->cedula ?? '')]);
         $request->validate([
             'cedula' => 'required|regex:/^\d{1,8}$/',
+            'estatus' => 'required|in:activo,inactivo,sancionado',
+            'fecha_fin_sancion' => 'nullable|date|required_if:estatus,sancionado',
         ], [
             'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
+            'fecha_fin_sancion.required_if' => 'Indique la fecha final de la sanción.',
         ]);
+        if ($request->estatus !== 'sancionado') {
+            $request->merge(['fecha_fin_sancion' => null]);
+        }
 
         $user = User::create([
             'name' => $request->nombre,
@@ -78,7 +84,8 @@ class EntrenadoresController extends Controller
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
             'user_id' => $user->id,
-            'estatus' => 'activo'
+            'estatus' => $request->estatus,
+            'fecha_fin_sancion' => $request->estatus === 'sancionado' ? $request->fecha_fin_sancion : null,
         ];
 
         // Manejar foto_carnet
@@ -145,9 +152,15 @@ class EntrenadoresController extends Controller
         $request->merge(['cedula' => CedulaNumero::soloDigitosMax8($request->cedula ?? '')]);
         $request->validate([
             'cedula' => 'required|regex:/^\d{1,8}$/',
+            'estatus' => 'required|in:activo,inactivo,sancionado',
+            'fecha_fin_sancion' => 'nullable|date|required_if:estatus,sancionado',
         ], [
             'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
+            'fecha_fin_sancion.required_if' => 'Indique la fecha final de la sanción.',
         ]);
+        if ($request->estatus !== 'sancionado') {
+            $request->merge(['fecha_fin_sancion' => null]);
+        }
         
         $user->update([
             'name' => $request->nombre,
@@ -163,6 +176,8 @@ class EntrenadoresController extends Controller
             'email' => $request->email,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
+            'estatus' => $request->estatus,
+            'fecha_fin_sancion' => $request->estatus === 'sancionado' ? $request->fecha_fin_sancion : null,
         ];
 
         // Manejar foto_carnet

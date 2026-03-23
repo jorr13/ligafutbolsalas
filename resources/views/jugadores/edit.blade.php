@@ -42,7 +42,7 @@
                                 </span>
                             </p>
                             <p class="text-muted mb-0">{{ __('Estado') }}: 
-                                <span class="badge {{ $jugador->status == 'activo' ? 'bg-success' : 'bg-danger' }}">
+                                <span class="badge {{ $jugador->status == 'activo' ? 'bg-success' : ($jugador->status == 'sancionado' ? 'bg-warning text-dark' : 'bg-danger') }}">
                                     {{ ucfirst($jugador->status) }}
                                 </span>
                             </p>
@@ -366,11 +366,28 @@
                                                     <option value="activo" {{ old('status', $jugador->status) == 'activo' ? 'selected' : '' }}>{{ __('Activo') }}</option>
                                                     <option value="inactivo" {{ old('status', $jugador->status) == 'inactivo' ? 'selected' : '' }}>{{ __('Inactivo') }}</option>
                                                     <option value="pendiente" {{ old('status', $jugador->status) == 'pendiente' ? 'selected' : '' }}>{{ __('Pendiente') }}</option>
+                                                    <option value="sancionado" {{ old('status', $jugador->status) == 'sancionado' ? 'selected' : '' }}>{{ __('Sancionado') }}</option>
                                 </select>
                             </div>
                                             @error('status')
                                                 <div class="invalid-feedback d-block mt-2">
                                                     <i class="fas fa-exclamation-circle me-1"></i>
+                                                    <strong>{{ $message }}</strong>
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 {{ old('status', $jugador->status) == 'sancionado' ? '' : 'd-none' }}" id="wrap-fecha-fin-sancion-jugador">
+                                        <div class="form-group">
+                                            <label for="fecha_fin_sancion" class="form-label fw-semibold">
+                                                <i class="fas fa-calendar-times me-2 text-primary"></i>
+                                                {{ __('Fecha final sanción') }}
+                                            </label>
+                                            <input type="date" name="fecha_fin_sancion" id="fecha_fin_sancion"
+                                                   class="form-control @error('fecha_fin_sancion') is-invalid @enderror"
+                                                   value="{{ old('fecha_fin_sancion', $jugador->fecha_fin_sancion ? $jugador->fecha_fin_sancion->format('Y-m-d') : '') }}">
+                                            @error('fecha_fin_sancion')
+                                                <div class="invalid-feedback d-block mt-2">
                                                     <strong>{{ $message }}</strong>
                                                 </div>
                                             @enderror
@@ -1158,6 +1175,22 @@ document.addEventListener('DOMContentLoaded', function() {
             this.value = this.value.replace(/\D/g, '').slice(0, 8);
         });
     });
+
+    const statusJugador = document.getElementById('status');
+    const wrapFechaJugador = document.getElementById('wrap-fecha-fin-sancion-jugador');
+    function toggleFechaSancionJugador() {
+        if (!statusJugador || !wrapFechaJugador) return;
+        const fechaInput = document.getElementById('fecha_fin_sancion');
+        const esSancionado = statusJugador.value === 'sancionado';
+        wrapFechaJugador.classList.toggle('d-none', !esSancionado);
+        if (!esSancionado && fechaInput) {
+            fechaInput.value = '';
+        }
+    }
+    if (statusJugador) {
+        statusJugador.addEventListener('change', toggleFechaSancionJugador);
+        toggleFechaSancionJugador();
+    }
 
     // File upload functionality for all file inputs
     const fileUploads = [

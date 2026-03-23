@@ -447,19 +447,25 @@
                         </div>
                         <div class="col-md-6">
                             <div class="row text-center">
-                                <div class="col-4">
+                                <div class="col-6 col-md-3">
                                     <div class="border-end">
                                         <h3 class="h5 mb-1 text-success">{{ $arbitros->where('estatus', 'activo')->count() }}</h3>
                                         <small class="text-muted">Activos</small>
                                     </div>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-6 col-md-3">
                                     <div class="border-end">
                                         <h3 class="h5 mb-1 text-secondary">{{ $arbitros->where('estatus', 'inactivo')->count() }}</h3>
                                         <small class="text-muted">Inactivos</small>
                                     </div>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-6 col-md-3">
+                                    <div class="border-end">
+                                        <h3 class="h5 mb-1 text-warning">{{ $arbitros->where('estatus', 'sancionado')->count() }}</h3>
+                                        <small class="text-muted">Sancionados</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
                                     <h3 class="h5 mb-1 text-info">{{ $arbitros->total() }}</h3>
                                     <small class="text-muted">Total</small>
                                 </div>
@@ -555,8 +561,8 @@
                             </div>
                         </td>
                         <td class="py-3 px-4">
-                            <span class="badge bg-{{ $arbitro->estatus == 'activo' ? 'success' : 'secondary' }} text-white px-3 py-2 rounded-pill">
-                                <i class="fas fa-{{ $arbitro->estatus == 'activo' ? 'check' : 'pause' }} me-1"></i>
+                            <span class="badge bg-{{ $arbitro->estatus == 'activo' ? 'success' : ($arbitro->estatus == 'sancionado' ? 'warning text-dark' : 'secondary') }} {{ $arbitro->estatus == 'sancionado' ? '' : 'text-white' }} px-3 py-2 rounded-pill">
+                                <i class="fas fa-{{ $arbitro->estatus == 'activo' ? 'check' : ($arbitro->estatus == 'sancionado' ? 'gavel' : 'pause') }} me-1"></i>
                                 {{ ucfirst($arbitro->estatus) }}
                             </span>
                         </td>

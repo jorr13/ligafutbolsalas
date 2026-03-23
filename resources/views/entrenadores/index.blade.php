@@ -447,19 +447,25 @@
                         </div>
                         <div class="col-md-6">
                             <div class="row text-center">
-                                <div class="col-4">
+                                <div class="col-6 col-md-3">
                                     <div class="border-end">
                                         <h3 class="h5 mb-1 text-success">{{ $entrenadores->where('estatus', 'activo')->count() }}</h3>
                                         <small class="text-muted">Activos</small>
                                     </div>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-6 col-md-3">
                                     <div class="border-end">
                                         <h3 class="h5 mb-1 text-secondary">{{ $entrenadores->where('estatus', 'inactivo')->count() }}</h3>
                                         <small class="text-muted">Inactivos</small>
                                     </div>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-6 col-md-3">
+                                    <div class="border-end">
+                                        <h3 class="h5 mb-1 text-warning">{{ $entrenadores->where('estatus', 'sancionado')->count() }}</h3>
+                                        <small class="text-muted">Sancionados</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
                                     <h3 class="h5 mb-1 text-info">{{ $entrenadores->total() }}</h3>
                                     <small class="text-muted">Total</small>
                                 </div>
@@ -536,7 +542,7 @@
                         <td class="py-3 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
-                                    <div class="position-absolute bottom-0 end-0 bg-{{ $entrenador->estatus == 'activo' ? 'success' : 'secondary' }} rounded-circle border-2 border-white" 
+                                    <div class="position-absolute bottom-0 end-0 bg-{{ $entrenador->estatus == 'activo' ? 'success' : ($entrenador->estatus == 'sancionado' ? 'warning' : 'secondary') }} rounded-circle border-2 border-white" 
                                          style="width: 12px; height: 12px;"></div>
                                 </div>
                                 <div>
@@ -571,8 +577,8 @@
                             </span>
                         </td>
                         <td class="py-3 px-4">
-                            <span class="badge bg-{{ $entrenador->estatus == 'activo' ? 'success' : 'secondary' }} text-white px-3 py-2 rounded-pill">
-                                <i class="fas fa-{{ $entrenador->estatus == 'activo' ? 'check' : 'pause' }} me-1"></i>
+                            <span class="badge bg-{{ $entrenador->estatus == 'activo' ? 'success' : ($entrenador->estatus == 'sancionado' ? 'warning text-dark' : 'secondary') }} {{ $entrenador->estatus == 'sancionado' ? '' : 'text-white' }} px-3 py-2 rounded-pill">
+                                <i class="fas fa-{{ $entrenador->estatus == 'activo' ? 'check' : ($entrenador->estatus == 'sancionado' ? 'gavel' : 'pause') }} me-1"></i>
                                 {{ ucfirst($entrenador->estatus) }}
                             </span>
                         </td>

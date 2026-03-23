@@ -43,20 +43,27 @@ class ArbitrosController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los datos
+        $request->merge(['cedula' => CedulaNumero::soloDigitosMax8($request->cedula ?? '')]);
+
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'cedula' => 'required|string|max:20|unique:arbitros,cedula',
+            'cedula' => 'required|regex:/^\d{1,8}$/|unique:arbitros,cedula',
             'email' => 'required|email|unique:arbitros,email',
             'telefono' => 'nullable|string|max:20',
             'direccion' => 'nullable|string|max:500',
             'pass' => 'required|string|min:6',
+            'estatus' => 'required|in:activo,inactivo,sancionado',
+            'fecha_fin_sancion' => 'nullable|date|required_if:estatus,sancionado',
             'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'archivo_cv' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ], [
             'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
+            'fecha_fin_sancion.required_if' => 'Indique la fecha final de la sanción.',
         ]);
+        if ($request->estatus !== 'sancionado') {
+            $request->merge(['fecha_fin_sancion' => null]);
+        }
 
         // Crear usuario
         $user = User::create([
@@ -74,7 +81,8 @@ class ArbitrosController extends Controller
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
             'user_id' => $user->id,
-            'estatus' => 'activo'
+            'estatus' => $request->estatus,
+            'fecha_fin_sancion' => $request->estatus === 'sancionado' ? $request->fecha_fin_sancion : null,
         ];
 
         // Manejar foto_carnet
@@ -131,19 +139,26 @@ class ArbitrosController extends Controller
      */
     public function update(Request $request, Arbitros $arbitro)
     {
-        // Validar los datos
+        $request->merge(['cedula' => CedulaNumero::soloDigitosMax8($request->cedula ?? '')]);
+
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'cedula' => 'required|string|max:20|unique:arbitros,cedula,' . $arbitro->id,
+            'cedula' => 'required|regex:/^\d{1,8}$/|unique:arbitros,cedula,' . $arbitro->id,
             'email' => 'required|email|unique:arbitros,email,' . $arbitro->id,
             'telefono' => 'nullable|string|max:20',
             'direccion' => 'nullable|string|max:500',
+            'estatus' => 'required|in:activo,inactivo,sancionado',
+            'fecha_fin_sancion' => 'nullable|date|required_if:estatus,sancionado',
             'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'archivo_cv' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ], [
             'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
+            'fecha_fin_sancion.required_if' => 'Indique la fecha final de la sanción.',
         ]);
+        if ($request->estatus !== 'sancionado') {
+            $request->merge(['fecha_fin_sancion' => null]);
+        }
 
         $user = User::where('id', $arbitro->user_id)->first();
         
@@ -158,6 +173,8 @@ class ArbitrosController extends Controller
             'email' => $request->email,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
+            'estatus' => $request->estatus,
+            'fecha_fin_sancion' => $request->estatus === 'sancionado' ? $request->fecha_fin_sancion : null,
         ];
 
         // Manejar foto_carnet

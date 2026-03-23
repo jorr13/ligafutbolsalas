@@ -395,6 +395,18 @@ class JugadoresController extends Controller
                 ->withErrors(['fecha_nacimiento' => __('El jugador sobrepasa la edad máxima permitida (18 años).')]);
         }
 
+        if (auth()->user()->rol_id === 'administrador') {
+            $request->validate([
+                'status' => 'required|in:activo,inactivo,pendiente,sancionado',
+                'fecha_fin_sancion' => 'nullable|date|required_if:status,sancionado',
+            ], [
+                'fecha_fin_sancion.required_if' => 'Indique la fecha final de la sanción.',
+            ]);
+            if ($request->status !== 'sancionado') {
+                $request->merge(['fecha_fin_sancion' => null]);
+            }
+        }
+
         $numeroCedulaNorm = CedulaNumero::soloDigitosMax8($request->cedula);
         $rawRep = $request->input('cedula_representante');
         $cedulaRepNorm = ($rawRep !== null && trim((string) $rawRep) !== '')
@@ -475,12 +487,14 @@ class JugadoresController extends Controller
             }
             $fotoIdentificacionPath = Storage::disk('storage')->putFile('jugadores/fotos_identificacion', $request->file('foto_identificacion'));
         }
-        if(isset($request->status)){
+        if (auth()->user()->rol_id === 'administrador') {
             $status = $request->status;
-        }else{
+            $fechaFinSancion = $request->status === 'sancionado' ? $request->fecha_fin_sancion : null;
+        } else {
             $status = $jugador->status;
+            $fechaFinSancion = $jugador->fecha_fin_sancion;
         }
-        
+
         // Calcular edad automáticamente si se proporciona fecha de nacimiento
         $edad = $request->edad ?? $jugador->edad;
         if ($request->fecha_nacimiento) {
@@ -532,8 +546,9 @@ class JugadoresController extends Controller
                 'cedula_representante' => $request->cedula_representante,
                 'telefono_representante' => $request->telefono_representante,
                 'categoria_id' => $categoriaId,
-                'nivel' => $request->nivel, 
+                'nivel' => $request->nivel,
                 'status' => $status,
+                'fecha_fin_sancion' => $fechaFinSancion,
             ]);
         
             // Regenerar QR Code si es necesario

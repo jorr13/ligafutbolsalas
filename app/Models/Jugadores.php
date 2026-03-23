@@ -15,7 +15,7 @@ class Jugadores extends Model
     protected $table = 'jugadores';
     protected $fillable = ['nombre','cedula','tipo_identificacion','telefono','direccion',
         'foto_carnet','foto_cedula','foto_identificacion','archivo_cv',
-        'user_id','club_id','status','pago',
+        'user_id','club_id','status','fecha_fin_sancion','pago',
         'email',
         'numero_dorsal',
         'edad',
@@ -30,6 +30,10 @@ class Jugadores extends Model
         'nivel',
         'qr_code_image',
         'qr_code_url'
+    ];
+
+    protected $casts = [
+        'fecha_fin_sancion' => 'date',
     ];
 
     /** Guardar nombre y nombre del representante en mayúsculas */

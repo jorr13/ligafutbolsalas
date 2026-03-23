@@ -21,7 +21,12 @@ class Arbitros extends Model
         'foto_cedula',
         'archivo_cv',
         'user_id',
-        'estatus'
+        'estatus',
+        'fecha_fin_sancion',
+    ];
+
+    protected $casts = [
+        'fecha_fin_sancion' => 'date',
     ];
 
     /** Guardar nombre en mayúsculas */

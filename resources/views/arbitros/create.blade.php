@@ -75,6 +75,34 @@
                             @enderror
                         </div>
 
+                        <!-- Estatus -->
+                        <div class="form-group mb-4">
+                            <label for="estatus" class="form-label fw-semibold">
+                                <i class="fas fa-toggle-on me-2 text-primary"></i>
+                                {{ __('Estatus') }}
+                            </label>
+                            <select name="estatus" id="estatus" class="form-select @error('estatus') is-invalid @enderror" required>
+                                <option value="activo" {{ old('estatus', 'activo') == 'activo' ? 'selected' : '' }}>{{ __('Activo') }}</option>
+                                <option value="inactivo" {{ old('estatus') == 'inactivo' ? 'selected' : '' }}>{{ __('Inactivo') }}</option>
+                                <option value="sancionado" {{ old('estatus') == 'sancionado' ? 'selected' : '' }}>{{ __('Sancionado') }}</option>
+                            </select>
+                            @error('estatus')
+                                <div class="invalid-feedback d-block mt-2"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-4 {{ old('estatus') == 'sancionado' ? '' : 'd-none' }}" id="wrap-fecha-fin-sancion-arbitro">
+                            <label for="fecha_fin_sancion" class="form-label fw-semibold">
+                                <i class="fas fa-calendar-times me-2 text-primary"></i>
+                                {{ __('Fecha final sanción') }}
+                            </label>
+                            <input type="date" name="fecha_fin_sancion" id="fecha_fin_sancion"
+                                   class="form-control @error('fecha_fin_sancion') is-invalid @enderror"
+                                   value="{{ old('fecha_fin_sancion') }}">
+                            @error('fecha_fin_sancion')
+                                <div class="invalid-feedback d-block mt-2"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+
                         <!-- Teléfono -->
                         <div class="form-group mb-4">
                             <label for="telefono" class="form-label fw-semibold">
@@ -481,6 +509,21 @@ document.addEventListener('DOMContentLoaded', function() {
         cedula.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '').slice(0, 8);
         });
+    }
+    const estatusSel = document.getElementById('estatus');
+    const wrapFecha = document.getElementById('wrap-fecha-fin-sancion-arbitro');
+    function toggleFechaArbitro() {
+        if (!estatusSel || !wrapFecha) return;
+        const fechaInput = document.getElementById('fecha_fin_sancion');
+        const esSancionado = estatusSel.value === 'sancionado';
+        wrapFecha.classList.toggle('d-none', !esSancionado);
+        if (!esSancionado && fechaInput) {
+            fechaInput.value = '';
+        }
+    }
+    if (estatusSel) {
+        estatusSel.addEventListener('change', toggleFechaArbitro);
+        toggleFechaArbitro();
     }
 });
 </script>

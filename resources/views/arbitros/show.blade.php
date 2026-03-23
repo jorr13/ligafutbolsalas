@@ -29,11 +29,11 @@
                                         <i class="fas fa-user fa-4x text-muted"></i>
                                     </div>
                                 @endif
-                                <div class="status-indicator bg-{{ $arbitro->estatus == 'activo' ? 'success' : 'secondary' }}"></div>
+                                <div class="status-indicator bg-{{ $arbitro->estatus == 'activo' ? 'success' : ($arbitro->estatus == 'sancionado' ? 'warning' : 'secondary') }}"></div>
                             </div>
                             <h4 class="mt-3 mb-1 fw-bold text-dark">{{ $arbitro->nombre }}</h4>
-                            <span class="badge bg-{{ $arbitro->estatus == 'activo' ? 'success' : 'secondary' }} text-white px-3 py-2 rounded-pill">
-                                <i class="fas fa-{{ $arbitro->estatus == 'activo' ? 'check' : 'pause' }} me-1"></i>
+                            <span class="badge bg-{{ $arbitro->estatus == 'activo' ? 'success' : ($arbitro->estatus == 'sancionado' ? 'warning text-dark' : 'secondary') }} {{ $arbitro->estatus == 'sancionado' ? '' : 'text-white' }} px-3 py-2 rounded-pill">
+                                <i class="fas fa-{{ $arbitro->estatus == 'activo' ? 'check' : ($arbitro->estatus == 'sancionado' ? 'gavel' : 'pause') }} me-1"></i>
                                 {{ ucfirst($arbitro->estatus) }}
                             </span>
                         </div>
