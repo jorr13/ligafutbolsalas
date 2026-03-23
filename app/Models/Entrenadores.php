@@ -20,4 +20,9 @@ class Entrenadores extends Model
     {
         $this->attributes['nombre'] = $value ? mb_strtoupper($value, 'UTF-8') : $value;
     }
+
+    public function club()
+    {
+        return $this->belongsTo(Clubes::class, 'club_id');
+    }
 }

@@ -569,6 +569,11 @@
                         <td class="py-3 px-4 text-end">
                             <div class="btn-group" role="group">
                                 @if(auth()->user()->rol_id=="administrador")
+                                <a href="{{ route('arbitros.carnet.preview', $arbitro->id) }}"
+                                   class="btn btn-outline-success btn-sm"
+                                   title="Carnet del árbitro">
+                                    <i class="fas fa-id-card me-1"></i><span class="d-none d-md-inline">Carnet</span>
+                                </a>
                                 <a href="{{ route('arbitros.edit', $arbitro) }}" 
                                    class="btn btn-outline-warning btn-sm"
                                    title="Editar árbitro">

@@ -50,9 +50,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('jugadores/{id}/historial', [App\Http\Controllers\TransferenciaController::class, 'mostrarHistorial'])->name('admin.jugadores.historial');
         Route::get('jugadores/{id}/edit', [App\Http\Controllers\JugadoresController::class, 'edit'])->name('admin.jugadores.edit');
         
-        // Rutas para sistema de carnets
+        // Rutas para sistema de carnets (plantillas independientes por tipo)
         Route::get('jugadores/{id}/carnet', [App\Http\Controllers\CarnetController::class, 'generar'])->name('jugadores.carnet');
         Route::get('jugadores/{id}/carnet/preview', [App\Http\Controllers\CarnetController::class, 'vistaPrevia'])->name('jugadores.carnet.preview');
+        Route::get('entrenadores/{id}/carnet', [App\Http\Controllers\CarnetEntrenadorController::class, 'generar'])->name('entrenadores.carnet');
+        Route::get('entrenadores/{id}/carnet/preview', [App\Http\Controllers\CarnetEntrenadorController::class, 'vistaPrevia'])->name('entrenadores.carnet.preview');
+        Route::get('arbitros/{id}/carnet', [App\Http\Controllers\CarnetArbitroController::class, 'generar'])->name('arbitros.carnet');
+        Route::get('arbitros/{id}/carnet/preview', [App\Http\Controllers\CarnetArbitroController::class, 'vistaPrevia'])->name('arbitros.carnet.preview');
         
         // Ruta para marcar pago de jugador
         Route::post('jugadores/{id}/toggle-pago', [App\Http\Controllers\JugadoresController::class, 'togglePago'])->name('admin.jugadores.togglePago');
