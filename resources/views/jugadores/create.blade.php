@@ -105,7 +105,11 @@
                                                id="cedula" 
                                                name="cedula" 
                                                required 
-                                               placeholder="Ej: 24042654"
+                                               maxlength="8"
+                                               inputmode="numeric"
+                                               pattern="[0-9]*"
+                                               autocomplete="off"
+                                               placeholder="{{ __('Hasta 8 dígitos') }}"
                                                value="{{ old('cedula') }}">
                                     </div>
                                     @error('cedula')
@@ -312,11 +316,11 @@
                                         <select class="form-select border-start-0 @error('categoria_id') is-invalid @enderror" 
                                                 id="categoria_id" 
                                                 disabled
-                                                data-categorias="{{ json_encode($categorias->map(fn($c) => ['id' => $c->id, 'nombre' => $c->nombre, 'edad_min' => $c->edad_min, 'edad_max' => $c->edad_max])) }}">
+                                                data-categorias="{{ json_encode($categorias->map(fn($c) => ['id' => $c->id, 'nombre' => $c->nombre, 'edad_min' => $c->edad_min, 'edad_max' => $c->edad_max, 'estatus' => $c->estatus])) }}">
                                             <option value="" selected disabled>{{ __('Ingrese fecha de nacimiento para ver categorías') }}</option>
                                     @foreach($categorias as $categoria)
-                                                <option value="{{ $categoria->id }}" {{ old('categoria_id') == $categoria->id ? 'selected' : '' }} data-edad-min="{{ $categoria->edad_min }}" data-edad-max="{{ $categoria->edad_max }}">
-                                                    {{ $categoria->nombre }}
+                                                <option value="{{ $categoria->id }}" {{ old('categoria_id') == $categoria->id ? 'selected' : '' }} data-edad-min="{{ $categoria->edad_min }}" data-edad-max="{{ $categoria->edad_max }}" data-estatus="{{ $categoria->estatus }}">
+                                                    {{ $categoria->nombre }}@if(($categoria->estatus ?? '') === \App\Models\Categorias::ESTATUS_BLOQUEADO) ({{ __('Bloqueada') }})@endif
                                                 </option>
                                     @endforeach
                                 </select>
@@ -410,7 +414,11 @@
                                                class="form-control border-start-0 @error('cedula_representante') is-invalid @enderror" 
                                                id="cedula_representante" 
                                                name="cedula_representante" 
-                                               placeholder="Ej: V-87654321"
+                                               maxlength="8"
+                                               inputmode="numeric"
+                                               pattern="[0-9]*"
+                                               autocomplete="off"
+                                               placeholder="{{ __('Hasta 8 dígitos') }}"
                                                value="{{ old('cedula_representante') }}">
                                     </div>
                                     @error('cedula_representante')
@@ -974,6 +982,14 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    ['cedula', 'cedula_representante'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 8);
+        });
+    });
+
     // File upload functionality for all file inputs
     const fileUploads = [
         { area: 'fotoCarnetArea', input: 'foto_carnet', btn: 'selectFotoCarnetBtn', preview: 'fotoCarnetPreview', image: 'fotoCarnetImage', remove: 'removeFotoCarnetBtn' },
@@ -1189,6 +1205,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return categorias.find(c => new RegExp('sub[_\\-]?\\s*' + numero + '\\b', 'i').test((c.nombre || '').trim()));
     }
 
+    function labelCategoria(cat) {
+        if (!cat) return '';
+        const bloqueado = typeof cat.estatus === 'string' && cat.estatus === '{{ \App\Models\Categorias::ESTATUS_BLOQUEADO }}';
+        return cat.nombre + (bloqueado ? ' ({{ __("Bloqueada") }})' : '');
+    }
+
     function actualizarCategoriasPorEdad(edad, añoNacimiento) {
         if (!categoriaSelect) return;
         const categoriasJson = categoriaSelect.getAttribute('data-categorias');
@@ -1231,13 +1253,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const cat = clave ? findCategoriaPorClave(categorias, clave) : null;
         const optPlaceholder = document.createElement('option');
         optPlaceholder.value = '';
-        optPlaceholder.textContent = cat ? cat.nombre : (clave === 'sub8' ? '{{ __("Sub-8") }}' : '{{ __("No hay categoría para este año de nacimiento") }}');
+        optPlaceholder.textContent = cat ? labelCategoria(cat) : (clave === 'sub8' ? '{{ __("Sub-8") }}' : '{{ __("No hay categoría para este año de nacimiento") }}');
         optPlaceholder.disabled = true;
         categoriaSelect.appendChild(optPlaceholder);
         if (cat) {
             const opt = document.createElement('option');
             opt.value = cat.id;
-            opt.textContent = cat.nombre;
+            opt.textContent = labelCategoria(cat);
             opt.selected = true;
             categoriaSelect.appendChild(opt);
             if (ayuda) ayuda.textContent = '{{ __("Categoría asignada por año de nacimiento") }}';

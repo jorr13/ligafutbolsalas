@@ -49,6 +49,28 @@
                             @enderror
                         </div>
 
+                        <!-- Estatus -->
+                        <div class="form-group mb-5">
+                            <label for="estatus" class="form-label fw-semibold">
+                                <i class="fas fa-toggle-on me-2 text-primary"></i>
+                                {{ __('Estatus') }}
+                            </label>
+                            <select name="estatus" id="estatus" class="form-select @error('estatus') is-invalid @enderror" required>
+                                <option value="{{ \App\Models\Categorias::ESTATUS_ACTIVO }}" {{ old('estatus', $categorias->estatus) === \App\Models\Categorias::ESTATUS_ACTIVO ? 'selected' : '' }}>
+                                    {{ __('Activo') }}
+                                </option>
+                                <option value="{{ \App\Models\Categorias::ESTATUS_BLOQUEADO }}" {{ old('estatus', $categorias->estatus) === \App\Models\Categorias::ESTATUS_BLOQUEADO ? 'selected' : '' }}>
+                                    {{ __('Bloqueado') }}
+                                </option>
+                            </select>
+                            <small class="text-muted d-block mt-2">{{ __('En bloqueado no se podrán asignar nuevos jugadores a esta categoría.') }}</small>
+                            @error('estatus')
+                                <div class="invalid-feedback d-block mt-2">
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @enderror
+                        </div>
+
                         <!-- Action Buttons -->
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                             <a href="{{ route('categorias.index') }}" class="btn btn-outline-secondary btn-lg">

@@ -64,8 +64,12 @@
                                        id="cedula" 
                                        name="cedula" 
                                        required 
-                                       placeholder="Ej: V-12345678"
-                                       value="{{ $arbitro->cedula }}">
+                                       maxlength="8"
+                                       inputmode="numeric"
+                                       pattern="[0-9]*"
+                                       autocomplete="off"
+                                       placeholder="{{ __('Hasta 8 dígitos') }}"
+                                       value="{{ \App\Support\CedulaNumero::soloDigitosMax8($arbitro->cedula) }}">
                             </div>
                             @error('cedula')
                                 <div class="invalid-feedback d-block mt-2">
@@ -483,4 +487,14 @@
     }
 }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cedula = document.getElementById('cedula');
+    if (cedula) {
+        cedula.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 8);
+        });
+    }
+});
+</script>
 @endsection

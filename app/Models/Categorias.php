@@ -8,15 +8,36 @@ use Illuminate\Database\Eloquent\Model;
 class Categorias extends Model
 {
     use HasFactory;
+
+    public const ESTATUS_ACTIVO = 'activo';
+
+    public const ESTATUS_BLOQUEADO = 'bloqueado';
+
     protected $table = 'categorias';
+
     protected $fillable = ['id', 'nombre', 'estatus', 'edad_min', 'edad_max'];
-    
-    public static function getCategoriasPorClub($clubId)
+
+    public function estaActiva(): bool
     {
-        return self::join('clubes_categorias', 'categorias.id', '=', 'clubes_categorias.categoria_id')
+        return $this->estatus === self::ESTATUS_ACTIVO;
+    }
+
+    /**
+     * Categorías asignadas al club vía clubes_categorias.
+     *
+     * @param  bool  $soloActivas  Si es true, excluye categorías en estatus bloqueado (para altas/edición de jugadores).
+     */
+    public static function getCategoriasPorClub($clubId, bool $soloActivas = false)
+    {
+        $query = self::join('clubes_categorias', 'categorias.id', '=', 'clubes_categorias.categoria_id')
             ->where('clubes_categorias.club_id', $clubId)
-            ->select('categorias.*')
-            ->get();
+            ->select('categorias.*');
+
+        if ($soloActivas) {
+            $query->where('categorias.estatus', self::ESTATUS_ACTIVO);
+        }
+
+        return $query->get();
     }
 
     /**
@@ -24,11 +45,15 @@ class Categorias extends Model
      * Si $edad es null, devuelve todas las categorías del club.
      * Si $edad tiene valor, solo devuelve categorías con edad_min <= edad <= edad_max.
      */
-    public static function getCategoriasPorClubYEdad($clubId, ?int $edad)
+    public static function getCategoriasPorClubYEdad($clubId, ?int $edad, bool $soloActivas = false)
     {
         $query = self::join('clubes_categorias', 'categorias.id', '=', 'clubes_categorias.categoria_id')
             ->where('clubes_categorias.club_id', $clubId)
             ->select('categorias.*');
+
+        if ($soloActivas) {
+            $query->where('categorias.estatus', self::ESTATUS_ACTIVO);
+        }
 
         if ($edad !== null) {
             $query->whereNotNull('categorias.edad_min')

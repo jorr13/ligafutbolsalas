@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Support\CedulaNumero;
 
 class ArbitrosController extends Controller
 {
@@ -53,6 +54,8 @@ class ArbitrosController extends Controller
             'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'archivo_cv' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+        ], [
+            'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
         ]);
 
         // Crear usuario
@@ -138,6 +141,8 @@ class ArbitrosController extends Controller
             'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'archivo_cv' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+        ], [
+            'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
         ]);
 
         $user = User::where('id', $arbitro->user_id)->first();

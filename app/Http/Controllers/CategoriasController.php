@@ -42,11 +42,16 @@ class CategoriasController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'estatus' => 'required|in:' . Categorias::ESTATUS_ACTIVO . ',' . Categorias::ESTATUS_BLOQUEADO,
+        ]);
+
         Categorias::create([
             'nombre' => $request->nombre,
-            'estatus' => 'activo'
+            'estatus' => $request->estatus,
         ]);
-    
+
         return redirect()->route('categorias.index')->with('success', 'Categoria creada exitosamente.');
     }
 
@@ -85,11 +90,17 @@ class CategoriasController extends Controller
      */
     public function update(Request $request, Categorias $categorias, $id)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'estatus' => 'required|in:' . Categorias::ESTATUS_ACTIVO . ',' . Categorias::ESTATUS_BLOQUEADO,
+        ]);
+
         $categoria = Categorias::where('id', $id)->first();
         $categoria->update([
             'nombre' => $request->nombre,
+            'estatus' => $request->estatus,
         ]);
-    
+
         return redirect()->route('categorias.index')->with('success', 'Categoria editada exitosamente.');
 
     }

@@ -64,6 +64,7 @@
                             } else {
                                 $numeroCedula = $entrenadores->cedula ?? '';
                             }
+                            $numeroCedula = \App\Support\CedulaNumero::soloDigitosMax8($numeroCedula);
                         @endphp
                         <div class="row g-3 mb-4">
                             <div class="col-md-3">
@@ -109,7 +110,11 @@
                                                id="cedula" 
                                                name="cedula" 
                                                required 
-                                               placeholder="Ej: 24042654"
+                                               maxlength="8"
+                                               inputmode="numeric"
+                                               pattern="[0-9]*"
+                                               autocomplete="off"
+                                               placeholder="{{ __('Hasta 8 dígitos') }}"
                                                value="{{ $numeroCedula }}">
                                     </div>
                                     @error('cedula')
@@ -1053,16 +1058,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const cedulaInput = document.getElementById('cedula');
     const telefonoInput = document.getElementById('telefono');
     
-    // Cédula format validation
+    // Cédula: solo números, máximo 8 dígitos
     cedulaInput.addEventListener('input', function() {
-        let value = this.value.replace(/[^A-Za-z0-9-]/g, '');
-        if (value.length > 0) {
-            value = value.toUpperCase();
-            if (value.length >= 2) {
-                value = value.slice(0, 1) + '-' + value.slice(1);
-            }
-        }
-        this.value = value;
+        this.value = this.value.replace(/\D/g, '').slice(0, 8);
     });
     
     // Teléfono format validation

@@ -13,6 +13,7 @@ use Endroid\QrCode\Builder\Builder;
  use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use App\Support\CedulaNumero;
 
 class JugadoresController extends Controller
 {
@@ -42,6 +43,28 @@ class JugadoresController extends Controller
             return null;
         }
     }
+
+    /**
+     * Impide asignar o cambiar a una categoría bloqueada; permite conservar la categoría actual si ya estaba bloqueada.
+     */
+    private function debeRechazarPorCategoriaBloqueada(?Jugadores $jugadorExistente, $categoriaId): bool
+    {
+        if ($categoriaId === null || $categoriaId === '') {
+            return false;
+        }
+
+        $categoria = Categorias::find($categoriaId);
+        if (!$categoria || $categoria->estaActiva()) {
+            return false;
+        }
+
+        if ($jugadorExistente && (int) $jugadorExistente->categoria_id === (int) $categoriaId) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function index(Request $request)
     {
         $club = null;
@@ -120,11 +143,24 @@ class JugadoresController extends Controller
                 ->withErrors(['fecha_nacimiento' => __('El jugador sobrepasa la edad máxima permitida (18 años).')]);
         }
 
+        $numeroCedulaNorm = CedulaNumero::soloDigitosMax8($request->cedula);
+        $rawRep = $request->input('cedula_representante');
+        $cedulaRepNorm = ($rawRep !== null && trim((string) $rawRep) !== '')
+            ? CedulaNumero::soloDigitosMax8($rawRep)
+            : null;
+        if ($cedulaRepNorm === '') {
+            $cedulaRepNorm = null;
+        }
+        $request->merge([
+            'cedula' => $numeroCedulaNorm,
+            'cedula_representante' => $cedulaRepNorm,
+        ]);
+
         // Validación de campos
         $request->validate([
             'nombre' => 'required|string|max:255',
             'tipo_identificacion' => 'required|in:V,E,F,P',
-            'cedula' => 'required|string|max:20',
+            'cedula' => 'required|regex:/^\d{1,8}$/',
             'telefono' => 'nullable|string|max:15',
             'email' => [
                 'nullable',
@@ -144,12 +180,15 @@ class JugadoresController extends Controller
             'categoria_id' => 'required|exists:categorias,id',
             'nivel' => 'required|in:iniciante,formativo,elite',
             'nombre_representante' => 'nullable|string|max:255',
-            'cedula_representante' => 'nullable|string|max:20',
+            'cedula_representante' => 'nullable|regex:/^\d{1,8}$/',
             'telefono_representante' => 'nullable|string|max:15',
             'observacion' => 'nullable|string|max:1000',
             'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_identificacion' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
+            'cedula_representante.regex' => 'La cédula del representante debe tener como máximo 8 dígitos numéricos, sin puntos.',
         ]);
 
         // Procesar archivos de fotos
@@ -192,6 +231,12 @@ class JugadoresController extends Controller
                     $categoriaId = $idPorClave;
                 }
             }
+        }
+
+        if ($this->debeRechazarPorCategoriaBloqueada(null, $categoriaId)) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['categoria_id' => 'Esta categoria esta bloqueada temporalmente']);
         }
 
         // Combinar tipo de identificación + número de cédula (ej: V-24042654)
@@ -312,7 +357,7 @@ class JugadoresController extends Controller
         if ($categoriasFiltradas->isEmpty()) {
             $categoriasFiltradas = $categorias;
         }
-        
+
         return view('jugadores.edit', compact('jugador', 'categorias', 'categoriasFiltradas'));
     }
 
@@ -350,11 +395,24 @@ class JugadoresController extends Controller
                 ->withErrors(['fecha_nacimiento' => __('El jugador sobrepasa la edad máxima permitida (18 años).')]);
         }
 
+        $numeroCedulaNorm = CedulaNumero::soloDigitosMax8($request->cedula);
+        $rawRep = $request->input('cedula_representante');
+        $cedulaRepNorm = ($rawRep !== null && trim((string) $rawRep) !== '')
+            ? CedulaNumero::soloDigitosMax8($rawRep)
+            : null;
+        if ($cedulaRepNorm === '') {
+            $cedulaRepNorm = null;
+        }
+        $request->merge([
+            'cedula' => $numeroCedulaNorm,
+            'cedula_representante' => $cedulaRepNorm,
+        ]);
+
         // Validación de campos
         $request->validate([
             'nombre' => 'required|string|max:255',
             'tipo_identificacion' => 'required|in:V,E,F,P',
-            'cedula' => 'required|string|max:20',
+            'cedula' => 'required|regex:/^\d{1,8}$/',
             'telefono' => 'nullable|string|max:15',
             'email' => [
                 'nullable',
@@ -374,12 +432,15 @@ class JugadoresController extends Controller
             'categoria_id' => 'required|exists:categorias,id',
             'nivel' => 'required|in:iniciante,formativo,elite',
             'nombre_representante' => 'nullable|string|max:255',
-            'cedula_representante' => 'nullable|string|max:20',
+            'cedula_representante' => 'nullable|regex:/^\d{1,8}$/',
             'telefono_representante' => 'nullable|string|max:15',
             'observacion' => 'nullable|string|max:1000',
             'foto_carnet' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_cedula' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_identificacion' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
+            'cedula_representante.regex' => 'La cédula del representante debe tener como máximo 8 dígitos numéricos, sin puntos.',
         ]);
 
         // Procesar archivos de fotos
@@ -440,6 +501,12 @@ class JugadoresController extends Controller
                     $categoriaId = $idPorClave;
                 }
             }
+        }
+
+        if ($this->debeRechazarPorCategoriaBloqueada($jugador, $categoriaId)) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['categoria_id' => 'Esta categoria esta bloqueada temporalmente']);
         }
 
         // Combinar tipo de identificación + número de cédula (ej: V-24042654)

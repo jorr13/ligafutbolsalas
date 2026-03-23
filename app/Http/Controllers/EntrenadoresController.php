@@ -16,6 +16,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Support\CedulaNumero;
 
 class EntrenadoresController extends Controller
 {
@@ -52,6 +53,13 @@ class EntrenadoresController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge(['cedula' => CedulaNumero::soloDigitosMax8($request->cedula ?? '')]);
+        $request->validate([
+            'cedula' => 'required|regex:/^\d{1,8}$/',
+        ], [
+            'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
+        ]);
+
         $user = User::create([
             'name' => $request->nombre,
             'email' => $request->email,
@@ -133,6 +141,13 @@ class EntrenadoresController extends Controller
     {
         $entrenador = Entrenadores::where('id', $id)->first();
         $user = User::where('id', $entrenador->user_id)->first();
+
+        $request->merge(['cedula' => CedulaNumero::soloDigitosMax8($request->cedula ?? '')]);
+        $request->validate([
+            'cedula' => 'required|regex:/^\d{1,8}$/',
+        ], [
+            'cedula.regex' => 'La cédula debe tener como máximo 8 dígitos numéricos, sin puntos.',
+        ]);
         
         $user->update([
             'name' => $request->nombre,

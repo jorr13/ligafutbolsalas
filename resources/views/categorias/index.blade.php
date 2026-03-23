@@ -436,14 +436,14 @@
                             <div class="row text-center">
                                 <div class="col-4">
                                     <div class="border-end">
-                                        <h3 class="h5 mb-1 text-success">{{ $categorias->where('estatus', 'activo')->count() }}</h3>
+                                        <h3 class="h5 mb-1 text-success">{{ $categorias->where('estatus', \App\Models\Categorias::ESTATUS_ACTIVO)->count() }}</h3>
                                         <small class="text-muted">Activas</small>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="border-end">
-                                        <h3 class="h5 mb-1 text-secondary">{{ $categorias->where('estatus', 'inactivo')->count() }}</h3>
-                                        <small class="text-muted">Inactivas</small>
+                                        <h3 class="h5 mb-1 text-secondary">{{ $categorias->where('estatus', \App\Models\Categorias::ESTATUS_BLOQUEADO)->count() }}</h3>
+                                        <small class="text-muted">Bloqueadas</small>
                                     </div>
                                 </div>
                                 <div class="col-4">
@@ -523,9 +523,9 @@
                             </div>
                         </td>
                         <td class="py-3 px-4">
-                            <span class="badge bg-{{ $categoria->estatus == 'activo' ? 'success' : 'secondary' }} text-white px-3 py-2 rounded-pill">
-                                <i class="fas fa-{{ $categoria->estatus == 'activo' ? 'check' : 'pause' }} me-1"></i>
-                                {{ ucfirst($categoria->estatus) }}
+                            <span class="badge bg-{{ $categoria->estatus == \App\Models\Categorias::ESTATUS_ACTIVO ? 'success' : 'warning' }} text-white px-3 py-2 rounded-pill">
+                                <i class="fas fa-{{ $categoria->estatus == \App\Models\Categorias::ESTATUS_ACTIVO ? 'check' : 'lock' }} me-1"></i>
+                                {{ $categoria->estatus == \App\Models\Categorias::ESTATUS_ACTIVO ? 'Activo' : 'Bloqueado' }}
                             </span>
                         </td>
                         <td class="py-3 px-4 text-end">
