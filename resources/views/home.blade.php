@@ -63,6 +63,47 @@
                             </div>
                         </div>
                     </div>
+
+                    @if(auth()->user()->rol_id === 'administrador' && !empty($statsAdmin))
+                    <div class="row g-3 mt-2">
+                        <div class="col-6 col-lg-3">
+                            <div class="bg-white bg-opacity-20 rounded p-3 h-100">
+                                <div class="text-center">
+                                    <i class="fas fa-user-friends text-dark fs-4 mb-2 d-block"></i>
+                                    <div class="fs-2 fw-bold text-dark lh-1">{{ number_format($statsAdmin['jugadores']) }}</div>
+                                    <small class="text-dark fw-semibold">{{ __('Jugadores') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="bg-white bg-opacity-20 rounded p-3 h-100">
+                                <div class="text-center">
+                                    <i class="fas fa-chalkboard-teacher text-dark fs-4 mb-2 d-block"></i>
+                                    <div class="fs-2 fw-bold text-dark lh-1">{{ number_format($statsAdmin['entrenadores']) }}</div>
+                                    <small class="text-dark fw-semibold">{{ __('Entrenadores') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="bg-white bg-opacity-20 rounded p-3 h-100">
+                                <div class="text-center">
+                                    <i class="fas fa-flag-checkered text-dark fs-4 mb-2 d-block"></i>
+                                    <div class="fs-2 fw-bold text-dark lh-1">{{ number_format($statsAdmin['arbitros']) }}</div>
+                                    <small class="text-dark fw-semibold">{{ __('Árbitros') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="bg-white bg-opacity-20 rounded p-3 h-100">
+                                <div class="text-center">
+                                    <i class="fas fa-landmark text-dark fs-4 mb-2 d-block"></i>
+                                    <div class="fs-2 fw-bold text-dark lh-1">{{ number_format($statsAdmin['clubes']) }}</div>
+                                    <small class="text-dark fw-semibold">{{ __('Clubes') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Jugadores;
+use App\Models\Entrenadores;
+use App\Models\Arbitros;
+use App\Models\Clubes;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -30,8 +33,18 @@ class HomeController extends Controller
     public function index()
     {
         $jugadores = Jugadores::GetjugadoresPendingCount();
-        // dd($jugadores);
-        return view('home', compact('jugadores'));
+
+        $statsAdmin = null;
+        if (auth()->user()->rol_id === 'administrador') {
+            $statsAdmin = [
+                'jugadores' => Jugadores::count(),
+                'entrenadores' => Entrenadores::count(),
+                'arbitros' => Arbitros::count(),
+                'clubes' => Clubes::count(),
+            ];
+        }
+
+        return view('home', compact('jugadores', 'statsAdmin'));
     }
     public function registerAdmin()
     {
