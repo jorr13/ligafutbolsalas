@@ -393,6 +393,19 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="qr_perfil_publico" name="qr_perfil_publico" value="1"
+                                                    {{ old('qr_perfil_publico', $jugador->qr_perfil_publico ?? true) ? 'checked' : '' }}>
+                                                <label class="form-check-label fw-semibold" for="qr_perfil_publico">
+                                                    <i class="fas fa-qrcode me-2 text-primary"></i>
+                                                    {{ __('Perfil visible al escanear el QR') }}
+                                                </label>
+                                                <small class="text-muted d-block mt-1">{{ __('Desactivar: al escanear el código solo se mostrará «Perfil Restringido», sin datos del jugador.') }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                     @endif
                              
                                     

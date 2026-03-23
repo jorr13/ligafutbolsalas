@@ -29,11 +29,13 @@ class Jugadores extends Model
         'categoria_id',
         'nivel',
         'qr_code_image',
-        'qr_code_url'
+        'qr_code_url',
+        'qr_perfil_publico',
     ];
 
     protected $casts = [
         'fecha_fin_sancion' => 'date',
+        'qr_perfil_publico' => 'boolean',
     ];
 
     /** Guardar nombre y nombre del representante en mayúsculas */

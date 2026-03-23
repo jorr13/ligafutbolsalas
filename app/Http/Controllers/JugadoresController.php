@@ -399,6 +399,7 @@ class JugadoresController extends Controller
             $request->validate([
                 'status' => 'required|in:activo,inactivo,pendiente,sancionado',
                 'fecha_fin_sancion' => 'nullable|date|required_if:status,sancionado',
+                'qr_perfil_publico' => 'nullable|boolean',
             ], [
                 'fecha_fin_sancion.required_if' => 'Indique la fecha final de la sanción.',
             ]);
@@ -490,9 +491,11 @@ class JugadoresController extends Controller
         if (auth()->user()->rol_id === 'administrador') {
             $status = $request->status;
             $fechaFinSancion = $request->status === 'sancionado' ? $request->fecha_fin_sancion : null;
+            $qrPerfilPublico = $request->boolean('qr_perfil_publico');
         } else {
             $status = $jugador->status;
             $fechaFinSancion = $jugador->fecha_fin_sancion;
+            $qrPerfilPublico = $jugador->qr_perfil_publico;
         }
 
         // Calcular edad automáticamente si se proporciona fecha de nacimiento
@@ -549,6 +552,7 @@ class JugadoresController extends Controller
                 'nivel' => $request->nivel,
                 'status' => $status,
                 'fecha_fin_sancion' => $fechaFinSancion,
+                'qr_perfil_publico' => $qrPerfilPublico,
             ]);
         
             // Regenerar QR Code si es necesario
@@ -636,6 +640,10 @@ class JugadoresController extends Controller
         
         if (!$jugador) {
             abort(404, 'Jugador no encontrado');
+        }
+
+        if (! $jugador->qr_perfil_publico) {
+            return view('jugadores.perfil-restringido');
         }
         
         return view('jugadores.publico', compact('jugador'));
