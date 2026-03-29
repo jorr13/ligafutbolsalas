@@ -62,6 +62,18 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('jugadores/{id}/toggle-pago', [App\Http\Controllers\JugadoresController::class, 'togglePago'])->name('admin.jugadores.togglePago');
     });
 
+    // Módulo de comentarios sobre entrenadores
+    Route::get('comentarios', [App\Http\Controllers\ComentarioController::class, 'index'])->name('comentarios.index');
+    Route::post('comentarios', [App\Http\Controllers\ComentarioController::class, 'store'])->name('comentarios.store');
+    Route::post('comentarios/{id}/responder', [App\Http\Controllers\ComentarioController::class, 'responder'])->name('comentarios.responder');
+
+    // Moderación de comentarios (solo admin, dentro del grupo admin)
+    Route::prefix('admin')->middleware('admin')->group(function () {
+        Route::get('comentarios/pendientes', [App\Http\Controllers\ComentarioController::class, 'pendientes'])->name('comentarios.pendientes');
+        Route::post('comentarios/{id}/aprobar', [App\Http\Controllers\ComentarioController::class, 'aprobar'])->name('comentarios.aprobar');
+        Route::post('comentarios/{id}/rechazar', [App\Http\Controllers\ComentarioController::class, 'rechazar'])->name('comentarios.rechazar');
+    });
+
     // Rutas para historial de clubes
     Route::get('clubes/{id}/historial', [App\Http\Controllers\HistorialClubController::class, 'mostrarHistorial'])->name('clubes.historial');
     Route::get('clubes/historial/general', [App\Http\Controllers\HistorialClubController::class, 'mostrarHistorialGeneral'])->name('clubes.historial.general');

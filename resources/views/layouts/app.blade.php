@@ -20,6 +20,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     
+    @yield('styles')
     <style>
         :root {
             --primary-color: #8F0000;
@@ -423,6 +424,15 @@
                                 </a>
                             </li>
                         @endif
+
+                        @if(in_array(auth()->user()->rol_id, ['entrenador', 'arbitro', 'administrador']))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('comentarios.index') }}">
+                                    <i class="fas fa-comments me-2"></i>
+                                    Comentarios
+                                </a>
+                            </li>
+                        @endif
                         
                         <!-- User Profile Section -->
                         <li class="nav-item dropdown">
@@ -638,5 +648,6 @@
          `;
          document.head.appendChild(style);
     </script>
+    @yield('scripts')
 </body>
 </html>
