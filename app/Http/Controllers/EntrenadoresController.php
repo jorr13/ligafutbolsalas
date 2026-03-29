@@ -106,8 +106,9 @@ class EntrenadoresController extends Controller
             $entrenadorData['archivo_cv'] = $archivoCvPath;
         }
 
-        Entrenadores::create($entrenadorData);
-    
+        $entrenador = Entrenadores::create($entrenadorData);
+        $entrenador->generarQRCode();
+
         return redirect()->route('entrenadores.index')->with('success', 'Entrenador creado exitosamente.');
     }
 
@@ -148,6 +149,8 @@ class EntrenadoresController extends Controller
     {
         $entrenador = Entrenadores::where('id', $id)->first();
         $user = User::where('id', $entrenador->user_id)->first();
+
+        $nombreAntes = $entrenador->nombre;
 
         $request->merge(['cedula' => CedulaNumero::soloDigitosMax8($request->cedula ?? '')]);
         $request->validate([
@@ -211,10 +214,39 @@ class EntrenadoresController extends Controller
         }
 
         $entrenador->update($entrenadorData);
-    
-        return redirect()->route('entrenadores.index')->with('success', 'Entrenador editado exitosamente.');
+        $entrenador->refresh();
 
+        $attrs = $entrenador->getAttributes();
+        $sinQr = empty($attrs['qr_code_image'] ?? null);
+        $necesitaQr = ($entrenador->nombre !== $nombreAntes) || $sinQr;
+        if ($necesitaQr) {
+            if ($entrenador->nombre !== $nombreAntes) {
+                $entrenador->eliminarArchivoQrEnDisco($nombreAntes);
+            }
+            $entrenador->generarQRCode();
+        }
+
+        return redirect()->route('entrenadores.index')->with('success', 'Entrenador editado exitosamente.');
     }
+
+    /**
+     * Perfil público del entrenador (escaneo QR del carnet).
+     */
+    public function mostrarPublico($id)
+    {
+        $entrenador = Entrenadores::with(['club'])->find($id);
+
+        if (! $entrenador) {
+            abort(404, 'Entrenador no encontrado');
+        }
+
+        if (! $entrenador->qr_perfil_publico) {
+            return view('jugadores.perfil-restringido');
+        }
+
+        return view('entrenadores.publico', compact('entrenador'));
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -236,7 +268,9 @@ class EntrenadoresController extends Controller
         if ($entrenador->archivo_cv && Storage::disk('storage')->exists($entrenador->archivo_cv)) {
             Storage::disk('storage')->delete($entrenador->archivo_cv);
         }
-        
+
+        $entrenador->eliminarArchivoQrEnDisco();
+
         $entrenador->delete();
         $user->delete();
     

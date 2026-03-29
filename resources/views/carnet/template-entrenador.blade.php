@@ -109,11 +109,20 @@
     </tr>
 </table>
 
+<!-- PÁGINA 2: QR (misma lógica que carnet de jugador) -->
 <table style="width: 80mm; margin: 0; padding: 0; background: #ffffff; border: 0.2mm solid #e9ecef; border-collapse: collapse; table-layout: fixed;">
     <tr>
-        <td style="padding: 2mm; vertical-align: middle; text-align: center;">
-            <img src="{{ asset('imagen/logoligafutbolsalas.png') }}" alt="" style="height: 28mm; width: auto;">
-            <div style="font-size: 5.5pt; color: #495057; margin-top: 1mm;">Liga Fútbol Sala de Caracas — Entrenador</div>
+        <td style="width: 40mm; padding: 0.8mm; vertical-align: middle; text-align: center;">
+            @if($entrenador->qr_code_image)
+                <div style="width: 35mm; height: 35mm; border: 0.2mm solid #e9ecef; background: white; margin: 0 auto; padding: 0.5mm;">
+                    <img src="data:image/png;base64,{{ $entrenador->qr_code_image }}" alt="QR" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+            @endif
+        </td>
+        <td style="width: 40mm; padding: 0.8mm; vertical-align: middle; text-align: center;">
+            <div style="width: 32mm; height: 35mm; text-align: center; margin: 0 auto;">
+                <!-- Espacio para sello (igual que carnet de jugador) -->
+            </div>
         </td>
     </tr>
 </table>

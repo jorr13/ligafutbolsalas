@@ -81,3 +81,6 @@ Route::post('filtrar-jugadores', [App\Http\Controllers\JugadoresController::clas
 
 // Ruta pública para mostrar datos del jugador por QR
 Route::get('jugador/{id}', [App\Http\Controllers\JugadoresController::class, 'mostrarJugadorPublico'])->name('jugador.publico');
+
+// Perfil público del entrenador (QR del carnet)
+Route::get('entrenador/{id}', [App\Http\Controllers\EntrenadoresController::class, 'mostrarPublico'])->name('entrenador.publico');
