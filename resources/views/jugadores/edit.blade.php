@@ -13,6 +13,13 @@
                 <p class="text-muted mb-0">{{ __('Modifica la información del jugador') }}: <strong>{{ $jugador->nombre }}</strong></p>
             </div>
 
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Cerrar') }}"></button>
+                </div>
+            @endif
+
             <!-- Two Column Layout -->
             <div class="row g-5">
                 <!-- Image Preview Card -->

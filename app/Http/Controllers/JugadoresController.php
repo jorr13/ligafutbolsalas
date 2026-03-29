@@ -529,6 +529,9 @@ class JugadoresController extends Controller
         // Combinar tipo de identificación + número de cédula (ej: V-24042654)
         $cedulaCompleta = $request->tipo_identificacion . '-' . preg_replace('/^[VEFP]-?/i', '', $request->cedula);
 
+        $qrPerfilPublicoAntes = (bool) $jugador->qr_perfil_publico;
+        $nombreAntes = $jugador->nombre;
+
         try {
             $jugador->update([
                 'nombre' => $request->nombre,
@@ -554,11 +557,33 @@ class JugadoresController extends Controller
                 'fecha_fin_sancion' => $fechaFinSancion,
                 'qr_perfil_publico' => $qrPerfilPublico,
             ]);
-        
-            // Regenerar QR Code si es necesario
-            //$jugador->generarQRCode();
-        
-            return redirect()->route('jugadores.index', $jugador->club_id)->with('success', 'Jugador editado exitosamente.');
+
+            $jugador->refresh();
+
+            if (auth()->user()->rol_id === 'administrador') {
+                if ($qrPerfilPublico && ! $qrPerfilPublicoAntes) {
+                    $jugador->eliminarArchivoQrEnDisco($nombreAntes);
+                    if ($jugador->nombre !== $nombreAntes) {
+                        $jugador->eliminarArchivoQrEnDisco();
+                    }
+                    $jugador->generarQRCode();
+                } elseif (! $qrPerfilPublico && $qrPerfilPublicoAntes) {
+                    $jugador->eliminarArchivoQrEnDisco($nombreAntes);
+                    $jugador->eliminarArchivoQrEnDisco();
+                    $jugador->update([
+                        'qr_code_image' => null,
+                        'qr_code_url' => null,
+                    ]);
+                }
+            }
+
+            $jugador->refresh();
+
+            $rutaEdicion = auth()->user()->rol_id === 'administrador'
+                ? 'admin.jugadores.edit'
+                : 'jugadores.edit';
+
+            return redirect()->route($rutaEdicion, $jugador->id)->with('success', __('Jugador editado exitosamente.'));
         } catch (QueryException $e) {
             // Verificar si es un error de email duplicado
             if ($e->getCode() == 23000 && str_contains($e->getMessage(), 'jugadores_email_unique')) {

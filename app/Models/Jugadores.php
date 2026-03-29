@@ -182,25 +182,49 @@ class Jugadores extends Model
     }
 
     /**
+     * Ruta física del PNG del QR (misma convención que {@see generarQRCode}).
+     */
+    public function rutaArchivoQrEnDisco(?string $nombre = null): string
+    {
+        $nombre = $nombre ?? $this->nombre;
+        $title = str_replace(' ', '_', (string) $nombre);
+
+        return storage_path('app/public/qrs/'.$title.'_qrjugador.png');
+    }
+
+    /**
+     * Elimina el archivo PNG del QR en storage/app/public/qrs si existe.
+     */
+    public function eliminarArchivoQrEnDisco(?string $nombre = null): void
+    {
+        $path = $this->rutaArchivoQrEnDisco($nombre);
+        if (is_file($path)) {
+            @unlink($path);
+        }
+    }
+
+    /**
      * Generar QR Code para el jugador
      */
     public function generarQRCode()
     {
         $urlapp = url("jugador/{$this->id}");
         $title = str_replace(' ', '_', $this->nombre);
-        
+
         // Crear directorio si no existe
         $qrDir = storage_path('app/public/qrs');
         if (!file_exists($qrDir)) {
             mkdir($qrDir, 0755, true);
         }
-        
+
+        $this->eliminarArchivoQrEnDisco();
+
         $result = Builder::create()
             ->writer(new PngWriter())
             ->data($urlapp)
             ->build();
-            
-        $qrPath = storage_path('app/public/qrs/' . $title . '_qrjugador.png');
+
+        $qrPath = storage_path('app/public/qrs/'.$title.'_qrjugador.png');
         $result->saveToFile($qrPath);
         
         // Convertir a base64
@@ -220,10 +244,19 @@ class Jugadores extends Model
      */
     public function getQRCodeImageAttribute($value)
     {
-        if (!$value) {
-            return $this->generarQRCode();
+        if ($value !== null && $value !== '') {
+            return $value;
         }
-        return $value;
+
+        $publico = array_key_exists('qr_perfil_publico', $this->attributes)
+            ? (bool) $this->attributes['qr_perfil_publico']
+            : true;
+
+        if (! $publico) {
+            return null;
+        }
+
+        return $this->generarQRCode();
     }
 }
 

@@ -8,7 +8,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Liga de Futbol Sala de Caracas</title>
-
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('imagen/logoligafutbolsalas.png') }}" type="image/x-icon">
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
