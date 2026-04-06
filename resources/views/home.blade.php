@@ -163,7 +163,7 @@
                             <i class="fas fa-comments text-danger fs-2"></i>
                         </div>
                         <h5 class="card-title mb-2 fw-bold">Comentarios</h5>
-                        <p class="text-muted small mb-0">Opiniones sobre entrenadores</p>
+                        <p class="text-muted small mb-0">Entrenadores comentan árbitros</p>
                     </div>
                 </a>
             </div>
@@ -207,7 +207,7 @@
                             <i class="fas fa-comments text-danger fs-2"></i>
                         </div>
                         <h5 class="card-title mb-2 fw-bold">Comentarios</h5>
-                        <p class="text-muted small mb-0">Opiniones sobre entrenadores</p>
+                        <p class="text-muted small mb-0">Entrenadores comentan árbitros</p>
                     </div>
                 </a>
             </div>

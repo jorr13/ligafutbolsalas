@@ -110,19 +110,10 @@
     
     /* Responsive adjustments */
     @media (max-width: 768px) {
-        .btn-group {
-            flex-direction: column;
-        }
-        
-        .btn-group .btn {
-            margin: 1px 0;
-        }
-        
         .table-responsive {
             font-size: 0.9rem;
         }
         
-        /* Header responsive */
         .card-body .row {
             flex-direction: column;
         }
@@ -135,9 +126,8 @@
             margin-top: 1rem;
         }
         
-        /* Tabla responsive */
         .table th, .table td {
-            padding: 0.75rem 0.5rem;
+            padding: 0.5rem 0.35rem;
         }
         
         .table th {
@@ -146,29 +136,48 @@
         
         .table td {
             font-size: 0.8rem;
+            white-space: normal;
         }
-        
-        /* Ocultar columnas menos importantes en móvil */
+
+        /* Ocultar columnas: Cédula(2), Contacto(3), Club(4) */
         .table th:nth-child(2),
         .table td:nth-child(2),
+        .table th:nth-child(3),
+        .table td:nth-child(3),
         .table th:nth-child(4),
         .table td:nth-child(4) {
             display: none;
         }
+
+        /* Acciones: fila horizontal con wrap */
+        .table td:last-child {
+            white-space: normal;
+            min-width: 120px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .btn-group .btn {
+            margin: 0;
+            padding: 0.3rem 0.45rem;
+            font-size: 0.78rem;
+        }
         
-        /* Botones más pequeños en móvil */
         .btn-sm {
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
         }
         
-        /* Búsqueda responsive */
         .input-group {
             max-width: 100% !important;
             margin-bottom: 1rem;
         }
         
-        /* Header de tabla responsive */
         .card-header .row {
             flex-direction: column;
         }
@@ -183,7 +192,6 @@
     }
     
     @media (max-width: 576px) {
-        /* Ajustes para pantallas muy pequeñas */
         .container-fluid {
             padding: 1rem 0.5rem;
         }
@@ -196,42 +204,44 @@
         .table-responsive {
             border: none;
         }
-        
-        /* Botones apilados verticalmente */
+
+        /* Ocultar también Estado(5) en pantallas muy pequeñas */
+        .table th:nth-child(5),
+        .table td:nth-child(5) {
+            display: none;
+        }
+
+        .table td:last-child {
+            min-width: 110px;
+        }
+
+        .table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .table td:first-child {
+            width: 55%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .table td:last-child {
+            width: 45%;
+        }
+
         .btn-group {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            flex-wrap: wrap;
             gap: 0.25rem;
         }
         
         .btn-group .btn {
-            width: 100%;
+            width: auto;
             margin: 0;
-        }
-        
-        /* Información del jugador más compacta */
-        .d-flex.align-items-center {
-            flex-direction: column;
-            text-align: center;
-        }
-        
-        .position-relative.me-3 {
-            margin: 0 0 0.5rem 0;
-        }
-        
-        /* Estadísticas más compactas */
-        .card-body h3 {
-            font-size: 1.5rem;
-        }
-        
-        .card-body small {
-            font-size: 0.75rem;
-        }
-        
-        /* Ocultar más columnas en pantallas muy pequeñas */
-        .table th:nth-child(3),
-        .table td:nth-child(3) {
-            display: none;
+            padding: 0.25rem 0.4rem;
+            font-size: 0.72rem;
         }
         
         /* Indicador de swipe */

@@ -73,19 +73,10 @@
     
     /* Responsive adjustments */
     @media (max-width: 768px) {
-        .btn-group {
-            flex-direction: column;
-        }
-        
-        .btn-group .btn {
-            margin: 1px 0;
-        }
-        
         .table-responsive {
             font-size: 0.9rem;
         }
         
-        /* Header responsive */
         .card-body .row {
             flex-direction: column;
         }
@@ -98,62 +89,51 @@
             margin-top: 1rem;
         }
         
-        /* Tabla responsive */
         .table th, .table td {
-            padding: 0.75rem 0.5rem;
+            padding: 0.5rem 0.35rem;
+            white-space: normal;
         }
         
-        .table th {
-            font-size: 0.85rem;
-        }
-        
-        .table td {
-            font-size: 0.8rem;
-        }
-        
-        /* Ocultar elementos en móvil */
+        .table th { font-size: 0.85rem; }
+        .table td { font-size: 0.8rem; }
+
         .table th:not(:first-child):not(:last-child),
         .table td:not(:first-child):not(:last-child) {
             display: none;
         }
         
-        /* Mostrar información importante en móvil */
-        .table td:first-child {
-            width: 60%;
+        .table td:first-child { width: 55%; }
+        .table td:last-child { width: 45%; min-width: 120px; }
+
+        .btn-group {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .btn-group .btn {
+            margin: 0;
+            padding: 0.3rem 0.45rem;
+            font-size: 0.78rem;
         }
         
-        .table td:last-child {
-            width: 40%;
-        }
-        
-        /* Botones más pequeños en móvil */
         .btn-sm {
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
         }
         
-        /* Búsqueda responsive */
         .input-group {
             max-width: 100% !important;
             margin-bottom: 1rem;
         }
         
-        /* Header de tabla responsive */
-        .card-header .row {
-            flex-direction: column;
-        }
-        
-        .card-header .col-md-6 {
-            margin-bottom: 1rem;
-        }
-        
-        .card-header .text-end {
-            text-align: left !important;
-        }
+        .card-header .row { flex-direction: column; }
+        .card-header .col-md-6 { margin-bottom: 1rem; }
+        .card-header .text-end { text-align: left !important; }
     }
     
     @media (max-width: 576px) {
-        /* Ajustes para pantallas muy pequeñas */
         .container-fluid {
             padding: 1rem 0.5rem;
         }
@@ -166,20 +146,21 @@
         .table-responsive {
             border: none;
         }
-        
-        /* Botones apilados verticalmente */
+
         .btn-group {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            flex-wrap: wrap;
             gap: 0.25rem;
         }
         
         .btn-group .btn {
-            width: 100%;
+            width: auto;
             margin: 0;
+            padding: 0.25rem 0.4rem;
+            font-size: 0.72rem;
         }
         
-        /* Información del club más compacta */
         .d-flex.align-items-center {
             flex-direction: column;
             text-align: center;

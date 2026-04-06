@@ -2,60 +2,59 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Arbitros;
 use App\Models\Comentario;
-use App\Models\Entrenadores;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ComentarioController extends Controller
 {
     /**
-     * Listado público: comentarios aprobados agrupados por entrenador destinatario.
+     * Comentarios aprobados sobre un árbitro seleccionado.
+     * Comentario raíz: entrenadores y administrador (hacia el árbitro).
+     * Respuestas: entrenadores, árbitros y administrador (pendientes de aprobación salvo admin).
      */
     public function index(Request $request)
     {
         $search = $request->get('search', '');
-        $entrenadorId = $request->get('entrenador_id');
+        $arbitroId = $request->get('arbitro_id');
 
-        $entrenadores = Entrenadores::leftJoin('clubes', 'entrenadores.club_id', '=', 'clubes.id')
-            ->select('entrenadores.*', 'clubes.nombre as nombre_club')
-            ->orderBy('entrenadores.nombre')
-            ->get();
+        $arbitros = Arbitros::query()->orderBy('nombre')->get();
 
         $comentarios = collect();
 
-        if ($entrenadorId) {
+        if ($arbitroId) {
             $comentarios = Comentario::with(['autor', 'destinatario', 'respuestas.autor'])
                 ->raiz()
                 ->aprobados()
-                ->where('destinatario_id', $entrenadorId)
+                ->where('destinatario_id', $arbitroId)
                 ->latest()
                 ->paginate(15)
                 ->appends($request->query());
         }
 
-        $entrenadorSeleccionado = $entrenadorId ? Entrenadores::with('club')->find($entrenadorId) : null;
+        $arbitroSeleccionado = $arbitroId ? Arbitros::find($arbitroId) : null;
 
         $comentariosPendientesCount = 0;
         if (Auth::user()->rol_id === 'administrador') {
             $comentariosPendientesCount = Comentario::pendientes()->count();
         }
 
-        return view('comentarios.index', compact('entrenadores', 'comentarios', 'entrenadorSeleccionado', 'search', 'comentariosPendientesCount'));
+        return view('comentarios.index', compact('arbitros', 'comentarios', 'arbitroSeleccionado', 'search', 'comentariosPendientesCount'));
     }
 
     /**
-     * Crear un comentario nuevo (solo entrenador / árbitro).
+     * Comentario raíz: entrenador o administrador (sobre un árbitro).
      */
     public function store(Request $request)
     {
         $user = Auth::user();
-        if (! in_array($user->rol_id, ['entrenador', 'arbitro', 'administrador'])) {
-            abort(403, 'No tienes permiso para comentar.');
+        if (! in_array($user->rol_id, ['entrenador', 'administrador'])) {
+            abort(403, 'Solo los entrenadores pueden iniciar un comentario principal sobre un árbitro. Los árbitros solo pueden responder a comentarios existentes.');
         }
 
         $request->validate([
-            'destinatario_id' => 'required|exists:entrenadores,id',
+            'destinatario_id' => 'required|exists:arbitros,id',
             'tipo' => 'required|in:positivo,negativo',
             'contenido' => 'required|string|max:1000',
         ]);
@@ -78,7 +77,7 @@ class ComentarioController extends Controller
     }
 
     /**
-     * Responder a un comentario (solo entrenador / árbitro, el comentario padre debe estar aprobado).
+     * Responder a un comentario aprobado: entrenador, árbitro o administrador (moderación si no es admin).
      */
     public function responder(Request $request, $comentarioId)
     {
@@ -112,8 +111,21 @@ class ComentarioController extends Controller
     }
 
     /**
-     * Panel de moderación para administradores.
+     * Eliminar comentario o respuesta (solo administrador).
+     * Al eliminar un comentario raíz, la BD elimina las respuestas en cascada.
      */
+    public function eliminar($id)
+    {
+        if (Auth::user()->rol_id !== 'administrador') {
+            abort(403);
+        }
+
+        $comentario = Comentario::findOrFail($id);
+        $comentario->delete();
+
+        return redirect()->back()->with('success', __('Comentario eliminado correctamente.'));
+    }
+
     public function pendientes(Request $request)
     {
         if (Auth::user()->rol_id !== 'administrador') {
@@ -129,9 +141,6 @@ class ComentarioController extends Controller
         return view('comentarios.pendientes', compact('comentarios'));
     }
 
-    /**
-     * Aprobar un comentario.
-     */
     public function aprobar($id)
     {
         if (Auth::user()->rol_id !== 'administrador') {
@@ -144,9 +153,6 @@ class ComentarioController extends Controller
         return redirect()->back()->with('success', 'Comentario aprobado exitosamente.');
     }
 
-    /**
-     * Rechazar un comentario.
-     */
     public function rechazar($id)
     {
         if (Auth::user()->rol_id !== 'administrador') {

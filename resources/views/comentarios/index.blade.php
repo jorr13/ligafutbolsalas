@@ -2,7 +2,7 @@
 
 @section('styles')
 <style>
-    .entrenador-selector {
+    .arbitro-selector {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         border-radius: 16px;
         padding: 2rem;
@@ -147,7 +147,7 @@
         border-color: #8F0000;
     }
 
-    .entrenador-profile {
+    .arbitro-profile {
         text-align: center;
         padding: 1.5rem;
         background: linear-gradient(135deg, #8F0000, #6B0000);
@@ -156,7 +156,7 @@
         margin-bottom: 1.5rem;
     }
 
-    .entrenador-profile .profile-avatar {
+    .arbitro-profile .profile-avatar {
         width: 80px;
         height: 80px;
         border-radius: 50%;
@@ -165,7 +165,7 @@
         margin-bottom: 0.75rem;
     }
 
-    .entrenador-profile .profile-avatar-placeholder {
+    .arbitro-profile .profile-avatar-placeholder {
         width: 80px;
         height: 80px;
         border-radius: 50%;
@@ -232,13 +232,12 @@
 @section('content')
 <div class="container">
 
-    {{-- Header --}}
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <div>
             <h2 class="fw-bold mb-1">
                 <i class="fas fa-comments text-danger me-2"></i>{{ __('Comentarios') }}
             </h2>
-            <p class="text-muted mb-0">{{ __('Opiniones sobre entrenadores de la liga') }}</p>
+            <p class="text-muted mb-0">{{ __('Comentarios de entrenadores hacia árbitros de la liga') }}</p>
         </div>
         @if(auth()->user()->rol_id === 'administrador')
             <a href="{{ route('comentarios.pendientes') }}" class="btn btn-outline-warning mt-2 mt-md-0 position-relative pe-3">
@@ -256,22 +255,21 @@
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Cerrar') }}"></button>
         </div>
     @endif
 
-    {{-- Selector de entrenador --}}
-    <div class="entrenador-selector">
+    <div class="arbitro-selector">
         <form method="GET" action="{{ route('comentarios.index') }}">
             <label class="form-label fw-semibold mb-2">
-                <i class="fas fa-user-tie me-1"></i>{{ __('Seleccionar entrenador') }}
+                <i class="fas fa-flag-checkered me-1"></i>{{ __('Seleccionar árbitro') }}
             </label>
             <div class="d-flex flex-column flex-md-row gap-2">
-                <select name="entrenador_id" class="form-select" onchange="this.form.submit()">
-                    <option value="">-- {{ __('Elige un entrenador para ver o dejar comentarios') }} --</option>
-                    @foreach($entrenadores as $ent)
-                        <option value="{{ $ent->id }}" {{ request('entrenador_id') == $ent->id ? 'selected' : '' }}>
-                            {{ $ent->nombre }} {{ $ent->nombre_club ? '('.$ent->nombre_club.')' : '' }}
+                <select name="arbitro_id" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- {{ __('Elige un árbitro para ver los comentarios') }} --</option>
+                    @foreach($arbitros as $arb)
+                        <option value="{{ $arb->id }}" {{ request('arbitro_id') == $arb->id ? 'selected' : '' }}>
+                            {{ $arb->nombre }}
                         </option>
                     @endforeach
                 </select>
@@ -279,21 +277,20 @@
         </form>
     </div>
 
-    @if($entrenadorSeleccionado)
+    @if($arbitroSeleccionado)
         <div class="row">
-            {{-- Perfil del entrenador --}}
             <div class="col-lg-4 mb-4 mb-lg-0">
-                <div class="entrenador-profile">
-                    @if($entrenadorSeleccionado->foto_carnet)
-                        <img src="{{ asset('storage/' . $entrenadorSeleccionado->foto_carnet) }}" alt="" class="profile-avatar d-block mx-auto">
+                <div class="arbitro-profile">
+                    @if($arbitroSeleccionado->foto_carnet)
+                        <img src="{{ asset('storage/' . $arbitroSeleccionado->foto_carnet) }}" alt="" class="profile-avatar d-block mx-auto">
                     @else
                         <div class="profile-avatar-placeholder">
                             <i class="fas fa-user"></i>
                         </div>
                     @endif
-                    <h5 class="fw-bold mb-1">{{ $entrenadorSeleccionado->nombre }}</h5>
-                    @if($entrenadorSeleccionado->club)
-                        <p class="mb-2 opacity-75"><i class="fas fa-building me-1"></i>{{ $entrenadorSeleccionado->club->nombre }}</p>
+                    <h5 class="fw-bold mb-1">{{ $arbitroSeleccionado->nombre }}</h5>
+                    @if($arbitroSeleccionado->estatus)
+                        <p class="mb-2 opacity-75"><i class="fas fa-circle me-1"></i>{{ ucfirst($arbitroSeleccionado->estatus) }}</p>
                     @endif
                     <div class="comment-count-badge mx-auto">
                         <i class="fas fa-comments"></i>
@@ -302,16 +299,28 @@
                 </div>
             </div>
 
-            {{-- Columna de comentarios --}}
             <div class="col-lg-8">
 
-                {{-- Formulario para nuevo comentario --}}
-                @if(in_array(auth()->user()->rol_id, ['entrenador', 'arbitro', 'administrador']))
+                @if(auth()->user()->rol_id === 'arbitro')
+                    <div class="alert alert-info shadow-sm mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ __('Como árbitro no puedes abrir un comentario nuevo; solo puedes responder. Las respuestas quedan pendientes hasta que un administrador las apruebe.') }}
+                    </div>
+                @endif
+
+                @if(auth()->user()->rol_id === 'entrenador')
+                    <div class="alert alert-light border shadow-sm mb-3">
+                        <i class="fas fa-info-circle me-2 text-primary"></i>
+                        {{ __('Los comentarios nuevos y tus respuestas pasan por moderación: serán visibles cuando un administrador las apruebe.') }}
+                    </div>
+                @endif
+
+                @if(in_array(auth()->user()->rol_id, ['entrenador', 'administrador']))
                     <div class="new-comment-card">
-                        <h6 class="fw-bold mb-3"><i class="fas fa-pen me-2 text-muted"></i>{{ __('Dejar un comentario') }}</h6>
+                        <h6 class="fw-bold mb-3"><i class="fas fa-pen me-2 text-muted"></i>{{ __('Nuevo comentario sobre este árbitro') }}</h6>
                         <form method="POST" action="{{ route('comentarios.store') }}">
                             @csrf
-                            <input type="hidden" name="destinatario_id" value="{{ $entrenadorSeleccionado->id }}">
+                            <input type="hidden" name="destinatario_id" value="{{ $arbitroSeleccionado->id }}">
 
                             <div class="tipo-selector mb-3 d-flex gap-2">
                                 <input type="radio" class="btn-check" name="tipo" id="tipo_positivo" value="positivo" autocomplete="off" {{ old('tipo', 'positivo') === 'positivo' ? 'checked' : '' }}>
@@ -328,7 +337,7 @@
                             <div class="mb-3">
                                 <textarea name="contenido" class="form-control @error('contenido') is-invalid @enderror"
                                     rows="3" maxlength="1000"
-                                    placeholder="{{ __('Escribe tu opinión sobre este entrenador...') }}"
+                                    placeholder="{{ __('Escribe tu opinión sobre este árbitro...') }}"
                                     required>{{ old('contenido') }}</textarea>
                                 @error('contenido')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -344,7 +353,6 @@
                     </div>
                 @endif
 
-                {{-- Lista de comentarios aprobados --}}
                 @if($comentarios->count() > 0)
                     @foreach($comentarios as $comentario)
                         <div class="comment-card p-3">
@@ -363,25 +371,33 @@
                                             @endif
                                         </span>
                                         <span class="comment-time">{{ $comentario->created_at->diffForHumans() }}</span>
+                                        @if(auth()->user()->rol_id === 'administrador')
+                                            <form method="POST" action="{{ route('comentarios.eliminar', $comentario->id) }}" class="d-inline ms-auto"
+                                                onsubmit="return confirm('{{ __('¿Eliminar este comentario y todas sus respuestas?') }}');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2" title="{{ __('Eliminar') }}">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                     <p class="comment-text mb-2">{{ $comentario->contenido }}</p>
 
-                                    <div class="d-flex align-items-center gap-3">
+                                    <div class="d-flex align-items-center gap-3 flex-wrap">
                                         @if($comentario->respuestas->count() > 0)
-                                            <button class="btn-reply-toggle" onclick="toggleReplies({{ $comentario->id }})">
+                                            <button type="button" class="btn-reply-toggle" onclick="toggleReplies({{ $comentario->id }})">
                                                 <i class="fas fa-caret-down me-1" id="caret-{{ $comentario->id }}"></i>
                                                 {{ $comentario->respuestas->count() }} {{ $comentario->respuestas->count() === 1 ? __('respuesta') : __('respuestas') }}
                                             </button>
                                         @endif
 
                                         @if(in_array(auth()->user()->rol_id, ['entrenador', 'arbitro', 'administrador']))
-                                            <button class="btn-reply-toggle" onclick="toggleReplyForm({{ $comentario->id }})">
+                                            <button type="button" class="btn-reply-toggle" onclick="toggleReplyForm({{ $comentario->id }})">
                                                 <i class="fas fa-reply me-1"></i>{{ __('Responder') }}
                                             </button>
                                         @endif
                                     </div>
 
-                                    {{-- Formulario de respuesta --}}
                                     @if(in_array(auth()->user()->rol_id, ['entrenador', 'arbitro', 'administrador']))
                                         <div class="reply-form" id="reply-form-{{ $comentario->id }}">
                                             <form method="POST" action="{{ route('comentarios.responder', $comentario->id) }}">
@@ -399,19 +415,27 @@
                                 </div>
                             </div>
 
-                            {{-- Respuestas anidadas --}}
                             @if($comentario->respuestas->count() > 0)
                                 <div class="reply-thread" id="replies-{{ $comentario->id }}" style="display: none;">
                                     @foreach($comentario->respuestas as $respuesta)
                                         <div class="reply-card">
-                                            <div class="d-flex gap-2">
+                                            <div class="d-flex gap-2 align-items-start">
                                                 <div class="reply-avatar">
                                                     {{ strtoupper(substr($respuesta->autor->name ?? '?', 0, 1)) }}
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <div class="d-flex align-items-center gap-2">
+                                                    <div class="d-flex align-items-center flex-wrap gap-2">
                                                         <span class="fw-semibold" style="font-size: 0.83rem;">{{ $respuesta->autor->name ?? __('Usuario') }}</span>
                                                         <span class="comment-time">{{ $respuesta->created_at->diffForHumans() }}</span>
+                                                        @if(auth()->user()->rol_id === 'administrador')
+                                                            <form method="POST" action="{{ route('comentarios.eliminar', $respuesta->id) }}" class="d-inline ms-auto"
+                                                                onsubmit="return confirm('{{ __('¿Eliminar esta respuesta?') }}');">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2" title="{{ __('Eliminar') }}">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
                                                     </div>
                                                     <p class="mb-0 mt-1" style="font-size: 0.88rem; color: #4a5568;">{{ $respuesta->contenido }}</p>
                                                 </div>
@@ -430,7 +454,7 @@
                     <div class="empty-state">
                         <i class="fas fa-comment-slash d-block"></i>
                         <h5 class="fw-semibold mb-2">{{ __('Sin comentarios aún') }}</h5>
-                        <p class="mb-0">{{ __('Sé el primero en dejar una opinión sobre este entrenador.') }}</p>
+                        <p class="mb-0">{{ __('Aún no hay comentarios aprobados sobre este árbitro.') }}</p>
                     </div>
                 @endif
             </div>
@@ -438,8 +462,8 @@
     @else
         <div class="empty-state">
             <i class="fas fa-hand-pointer d-block"></i>
-            <h5 class="fw-semibold mb-2">{{ __('Selecciona un entrenador') }}</h5>
-            <p class="mb-0">{{ __('Elige un entrenador del listado para ver y dejar comentarios.') }}</p>
+            <h5 class="fw-semibold mb-2">{{ __('Selecciona un árbitro') }}</h5>
+            <p class="mb-0">{{ __('Elige un árbitro del listado para ver los comentarios.') }}</p>
         </div>
     @endif
 </div>

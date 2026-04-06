@@ -27,7 +27,7 @@ class Comentario extends Model
 
     public function destinatario()
     {
-        return $this->belongsTo(Entrenadores::class, 'destinatario_id');
+        return $this->belongsTo(Arbitros::class, 'destinatario_id');
     }
 
     public function padre()

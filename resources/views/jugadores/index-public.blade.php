@@ -116,11 +116,13 @@
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .btn-group {
-            flex-direction: column;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.25rem;
         }
         
         .btn-group .btn {
-            margin: 1px 0;
+            margin: 0;
         }
         
         .table-responsive {

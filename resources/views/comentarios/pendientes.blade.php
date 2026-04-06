@@ -100,7 +100,7 @@
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Cerrar') }}"></button>
         </div>
     @endif
 
@@ -128,8 +128,8 @@
                         </div>
 
                         <div class="mb-1" style="font-size: 0.82rem; color: #718096;">
-                            <i class="fas fa-user-tie me-1"></i>{{ __('Sobre:') }}
-                            <strong>{{ $comentario->destinatario->nombre ?? __('Entrenador eliminado') }}</strong>
+                            <i class="fas fa-flag-checkered me-1"></i>{{ __('Sobre el árbitro:') }}
+                            <strong>{{ $comentario->destinatario->nombre ?? __('Árbitro eliminado') }}</strong>
                         </div>
 
                         @if($comentario->padre)
@@ -142,7 +142,7 @@
 
                         <p class="mb-3" style="font-size: 0.92rem; color: #2d3748; line-height: 1.6;">{{ $comentario->contenido }}</p>
 
-                        <div class="d-flex gap-2">
+                        <div class="d-flex flex-wrap gap-2">
                             <form method="POST" action="{{ route('comentarios.aprobar', $comentario->id) }}">
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-sm px-3">
@@ -153,6 +153,13 @@
                                 @csrf
                                 <button type="submit" class="btn btn-danger btn-sm px-3">
                                     <i class="fas fa-times me-1"></i>{{ __('Rechazar') }}
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ route('comentarios.eliminar', $comentario->id) }}"
+                                onsubmit="return confirm('{{ $comentario->parent_id ? __('¿Eliminar esta respuesta?') : __('¿Eliminar este comentario y todas sus respuestas?') }}');">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-secondary btn-sm px-3">
+                                    <i class="fas fa-trash-alt me-1"></i>{{ __('Eliminar') }}
                                 </button>
                             </form>
                         </div>

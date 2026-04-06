@@ -315,22 +315,6 @@
             white-space: nowrap;
         }
 
-        .table .d-flex.gap-2 {
-            flex-wrap: nowrap;
-        }
-
-        .table td {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .table .actions-column {
-            min-width: 260px;
-            width: auto;
-        }
-
         /* Custom button styles */
         .btn-outline-primary {
             border-color: var(--blue-dark);
@@ -349,15 +333,53 @@
             box-shadow: 0 2px 4px var(--shadow-light);
         }
 
-        /* Table responsive styles */
+        /* Solo escritorio: truncar celdas largas */
+        @media (min-width: 769px) {
+            .table td {
+                max-width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .table .actions-column {
+                min-width: 260px;
+                width: auto;
+            }
+        }
+
         @media (max-width: 1200px) {
             .table .btn-sm {
                 padding: 0.2rem 0.4rem;
                 font-size: 0.7rem;
             }
-            
-            .table .d-flex.gap-2 {
-                gap: 0.25rem !important;
+        }
+
+        /* Móvil: botones en fila horizontal con wrap */
+        @media (max-width: 768px) {
+            .table td {
+                white-space: normal;
+                max-width: none;
+                overflow: visible;
+            }
+
+            .table td:last-child {
+                min-width: 120px;
+            }
+
+            .table .btn-group {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                gap: 0.3rem;
+            }
+
+            .table .btn-group .btn {
+                margin: 0 !important;
+                flex: 0 0 auto;
+                width: auto !important;
+                padding: 0.3rem 0.45rem;
+                font-size: 0.78rem;
             }
         }
     </style>

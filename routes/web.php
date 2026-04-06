@@ -62,16 +62,17 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('jugadores/{id}/toggle-pago', [App\Http\Controllers\JugadoresController::class, 'togglePago'])->name('admin.jugadores.togglePago');
     });
 
-    // Módulo de comentarios sobre entrenadores
+    // Módulo de comentarios sobre árbitros
     Route::get('comentarios', [App\Http\Controllers\ComentarioController::class, 'index'])->name('comentarios.index');
     Route::post('comentarios', [App\Http\Controllers\ComentarioController::class, 'store'])->name('comentarios.store');
     Route::post('comentarios/{id}/responder', [App\Http\Controllers\ComentarioController::class, 'responder'])->name('comentarios.responder');
 
-    // Moderación de comentarios (solo admin, dentro del grupo admin)
+    // Moderación y eliminación de comentarios (solo admin)
     Route::prefix('admin')->middleware('admin')->group(function () {
         Route::get('comentarios/pendientes', [App\Http\Controllers\ComentarioController::class, 'pendientes'])->name('comentarios.pendientes');
         Route::post('comentarios/{id}/aprobar', [App\Http\Controllers\ComentarioController::class, 'aprobar'])->name('comentarios.aprobar');
         Route::post('comentarios/{id}/rechazar', [App\Http\Controllers\ComentarioController::class, 'rechazar'])->name('comentarios.rechazar');
+        Route::post('comentarios/{id}/eliminar', [App\Http\Controllers\ComentarioController::class, 'eliminar'])->name('comentarios.eliminar');
     });
 
     // Rutas para historial de clubes
